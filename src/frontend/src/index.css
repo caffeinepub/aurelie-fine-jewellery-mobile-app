@@ -1,0 +1,208 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --radius: 0.625rem;
+        
+        /* Aurelie Fine Jewellery - Multi-toned Beige with Dark Bottle Green & Gold */
+        /* Light Mode: Warm beige gradients with dark bottle green and gold accents */
+        --background: 0.92 0.025 55;
+        --foreground: 0.70 0.12 75;
+        
+        --card: 0.94 0.020 55;
+        --card-foreground: 0.70 0.12 75;
+        
+        --popover: 0.94 0.020 55;
+        --popover-foreground: 0.70 0.12 75;
+        
+        /* Primary: Rich Gold */
+        --primary: 0.70 0.12 75;
+        --primary-foreground: 0.94 0.020 55;
+        
+        /* Secondary: Dark Bottle Green */
+        --secondary: 0.32 0.08 155;
+        --secondary-foreground: 0.94 0.020 55;
+        
+        /* Muted: Soft Beige */
+        --muted: 0.88 0.025 55;
+        --muted-foreground: 0.70 0.12 75;
+        
+        /* Accent: Bright Gold */
+        --accent: 0.75 0.15 70;
+        --accent-foreground: 0.25 0.04 155;
+        
+        --destructive: 0.577 0.245 27.325;
+        --destructive-foreground: 0.985 0 0;
+        
+        --border: 0.85 0.02 55;
+        --input: 0.90 0.020 55;
+        --ring: 0.70 0.12 75;
+        
+        /* Dark Bottle Green variations for backgrounds */
+        --bottle-green-dark: 0.25 0.10 155;
+        --bottle-green-medium: 0.32 0.08 155;
+        --bottle-green-light: 0.40 0.06 155;
+        
+        /* Multi-toned Beige variations */
+        --beige-darkest: 0.82 0.030 50;
+        --beige-dark: 0.86 0.028 52;
+        --beige-medium: 0.90 0.025 55;
+        --beige-light: 0.94 0.020 58;
+        --beige-lightest: 0.97 0.015 60;
+        
+        /* Gold variations for gradients */
+        --gold-dark: 0.60 0.10 75;
+        --gold-medium: 0.70 0.12 75;
+        --gold-light: 0.80 0.14 70;
+        
+        --chart-1: 0.70 0.12 75;
+        --chart-2: 0.32 0.08 155;
+        --chart-3: 0.75 0.15 70;
+        --chart-4: 0.40 0.06 155;
+        --chart-5: 0.65 0.11 75;
+    }
+
+    .dark {
+        /* Dark Mode: Deep Bottle Green with Beige and Gold Accents */
+        --background: 0.22 0.06 155;
+        --foreground: 0.75 0.15 70;
+        
+        --card: 0.28 0.06 155;
+        --card-foreground: 0.75 0.15 70;
+        
+        --popover: 0.28 0.06 155;
+        --popover-foreground: 0.75 0.15 70;
+        
+        /* Primary: Bright Gold */
+        --primary: 0.75 0.15 70;
+        --primary-foreground: 0.22 0.06 155;
+        
+        /* Secondary: Medium Bottle Green */
+        --secondary: 0.35 0.07 155;
+        --secondary-foreground: 0.94 0.020 55;
+        
+        /* Muted: Dark Bottle Green */
+        --muted: 0.30 0.05 155;
+        --muted-foreground: 0.75 0.15 70;
+        
+        /* Accent: Bright Gold */
+        --accent: 0.80 0.16 68;
+        --accent-foreground: 0.22 0.06 155;
+        
+        --destructive: 0.60 0.20 25;
+        --destructive-foreground: 0.22 0.06 155;
+        
+        --border: 0.35 0.05 155;
+        --input: 0.30 0.05 155;
+        --ring: 0.75 0.15 70;
+        
+        /* Dark Bottle Green variations for dark mode */
+        --bottle-green-dark: 0.18 0.08 155;
+        --bottle-green-medium: 0.25 0.06 155;
+        --bottle-green-light: 0.35 0.05 155;
+        
+        /* Beige variations for dark mode */
+        --beige-darkest: 0.70 0.020 55;
+        --beige-dark: 0.75 0.020 55;
+        --beige-medium: 0.82 0.020 55;
+        --beige-light: 0.88 0.020 55;
+        --beige-lightest: 0.93 0.015 55;
+        
+        /* Gold variations for dark mode */
+        --gold-dark: 0.65 0.12 75;
+        --gold-medium: 0.75 0.15 70;
+        --gold-light: 0.85 0.17 68;
+        
+        --chart-1: 0.75 0.15 70;
+        --chart-2: 0.35 0.07 155;
+        --chart-3: 0.80 0.16 68;
+        --chart-4: 0.40 0.06 155;
+        --chart-5: 0.70 0.13 73;
+    }
+
+    * {
+        @apply border-border;
+    }
+    
+    body {
+        @apply bg-background text-foreground;
+        font-feature-settings: "rlig" 1, "calt" 1;
+    }
+    
+    /* Elegant serif font for headings with gold gradient */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', 'Georgia', serif;
+        background: linear-gradient(135deg, oklch(var(--gold-light)), oklch(var(--gold-medium)), oklch(var(--gold-dark)));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    /* All text elements use metallic golden color */
+    p, span, a, label, input, textarea, select, button {
+        color: oklch(var(--foreground));
+    }
+}
+
+/* Custom scrollbar styling */
+@layer utilities {
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    .scrollbar-thin::-webkit-scrollbar-track {
+        @apply bg-muted/30;
+    }
+    
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        @apply bg-primary/30 rounded-full;
+    }
+    
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+        @apply bg-primary/50;
+    }
+    
+    /* Gold gradient utilities */
+    .gold-gradient {
+        background: linear-gradient(135deg, oklch(var(--gold-light)), oklch(var(--gold-medium)), oklch(var(--gold-dark)));
+    }
+    
+    .gold-text {
+        background: linear-gradient(135deg, oklch(var(--gold-light)), oklch(var(--gold-medium)), oklch(var(--gold-dark)));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    /* Dark Bottle Green gradient utilities */
+    .bottle-green-gradient {
+        background: linear-gradient(135deg, oklch(var(--bottle-green-light)), oklch(var(--bottle-green-medium)), oklch(var(--bottle-green-dark)));
+    }
+    
+    /* Multi-toned Beige gradient utilities */
+    .beige-gradient {
+        background: linear-gradient(135deg, 
+            oklch(var(--beige-lightest)) 0%, 
+            oklch(var(--beige-light)) 25%, 
+            oklch(var(--beige-medium)) 50%, 
+            oklch(var(--beige-dark)) 75%, 
+            oklch(var(--beige-darkest)) 100%);
+    }
+    
+    /* Dual-tone gradient: Dark Bottle Green to Beige with Gold accent */
+    .dual-tone-gradient {
+        background: linear-gradient(135deg, oklch(var(--bottle-green-dark)) 0%, oklch(var(--bottle-green-medium)) 50%, oklch(var(--gold-dark)) 100%);
+    }
+    
+    /* Gold border with gradient */
+    .gold-border {
+        border: 2px solid transparent;
+        background-image: linear-gradient(oklch(var(--background)), oklch(var(--background))), 
+                          linear-gradient(135deg, oklch(var(--gold-light)), oklch(var(--gold-medium)), oklch(var(--gold-dark)));
+        background-origin: border-box;
+        background-clip: padding-box, border-box;
+    }
+}
