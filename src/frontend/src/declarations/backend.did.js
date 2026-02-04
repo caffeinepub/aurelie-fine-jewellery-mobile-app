@@ -20,12 +20,22 @@ export const _CaffeineStorageRefillResult = IDL.Record({
   'topped_up_amount' : IDL.Opt(IDL.Nat),
 });
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
-export const Product = IDL.Record({
+export const CarouselSlide = IDL.Record({
+  'order' : IDL.Nat,
+  'enabled' : IDL.Bool,
+  'visualContent' : ExternalBlob,
+  'urlRedirect' : IDL.Text,
+});
+export const ProductMedia = IDL.Record({
+  'video' : IDL.Opt(ExternalBlob),
+  'images' : IDL.Vec(ExternalBlob),
+});
+export const ProductCreate = IDL.Record({
   'id' : IDL.Text,
+  'media' : ProductMedia,
   'inStock' : IDL.Bool,
   'name' : IDL.Text,
   'description' : IDL.Text,
-  'image' : ExternalBlob,
   'priceInCents' : IDL.Nat,
 });
 export const UserRole = IDL.Variant({
@@ -41,6 +51,12 @@ export const ShoppingItem = IDL.Record({
   'priceInCents' : IDL.Nat,
   'productDescription' : IDL.Text,
 });
+export const ShippingAddress = IDL.Record({
+  'name' : IDL.Text,
+  'email' : IDL.Text,
+  'address' : IDL.Text,
+  'phone' : IDL.Text,
+});
 export const OrderCreate = IDL.Record({
   'id' : IDL.Text,
   'totalPriceInCents' : IDL.Nat,
@@ -48,6 +64,7 @@ export const OrderCreate = IDL.Record({
   'productId' : IDL.Text,
   'upiId' : IDL.Text,
   'quantity' : IDL.Nat,
+  'shippingAddress' : ShippingAddress,
 });
 export const UserProfile = IDL.Record({
   'name' : IDL.Text,
@@ -80,6 +97,15 @@ export const Order = IDL.Record({
   'timestamp' : IDL.Int,
   'upiId' : IDL.Text,
   'quantity' : IDL.Nat,
+  'shippingAddress' : ShippingAddress,
+});
+export const Product = IDL.Record({
+  'id' : IDL.Text,
+  'media' : ProductMedia,
+  'inStock' : IDL.Bool,
+  'name' : IDL.Text,
+  'description' : IDL.Text,
+  'priceInCents' : IDL.Nat,
 });
 export const SiteContent = IDL.Record({
   'generalDisclaimer' : IDL.Text,
@@ -153,7 +179,8 @@ export const idlService = IDL.Service({
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
-  'addProduct' : IDL.Func([Product], [], []),
+  'addCarouselSlide' : IDL.Func([CarouselSlide], [], []),
+  'addProduct' : IDL.Func([ProductCreate], [], []),
   'assignAdminRole' : IDL.Func([IDL.Principal], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'cancelOrder' : IDL.Func([IDL.Text, CancelReason], [], []),
@@ -164,6 +191,7 @@ export const idlService = IDL.Service({
     ),
   'createOrder' : IDL.Func([OrderCreate], [], []),
   'deleteProduct' : IDL.Func([IDL.Text], [], []),
+  'getAllCarouselSlides' : IDL.Func([], [IDL.Vec(CarouselSlide)], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getContactInfo' : IDL.Func(
@@ -182,7 +210,7 @@ export const idlService = IDL.Service({
   'getInquiries' : IDL.Func([], [IDL.Vec(CustomerInquiry)], ['query']),
   'getInquiry' : IDL.Func([IDL.Text], [CustomerInquiry], ['query']),
   'getOrder' : IDL.Func([IDL.Text], [Order], ['query']),
-  'getOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
+  'getOrders' : IDL.Func([], [IDL.Vec(Order)], []),
   'getProduct' : IDL.Func([IDL.Text], [Product], ['query']),
   'getProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
   'getSiteContent' : IDL.Func([], [SiteContent], ['query']),
@@ -206,17 +234,21 @@ export const idlService = IDL.Service({
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'isOrderCancellable' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
   'isStripeConfigured' : IDL.Func([], [IDL.Bool], ['query']),
+  'removeCarouselSlide' : IDL.Func([IDL.Nat], [], []),
+  'reorderCarouselSlides' : IDL.Func([IDL.Vec(IDL.Nat)], [], []),
   'respondToInquiry' : IDL.Func([IDL.Text, IDL.Text], [], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'setStripeConfiguration' : IDL.Func([StripeConfiguration], [], []),
   'submitInquiry' : IDL.Func([CustomerInquiry], [], []),
+  'toggleCarouselSlide' : IDL.Func([IDL.Nat, IDL.Bool], [], []),
   'transform' : IDL.Func(
       [TransformationInput],
       [TransformationOutput],
       ['query'],
     ),
+  'updateCarouselSlide' : IDL.Func([IDL.Nat, CarouselSlide], [], []),
   'updateOrderStatus' : IDL.Func([IDL.Text, OrderStatus], [], []),
-  'updateProduct' : IDL.Func([Product], [], []),
+  'updateProduct' : IDL.Func([ProductCreate], [], []),
   'updateSiteContent' : IDL.Func([SiteContent], [], []),
 });
 
@@ -235,12 +267,22 @@ export const idlFactory = ({ IDL }) => {
     'topped_up_amount' : IDL.Opt(IDL.Nat),
   });
   const ExternalBlob = IDL.Vec(IDL.Nat8);
-  const Product = IDL.Record({
+  const CarouselSlide = IDL.Record({
+    'order' : IDL.Nat,
+    'enabled' : IDL.Bool,
+    'visualContent' : ExternalBlob,
+    'urlRedirect' : IDL.Text,
+  });
+  const ProductMedia = IDL.Record({
+    'video' : IDL.Opt(ExternalBlob),
+    'images' : IDL.Vec(ExternalBlob),
+  });
+  const ProductCreate = IDL.Record({
     'id' : IDL.Text,
+    'media' : ProductMedia,
     'inStock' : IDL.Bool,
     'name' : IDL.Text,
     'description' : IDL.Text,
-    'image' : ExternalBlob,
     'priceInCents' : IDL.Nat,
   });
   const UserRole = IDL.Variant({
@@ -256,6 +298,12 @@ export const idlFactory = ({ IDL }) => {
     'priceInCents' : IDL.Nat,
     'productDescription' : IDL.Text,
   });
+  const ShippingAddress = IDL.Record({
+    'name' : IDL.Text,
+    'email' : IDL.Text,
+    'address' : IDL.Text,
+    'phone' : IDL.Text,
+  });
   const OrderCreate = IDL.Record({
     'id' : IDL.Text,
     'totalPriceInCents' : IDL.Nat,
@@ -263,6 +311,7 @@ export const idlFactory = ({ IDL }) => {
     'productId' : IDL.Text,
     'upiId' : IDL.Text,
     'quantity' : IDL.Nat,
+    'shippingAddress' : ShippingAddress,
   });
   const UserProfile = IDL.Record({
     'name' : IDL.Text,
@@ -295,6 +344,15 @@ export const idlFactory = ({ IDL }) => {
     'timestamp' : IDL.Int,
     'upiId' : IDL.Text,
     'quantity' : IDL.Nat,
+    'shippingAddress' : ShippingAddress,
+  });
+  const Product = IDL.Record({
+    'id' : IDL.Text,
+    'media' : ProductMedia,
+    'inStock' : IDL.Bool,
+    'name' : IDL.Text,
+    'description' : IDL.Text,
+    'priceInCents' : IDL.Nat,
   });
   const SiteContent = IDL.Record({
     'generalDisclaimer' : IDL.Text,
@@ -365,7 +423,8 @@ export const idlFactory = ({ IDL }) => {
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
-    'addProduct' : IDL.Func([Product], [], []),
+    'addCarouselSlide' : IDL.Func([CarouselSlide], [], []),
+    'addProduct' : IDL.Func([ProductCreate], [], []),
     'assignAdminRole' : IDL.Func([IDL.Principal], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'cancelOrder' : IDL.Func([IDL.Text, CancelReason], [], []),
@@ -376,6 +435,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'createOrder' : IDL.Func([OrderCreate], [], []),
     'deleteProduct' : IDL.Func([IDL.Text], [], []),
+    'getAllCarouselSlides' : IDL.Func([], [IDL.Vec(CarouselSlide)], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getContactInfo' : IDL.Func(
@@ -398,7 +458,7 @@ export const idlFactory = ({ IDL }) => {
     'getInquiries' : IDL.Func([], [IDL.Vec(CustomerInquiry)], ['query']),
     'getInquiry' : IDL.Func([IDL.Text], [CustomerInquiry], ['query']),
     'getOrder' : IDL.Func([IDL.Text], [Order], ['query']),
-    'getOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
+    'getOrders' : IDL.Func([], [IDL.Vec(Order)], []),
     'getProduct' : IDL.Func([IDL.Text], [Product], ['query']),
     'getProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
     'getSiteContent' : IDL.Func([], [SiteContent], ['query']),
@@ -422,17 +482,21 @@ export const idlFactory = ({ IDL }) => {
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'isOrderCancellable' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
     'isStripeConfigured' : IDL.Func([], [IDL.Bool], ['query']),
+    'removeCarouselSlide' : IDL.Func([IDL.Nat], [], []),
+    'reorderCarouselSlides' : IDL.Func([IDL.Vec(IDL.Nat)], [], []),
     'respondToInquiry' : IDL.Func([IDL.Text, IDL.Text], [], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'setStripeConfiguration' : IDL.Func([StripeConfiguration], [], []),
     'submitInquiry' : IDL.Func([CustomerInquiry], [], []),
+    'toggleCarouselSlide' : IDL.Func([IDL.Nat, IDL.Bool], [], []),
     'transform' : IDL.Func(
         [TransformationInput],
         [TransformationOutput],
         ['query'],
       ),
+    'updateCarouselSlide' : IDL.Func([IDL.Nat, CarouselSlide], [], []),
     'updateOrderStatus' : IDL.Func([IDL.Text, OrderStatus], [], []),
-    'updateProduct' : IDL.Func([Product], [], []),
+    'updateProduct' : IDL.Func([ProductCreate], [], []),
     'updateSiteContent' : IDL.Func([SiteContent], [], []),
   });
 };

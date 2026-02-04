@@ -1,2 +1,3 @@
-# aurelie-fine-jewellery-mobile-app
-Exported from Caffeine project: Aurelie Fine Jewellery Mobile App
+## 
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

@@ -31,7 +31,7 @@ export default function InquiryManagement() {
   };
 
   return (
-    <Card className="gold-border bg-card/80 backdrop-blur">
+    <Card className="gold-border chrome-surface backdrop-blur">
       <CardHeader>
         <CardTitle className="gold-text flex items-center gap-2">
           <MessageSquare className="h-5 w-5" />

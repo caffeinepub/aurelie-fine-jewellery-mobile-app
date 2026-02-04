@@ -2,11 +2,12 @@ import { useIsCallerAdmin, useGetProducts, useGetOrders, useGetInquiries } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Skeleton } from '../components/ui/skeleton';
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Settings } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Settings, Image } from 'lucide-react';
 import ProductManagement from '../components/admin/ProductManagement';
 import OrderManagement from '../components/admin/OrderManagement';
 import InquiryManagement from '../components/admin/InquiryManagement';
 import SiteContentManagement from '../components/admin/SiteContentManagement';
+import CarouselManagement from '../components/admin/CarouselManagement';
 
 export default function AdminDashboardPage() {
   const { data: isAdmin, isLoading: adminLoading } = useIsCallerAdmin();
@@ -52,7 +53,7 @@ export default function AdminDashboardPage() {
 
       {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-3 mb-8">
-        <Card className="gold-border bg-beige-light/80 backdrop-blur">
+        <Card className="gold-border chrome-surface backdrop-blur">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium gold-text">Total Products</CardTitle>
             <Package className="h-4 w-4 text-gold-medium" />
@@ -65,7 +66,7 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="gold-border bg-beige-light/80 backdrop-blur">
+        <Card className="gold-border chrome-surface backdrop-blur">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium gold-text">Total Orders</CardTitle>
             <ShoppingBag className="h-4 w-4 text-gold-medium" />
@@ -80,7 +81,7 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="gold-border bg-beige-light/80 backdrop-blur">
+        <Card className="gold-border chrome-surface backdrop-blur">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium gold-text">Inquiries</CardTitle>
             <MessageSquare className="h-4 w-4 text-gold-medium" />
@@ -98,7 +99,7 @@ export default function AdminDashboardPage() {
 
       {/* Management Tabs */}
       <Tabs defaultValue="products" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4 bg-bottle-green-medium/20 border border-gold-medium/30">
+        <TabsList className="grid w-full grid-cols-5 chrome-surface border border-gold-medium/30">
           <TabsTrigger value="products" className="gold-text data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
             <Package className="h-4 w-4 mr-2" />
             Products
@@ -110,6 +111,10 @@ export default function AdminDashboardPage() {
           <TabsTrigger value="inquiries" className="gold-text data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
             <MessageSquare className="h-4 w-4 mr-2" />
             Inquiries
+          </TabsTrigger>
+          <TabsTrigger value="carousel" className="gold-text data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
+            <Image className="h-4 w-4 mr-2" />
+            Carousel
           </TabsTrigger>
           <TabsTrigger value="edit" className="gold-text data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
             <Settings className="h-4 w-4 mr-2" />
@@ -127,6 +132,10 @@ export default function AdminDashboardPage() {
 
         <TabsContent value="inquiries">
           <InquiryManagement />
+        </TabsContent>
+
+        <TabsContent value="carousel">
+          <CarouselManagement />
         </TabsContent>
 
         <TabsContent value="edit">

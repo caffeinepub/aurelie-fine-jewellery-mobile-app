@@ -8,6 +8,7 @@ import { Badge } from '../components/ui/badge';
 import { Skeleton } from '../components/ui/skeleton';
 import { ShoppingCart, Zap } from 'lucide-react';
 import { toast } from 'sonner';
+import HomeCarousel from '../components/HomeCarousel';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -52,24 +53,8 @@ export default function HomePage() {
 
   return (
     <div className="container px-4 py-8">
-      {/* Hero Section */}
-      <section className="relative mb-12 overflow-hidden rounded-2xl shadow-bottle-green">
-        <div className="relative h-64 sm:h-80 dual-tone-gradient">
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-            <img
-              src="/assets/IMG_20260122_212029_590-2.webp"
-              alt="Aurelie Logo"
-              className="h-24 w-24 mb-6 object-contain"
-            />
-            <h1 className="font-serif text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl mb-4 text-beige-lightest">
-              Timeless Elegance
-            </h1>
-            <p className="text-lg sm:text-xl text-beige-lightest/90 max-w-2xl">
-              Discover our exquisite collection of handcrafted fine jewellery
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Carousel Section */}
+      <HomeCarousel />
 
       {/* Products Section */}
       <section>
@@ -97,58 +82,69 @@ export default function HomePage() {
           </div>
         ) : products && products.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((product) => (
-              <Card
-                key={product.id}
-                className="group overflow-hidden transition-all hover:shadow-gold cursor-pointer gold-border bg-beige-light/80 backdrop-blur"
-                onClick={() => navigate({ to: '/product/$productId', params: { productId: product.id } })}
-              >
-                <div className="relative overflow-hidden bg-bottle-green-light/20">
-                  <img
-                    src={product.image.getDirectURL()}
-                    alt={product.name}
-                    className="h-64 w-full object-cover transition-transform group-hover:scale-105"
-                  />
-                  {!product.inStock && (
-                    <Badge variant="secondary" className="absolute top-3 right-3 bg-secondary text-secondary-foreground">
-                      Out of Stock
-                    </Badge>
-                  )}
-                </div>
-                <CardHeader>
-                  <CardTitle className="font-serif text-xl gold-text">{product.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {product.description}
-                  </p>
-                  <p className="text-2xl font-semibold gold-text mt-3">
-                    {formatINR(product.priceInCents)}
-                  </p>
-                </CardContent>
-                <CardFooter className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex-1 gap-2 border-gold-medium hover:bg-gold-medium/20"
-                    onClick={(e) => handleAddToCart(e, product)}
-                    disabled={!product.inStock}
-                  >
-                    <ShoppingCart className="h-4 w-4" />
-                    Add to Cart
-                  </Button>
-                  <Button
-                    size="sm"
-                    className="flex-1 gap-2 gold-gradient text-secondary shadow-gold"
-                    onClick={(e) => handleBuyNow(e, product.id)}
-                    disabled={!product.inStock}
-                  >
-                    <Zap className="h-4 w-4" />
-                    Buy Now
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+            {products.map((product) => {
+              // Use first image from media.images array
+              const firstImage = product.media.images[0];
+              
+              return (
+                <Card
+                  key={product.id}
+                  className="group overflow-hidden transition-all hover:shadow-gold cursor-pointer gold-border chrome-surface backdrop-blur"
+                  onClick={() => navigate({ to: '/product/$productId', params: { productId: product.id } })}
+                >
+                  <div className="relative overflow-hidden bg-bottle-green-light/20">
+                    {firstImage ? (
+                      <img
+                        src={firstImage.getDirectURL()}
+                        alt={product.name}
+                        className="h-64 w-full object-cover transition-transform group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="h-64 w-full flex items-center justify-center bg-muted">
+                        <span className="text-muted-foreground">No image</span>
+                      </div>
+                    )}
+                    {!product.inStock && (
+                      <Badge variant="secondary" className="absolute top-3 right-3 bg-secondary text-secondary-foreground">
+                        Out of Stock
+                      </Badge>
+                    )}
+                  </div>
+                  <CardHeader>
+                    <CardTitle className="font-serif text-xl gold-text">{product.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {product.description}
+                    </p>
+                    <p className="text-2xl font-semibold gold-text mt-3">
+                      {formatINR(product.priceInCents)}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 gap-2 border-gold-medium hover:bg-gold-medium/20"
+                      onClick={(e) => handleAddToCart(e, product)}
+                      disabled={!product.inStock}
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                      Add to Cart
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="flex-1 gap-2 gold-gradient text-secondary shadow-gold"
+                      onClick={(e) => handleBuyNow(e, product.id)}
+                      disabled={!product.inStock}
+                    >
+                      <Zap className="h-4 w-4" />
+                      Buy Now
+                    </Button>
+                  </CardFooter>
+                </Card>
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-12">

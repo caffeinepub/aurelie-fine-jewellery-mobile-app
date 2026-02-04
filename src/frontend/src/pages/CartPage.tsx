@@ -3,7 +3,7 @@ import { useCart } from '../hooks/useCart';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, Package } from 'lucide-react';
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -58,61 +58,70 @@ export default function CartPage() {
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-4">
-          {items.map((item) => (
-            <Card key={item.product.id} className="overflow-hidden gold-border bg-beige-light/80 backdrop-blur">
-              <CardContent className="p-4">
-                <div className="flex gap-4">
-                  <img
-                    src={item.product.image.getDirectURL()}
-                    alt={item.product.name}
-                    className="h-24 w-24 object-cover rounded border-2 border-gold-medium/30"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold gold-text mb-1">{item.product.name}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                      {item.product.description}
-                    </p>
-                    <p className="text-lg font-semibold gold-text">
-                      {formatINR(Number(item.product.priceInCents))}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-end justify-between">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeItem(item.product.id)}
-                      className="text-destructive hover:text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                    <div className="flex items-center gap-2">
+          {items.map((item) => {
+            const firstImage = item.product.media.images[0];
+            return (
+              <Card key={item.product.id} className="overflow-hidden gold-border chrome-surface backdrop-blur">
+                <CardContent className="p-4">
+                  <div className="flex gap-4">
+                    {firstImage ? (
+                      <img
+                        src={firstImage.getDirectURL()}
+                        alt={item.product.name}
+                        className="h-24 w-24 object-cover rounded border-2 border-gold-medium/30"
+                      />
+                    ) : (
+                      <div className="h-24 w-24 flex items-center justify-center bg-muted rounded border-2 border-gold-medium/30">
+                        <Package className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <h3 className="font-semibold gold-text mb-1">{item.product.name}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                        {item.product.description}
+                      </p>
+                      <p className="text-lg font-semibold gold-text">
+                        {formatINR(Number(item.product.priceInCents))}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end justify-between">
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
-                        onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                        className="h-8 w-8 p-0 border-gold-medium"
+                        onClick={() => removeItem(item.product.id)}
+                        className="text-destructive hover:text-destructive"
                       >
-                        <Minus className="h-3 w-3" />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
-                      <span className="w-8 text-center font-medium">{item.quantity}</span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                        className="h-8 w-8 p-0 border-gold-medium"
-                      >
-                        <Plus className="h-3 w-3" />
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                          className="h-8 w-8 p-0 border-gold-medium"
+                        >
+                          <Minus className="h-3 w-3" />
+                        </Button>
+                        <span className="w-8 text-center font-medium">{item.quantity}</span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                          className="h-8 w-8 p-0 border-gold-medium"
+                        >
+                          <Plus className="h-3 w-3" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         <div className="lg:col-span-1">
-          <Card className="gold-border bg-beige-light/80 backdrop-blur sticky top-24">
+          <Card className="gold-border chrome-surface backdrop-blur sticky top-24">
             <CardHeader>
               <CardTitle className="gold-text">Order Summary</CardTitle>
             </CardHeader>

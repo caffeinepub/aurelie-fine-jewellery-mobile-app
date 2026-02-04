@@ -9,6 +9,7 @@ import { Badge } from '../components/ui/badge';
 import { Skeleton } from '../components/ui/skeleton';
 import { ArrowLeft, ShoppingCart, Zap } from 'lucide-react';
 import { toast } from 'sonner';
+import ProductMediaCarousel from '../components/ProductMediaCarousel';
 
 export default function ProductDetailPage() {
   const { productId } = useParams({ from: '/product/$productId' });
@@ -107,14 +108,8 @@ export default function ProductDetailPage() {
       </Button>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        {/* Product Image */}
-        <div className="relative overflow-hidden rounded-lg gold-border bg-bottle-green-light/20 shadow-gold">
-          <img
-            src={product.image.getDirectURL()}
-            alt={product.name}
-            className="h-full w-full object-cover"
-          />
-        </div>
+        {/* Product Media Carousel */}
+        <ProductMediaCarousel media={product.media} productName={product.name} />
 
         {/* Product Details */}
         <div className="flex flex-col gap-6">
@@ -135,7 +130,7 @@ export default function ProductDetailPage() {
             <p className="text-muted-foreground leading-relaxed">{product.description}</p>
           </div>
 
-          <Card className="gold-border bg-beige-light/80 backdrop-blur">
+          <Card className="gold-border chrome-surface backdrop-blur">
             <CardHeader>
               <CardTitle className="text-lg gold-text">Purchase Details</CardTitle>
             </CardHeader>

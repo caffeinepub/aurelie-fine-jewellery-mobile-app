@@ -1,0 +1,71 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-update-the-global-styling-so-every-button-across-the-app-storefront-admin-header-footer-renders-with-a-shimmering-gold-background-not-navy-blue-overriding-any-tailwind-shadcn-button-background-classes-that-currently-force-navy-primary-styling-without-editing-any-immutable-shadcn-ui-component-source-files",
+      "featureTitle": "Update the global styling so every button across the app (storefront + admin + header/footer) renders with a shimmering gold background (not navy blue), overriding any Tailwind/Shadcn button background classes that currently force navy/primary styling, without editing any immutable Shadcn UI component source files.",
+      "files": [
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-change-button-label-text-color-to-a-metallic-silver-treatment-on-top-of-the-shimmering-gold-button-background-ensuring-the-button-text-is-not-affected-by-the-global-non-button-text-shimmer-rules-and-remains-readable",
+      "featureTitle": "Change button label text color to a metallic silver treatment on top of the shimmering gold button background, ensuring the button text is not affected by the global non-button text shimmer rules and remains readable.",
+      "files": [
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-replace-the-current-global-shimmering-silver-body-text-effect-with-a-shimmering-gold-text-finish-that-is-static-no-animation-applied-consistently-to-non-button-text-across-pages-including-header-footer-text-where-applicable",
+      "featureTitle": "Replace the current global shimmering silver body text effect with a shimmering gold text finish that is static (no animation), applied consistently to non-button text across pages (including header/footer text where applicable).",
+      "files": [
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

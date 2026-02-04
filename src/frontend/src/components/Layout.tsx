@@ -42,7 +42,7 @@ export default function Layout() {
   const currentPath = routerState.location.pathname;
 
   return (
-    <div className="min-h-screen flex flex-col beige-gradient">
+    <div className="min-h-screen flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b border-gold-medium/30 bg-secondary/95 backdrop-blur supports-[backdrop-filter]:bg-secondary/90">
         <div className="container flex h-20 items-center justify-between px-4">
@@ -55,7 +55,7 @@ export default function Layout() {
               alt="Aurelie Fine Jewellery"
               className="h-14 w-14 object-contain"
             />
-            <span className="font-serif text-2xl font-bold tracking-tight gold-text">
+            <span className="font-serif text-2xl font-bold tracking-tight">
               Aurelie
             </span>
           </button>
@@ -67,11 +67,11 @@ export default function Layout() {
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate({ to: '/cart' })}
-                  className="gap-2 gold-text hover:gold-text relative"
+                  className="gap-2 relative"
                 >
                   <ShoppingCart className="h-4 w-4" />
                   {cartItemCount > 0 && (
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-gold-medium text-secondary text-xs">
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
                       {cartItemCount}
                     </Badge>
                   )}
@@ -81,7 +81,7 @@ export default function Layout() {
                   variant={currentPath === '/dashboard' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => navigate({ to: '/dashboard' })}
-                  className="gap-2 gold-text hover:gold-text"
+                  className="gap-2"
                 >
                   <LayoutDashboard className="h-4 w-4" />
                   <span className="hidden sm:inline">Dashboard</span>
@@ -91,7 +91,7 @@ export default function Layout() {
                     variant={currentPath === '/admin' ? 'default' : 'ghost'}
                     size="sm"
                     onClick={() => navigate({ to: '/admin' })}
-                    className="gap-2 gold-text hover:gold-text"
+                    className="gap-2"
                   >
                     <LayoutDashboard className="h-4 w-4" />
                     <span className="hidden sm:inline">Admin</span>
@@ -104,12 +104,11 @@ export default function Layout() {
               disabled={disabled}
               size="sm"
               variant={isAuthenticated ? 'outline' : 'default'}
-              className={isAuthenticated ? 'border-gold-medium gold-text hover:bg-gold-medium/20' : 'gold-gradient text-secondary shadow-gold'}
             >
               {isAuthenticated ? (
                 <>
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline gold-text">Logout</span>
+                  <span className="hidden sm:inline">Logout</span>
                 </>
               ) : (
                 <>
@@ -122,13 +121,13 @@ export default function Layout() {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1">
+      {/* Main Content with Animated Luxury Satin Ivory Shimmer Background */}
+      <main className="flex-1 shimmering-ivory">
         <Outlet />
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-gold-medium/30 bg-bottle-green-dark/90 backdrop-blur py-8">
+      {/* Footer with Blood Maroon Background */}
+      <footer className="border-t border-gold-medium/30 bg-blood-maroon backdrop-blur py-8">
         <div className="container px-4">
           <div className="flex flex-col items-center gap-6 text-center">
             <img
@@ -142,32 +141,32 @@ export default function Layout() {
               <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 items-center justify-center text-sm">
                 <a 
                   href={`mailto:${contactInfo.contactEmail}`}
-                  className="flex items-center gap-2 gold-text hover:text-gold-light transition-colors"
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
                 >
                   <Mail className="h-4 w-4" />
                   <span>{contactInfo.contactEmail}</span>
                 </a>
                 <a 
                   href={`tel:${contactInfo.phoneNumber}`}
-                  className="flex items-center gap-2 gold-text hover:text-gold-light transition-colors"
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
                 >
                   <Phone className="h-4 w-4" />
                   <span>{contactInfo.phoneNumber}</span>
                 </a>
-                <div className="flex items-center gap-2 gold-text">
+                <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
                   <span>{contactInfo.address}</span>
                 </div>
               </div>
             )}
 
-            <p className="text-sm gold-text">
-              © 2025. Built with <Heart className="inline h-4 w-4 text-gold-medium fill-gold-medium" /> using{' '}
+            <p className="text-sm">
+              © 2026. Built with <Heart className="inline h-4 w-4 fill-current" /> using{' '}
               <a
                 href="https://caffeine.ai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium gold-text hover:text-gold-light hover:underline transition-colors"
+                className="font-medium hover:opacity-80 hover:underline transition-opacity"
               >
                 caffeine.ai
               </a>

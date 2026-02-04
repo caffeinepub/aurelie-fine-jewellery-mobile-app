@@ -14,11 +14,19 @@ export class ExternalBlob {
     static fromBytes(blob: Uint8Array<ArrayBuffer>): ExternalBlob;
     withUploadProgress(onProgress: (percentage: number) => void): ExternalBlob;
 }
-export interface UserProfile {
+export interface Product {
+    id: string;
+    media: ProductMedia;
+    inStock: boolean;
     name: string;
-    email: string;
-    address: string;
-    phone: string;
+    description: string;
+    priceInCents: bigint;
+}
+export interface CarouselSlide {
+    order: bigint;
+    enabled: boolean;
+    visualContent: ExternalBlob;
+    urlRedirect: string;
 }
 export interface TransformationOutput {
     status: bigint;
@@ -33,6 +41,12 @@ export interface CustomerInquiry {
     message: string;
     response?: string;
 }
+export interface ShippingAddress {
+    name: string;
+    email: string;
+    address: string;
+    phone: string;
+}
 export interface Order {
     id: string;
     status: OrderStatus;
@@ -43,6 +57,7 @@ export interface Order {
     timestamp: bigint;
     upiId: string;
     quantity: bigint;
+    shippingAddress: ShippingAddress;
 }
 export interface http_header {
     value: string;
@@ -60,6 +75,7 @@ export interface OrderCreate {
     productId: string;
     upiId: string;
     quantity: bigint;
+    shippingAddress: ShippingAddress;
 }
 export type OrderStatus = {
     __kind__: "shipped";
@@ -86,9 +102,21 @@ export interface ShoppingItem {
     priceInCents: bigint;
     productDescription: string;
 }
+export interface ProductCreate {
+    id: string;
+    media: ProductMedia;
+    inStock: boolean;
+    name: string;
+    description: string;
+    priceInCents: bigint;
+}
 export interface TransformationInput {
     context: Uint8Array;
     response: http_request_result;
+}
+export interface ProductMedia {
+    video?: ExternalBlob;
+    images: Array<ExternalBlob>;
 }
 export type StripeSessionStatus = {
     __kind__: "completed";
@@ -123,13 +151,11 @@ export interface SiteContent {
 export interface CancelReason {
     reason: string;
 }
-export interface Product {
-    id: string;
-    inStock: boolean;
+export interface UserProfile {
     name: string;
-    description: string;
-    image: ExternalBlob;
-    priceInCents: bigint;
+    email: string;
+    address: string;
+    phone: string;
 }
 export enum UserRole {
     admin = "admin",
@@ -137,13 +163,15 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
-    addProduct(product: Product): Promise<void>;
+    addCarouselSlide(newSlide: CarouselSlide): Promise<void>;
+    addProduct(product: ProductCreate): Promise<void>;
     assignAdminRole(userPrincipal: Principal): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     cancelOrder(orderId: string, cancelReason: CancelReason): Promise<void>;
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;
     createOrder(input: OrderCreate): Promise<void>;
     deleteProduct(productId: string): Promise<void>;
+    getAllCarouselSlides(): Promise<Array<CarouselSlide>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getContactInfo(): Promise<{
@@ -170,12 +198,16 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     isOrderCancellable(orderId: string): Promise<boolean>;
     isStripeConfigured(): Promise<boolean>;
+    removeCarouselSlide(slideIndex: bigint): Promise<void>;
+    reorderCarouselSlides(newOrder: Array<bigint>): Promise<void>;
     respondToInquiry(inquiryId: string, response: string): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     setStripeConfiguration(config: StripeConfiguration): Promise<void>;
     submitInquiry(inquiry: CustomerInquiry): Promise<void>;
+    toggleCarouselSlide(slideIndex: bigint, enabled: boolean): Promise<void>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
+    updateCarouselSlide(slideIndex: bigint, updatedSlide: CarouselSlide): Promise<void>;
     updateOrderStatus(orderId: string, status: OrderStatus): Promise<void>;
-    updateProduct(product: Product): Promise<void>;
+    updateProduct(product: ProductCreate): Promise<void>;
     updateSiteContent(newContent: SiteContent): Promise<void>;
 }

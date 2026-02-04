@@ -1,0 +1,362 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "A full-stack Internet Computer (ICP) e-commerce dapp for “Aurelie Fine Jewellery Mobile App”. A Motoko backend canister provides role-based access control (admin/user/guest) bootstrapped via an environment-provided admin token, plus APIs for product catalog management (with mixed media: up to 5 images and optional video), order creation and tracking (including a 12-hour cancellation window with reason capture), customer inquiries with admin responses, editable site content (contact/policies/about/footer), a homepage carousel (up to 5 slides with enable/disable and ordering), optional Stripe checkout session support via IC HTTP outcalls, and Caffeine blob-storage maintenance endpoints. A React + TypeScript frontend integrates Internet Identity authentication, TanStack Router navigation, TanStack React Query for canister I/O/caching, a persisted Zustand shopping cart, and admin/customer dashboards, all wrapped in a luxury “gold/silver shimmer” global theme.",
+  "existing_features": [
+    {
+      "id": "IF-1",
+      "title": "Internet Identity authentication context",
+      "synonyms": [
+        "InternetIdentityProvider",
+        "AuthClient integration",
+        "II login/logout"
+      ],
+      "description": "Provides a React context for Internet Identity authentication using @dfinity/auth-client, including identity restoration on reload, login/logout helpers, delegation TTL (30 days), and granular login status flags.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-2",
+      "title": "Identity-scoped backend actor creation and lifecycle",
+      "synonyms": [
+        "useActor",
+        "anonymous actor",
+        "identity-backed actor"
+      ],
+      "description": "Creates an anonymous backend actor when logged out and an identity-backed actor when logged in; recreates actor on principal change and triggers React Query cache invalidation/refetch for dependent queries.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-3",
+      "title": "Secure URL-hash secret extraction with session persistence",
+      "synonyms": [
+        "getSecretParameter",
+        "getSecretFromHash",
+        "sessionStorage token persistence"
+      ],
+      "description": "Utilities to read sensitive parameters from the URL hash, persist them to sessionStorage for the session, and remove them from the address bar via history.replaceState to reduce token leakage.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-4",
+      "title": "Role-based access control (RBAC) with admin bootstrap token",
+      "synonyms": [
+        "AccessControl",
+        "admin/user/guest roles",
+        "CAFFEINE_ADMIN_TOKEN bootstrap"
+      ],
+      "description": "Motoko RBAC system where the first authenticated caller presenting the correct bootstrap token becomes admin and other authenticated callers become users; includes admin-only role assignment and helper admin checks.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-5",
+      "title": "Frontend React Query API hooks for canister operations",
+      "synonyms": [
+        "useQueries",
+        "TanStack React Query hooks",
+        "query invalidation"
+      ],
+      "description": "Centralized hooks for querying and mutating backend data including user profile, admin check, products, orders, inquiries, site content, and carousel slides, with enabled guards, identity-scoped query keys, and cache invalidation on successful mutations.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-6",
+      "title": "Persistent shopping cart state management",
+      "synonyms": [
+        "Zustand cart",
+        "useCart",
+        "localStorage persistence"
+      ],
+      "description": "Client-side shopping cart with add/remove/update quantity/clear operations and derived totals (item count and total price), persisted via Zustand middleware.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-7",
+      "title": "SPA routing with shared Layout and auth-aware navigation",
+      "synonyms": [
+        "TanStack Router",
+        "Layout",
+        "header/footer navigation"
+      ],
+      "description": "Defines a routed SPA with a shared Layout (header, main content, footer) and navigation that adapts to auth state (cart/dashboard/admin links shown only when appropriate).",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-8",
+      "title": "Global luxury shimmer theme (gold buttons, silver text, ivory shimmer background)",
+      "synonyms": [
+        "global shimmer styling",
+        "OKLCH token system",
+        "luxury brand theme"
+      ],
+      "description": "Tailwind + CSS variables implement a high-end jewellery palette and apply continuous shimmering gold styling to buttons and shimmering silver treatment to non-button text via base-layer selectors, plus an animated “satin ivory” shimmer background utility and reduced-motion support.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-9",
+      "title": "User profile storage and first-login profile setup modal",
+      "synonyms": [
+        "UserProfile",
+        "ProfileSetupModal",
+        "saveCallerUserProfile"
+      ],
+      "description": "Stores per-principal user profiles (name/email/phone/address). After login, the app detects missing profiles and blocks with a modal until a profile is saved; query caches are invalidated after save.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-10",
+      "title": "Product catalog browsing on homepage with cart actions",
+      "synonyms": [
+        "HomePage product grid",
+        "Add to Cart",
+        "Buy Now"
+      ],
+      "description": "Homepage fetches products from the canister and renders a catalog grid with INR formatting, stock status, and Add-to-Cart/Buy-Now actions gated by authentication and in-stock status.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-11",
+      "title": "Product detail page with mixed-media carousel",
+      "synonyms": [
+        "ProductDetailPage",
+        "ProductMediaCarousel",
+        "video + images carousel"
+      ],
+      "description": "Product detail view fetches a single product and displays a mixed-media carousel (video first if present, then images), quantity selection, total calculation, and Add-to-Cart/Buy-Now flows.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-12",
+      "title": "Backend product catalog with admin CRUD and media constraints",
+      "synonyms": [
+        "addProduct",
+        "updateProduct",
+        "deleteProduct",
+        "ProductMedia"
+      ],
+      "description": "Motoko backend stores products and exposes listing/detail queries plus admin-only create/update/delete. Products support optional video and up to 5 images, enforced server-side.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-13",
+      "title": "Admin product management UI with media upload and preview",
+      "synonyms": [
+        "ProductManagement",
+        "ProductFormModal",
+        "media upload"
+      ],
+      "description": "Admin UI lists products, supports add/edit/delete with confirmation, and includes a form modal for editing details, stock status, uploading up to 5 images plus optional video, showing previews and allowing removals/replacements; uploads are encoded into ExternalBlob payloads.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-14",
+      "title": "Shopping cart page with quantity controls and checkout navigation",
+      "synonyms": [
+        "CartPage",
+        "order summary",
+        "quantity +/- controls"
+      ],
+      "description": "Authenticated cart UI displays items (including first product image), supports quantity increment/decrement, item removal, and shows an INR-formatted order summary with navigation to checkout.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-15",
+      "title": "Two-step checkout (shipping confirmation + UPI ID capture)",
+      "synonyms": [
+        "CheckoutPage",
+        "address step",
+        "UPI payment step"
+      ],
+      "description": "Checkout flow pre-fills shipping details from the saved user profile, confirms shipping address, captures a UPI ID, creates one order per cart item via the backend, clears the cart, and routes to the customer dashboard.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-16",
+      "title": "Backend orders with status lifecycle and cancellation window",
+      "synonyms": [
+        "createOrder",
+        "getCustomerOrders",
+        "updateOrderStatus",
+        "cancelOrder"
+      ],
+      "description": "Supports order creation by authenticated users (caller-only), customer listing of own orders, admin listing of all orders, admin status updates (pending/confirmed/shipped/delivered), cancellation with reason capture, and a 12-hour cancellation window check via isOrderCancellable.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-17",
+      "title": "Customer dashboard with orders and inquiries",
+      "synonyms": [
+        "CustomerDashboardPage",
+        "orders/inquiries tabs",
+        "stats cards"
+      ],
+      "description": "Authenticated customer dashboard shows summary stats plus tabbed lists of the user’s orders and inquiries with status badges; orders open a detail modal for deeper inspection and cancellation actions.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-18",
+      "title": "Order detail modal with guided cancellation flow",
+      "synonyms": [
+        "OrderDetailModal",
+        "cancellation reasons",
+        "cancellability polling"
+      ],
+      "description": "Modal displays order status and details (including cancellation reason if cancelled), checks cancellability via periodic polling, and provides a guided cancellation form with predefined reasons and custom input.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-19",
+      "title": "Customer inquiries (submit, list, respond) with admin management UI",
+      "synonyms": [
+        "submitInquiry",
+        "getCustomerInquiries",
+        "InquiryManagement",
+        "respondToInquiry"
+      ],
+      "description": "Authenticated users can submit inquiries and view their own inquiries; admins can view all inquiries and respond. Frontend provides both the customer contact form and an admin inquiry management panel with pending/answered indicators.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-20",
+      "title": "Site content (CMS-lite) read/update with admin editor and footer contact info",
+      "synonyms": [
+        "SiteContent",
+        "SiteContentManagement",
+        "getContactInfo"
+      ],
+      "description": "Backend stores editable site-wide text content (contact details, about, policies, disclaimers, footer content). Admin UI edits and persists this content; Layout fetches and displays contact info in the footer.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-21",
+      "title": "Homepage carousel (backend + customer carousel + admin management)",
+      "synonyms": [
+        "CarouselSlide",
+        "HomeCarousel",
+        "CarouselManagement"
+      ],
+      "description": "Backend stores up to 5 homepage carousel slides with enabled state and ordering; customer homepage renders a 16:9 autoplay carousel with hover pause, arrows/dots navigation, and click-through URLs; admin UI manages slide images, URLs, enable/disable, and ordering.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-22",
+      "title": "Admin order management with status updates and printable receipts",
+      "synonyms": [
+        "OrderManagement",
+        "admin order tracking",
+        "print receipt"
+      ],
+      "description": "Admin UI lists all orders with timestamps, shipping address details, cancellation reasons, supports updating order status, and generates a branded printable receipt in a new window.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-23",
+      "title": "Stripe checkout session APIs via IC HTTP outcalls (backend)",
+      "synonyms": [
+        "createCheckoutSession",
+        "getStripeSessionStatus",
+        "setStripeConfiguration"
+      ],
+      "description": "Backend supports configuring Stripe, creating Stripe Checkout Sessions, and checking session status using IC HTTP outcalls with a response transform that strips headers.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-24",
+      "title": "Caffeine blob-storage maintenance endpoints (backend)",
+      "synonyms": [
+        "gateway principal sync",
+        "dead blob pruning",
+        "cashier refill"
+      ],
+      "description": "Backend includes maintenance endpoints for syncing authorized gateway principals, listing/pruning dead blobs, checking blob liveness, creating upload certificates, and topping up a cashier canister with cycles.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-global-styling-so-every-button-across-the-app-storefront-admin-header-footer-renders-with-a-shimmering-gold-background-not-navy-blue-overriding-any-tailwind-shadcn-button-background-classes-that-currently-force-navy-primary-styling-without-editing-any-immutable-shadcn-ui-component-source-files",
+      "title": "Update the global styling so every button across the app (storefront + admin + header/footer) renders with a shimmering gold background (not navy blue), overriding any Tailwind/Shadcn button background classes that currently force navy/primary styling, without editing any immutable Shadcn UI component source files.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-change-button-label-text-color-to-a-metallic-silver-treatment-on-top-of-the-shimmering-gold-button-background-ensuring-the-button-text-is-not-affected-by-the-global-non-button-text-shimmer-rules-and-remains-readable",
+      "title": "Change button label text color to a metallic silver treatment on top of the shimmering gold button background, ensuring the button text is not affected by the global non-button text shimmer rules and remains readable.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-current-global-shimmering-silver-body-text-effect-with-a-shimmering-gold-text-finish-that-is-static-no-animation-applied-consistently-to-non-button-text-across-pages-including-header-footer-text-where-applicable",
+      "title": "Replace the current global shimmering silver body text effect with a shimmering gold text finish that is static (no animation), applied consistently to non-button text across pages (including header/footer text where applicable).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Update global UI styling: all buttons should be shimmering gold with metallic silver text; change body text from shimmering silver to static shimmering gold (no animation).",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "architectural_notes": [
+    "Backend is a single Motoko actor (backend/main.mo) holding application state in mo:core/Map collections (products, orders, inquiries, carouselSlides, userProfiles) plus vars for siteContent and optional Stripe config.",
+    "Backend composes reusable capabilities via Motoko mixins: authorization (RBAC) and blob-storage maintenance endpoints.",
+    "Authorization bootstrapping uses an env var (CAFFEINE_ADMIN_TOKEN) checked during initialization; caller role/permissions enforced by AccessControl.hasPermission and admin checks.",
+    "Stripe integration is encapsulated in backend/stripe/stripe.mo and uses IC management canister http_request via a shared http-outcalls helper with a transform function that strips response headers.",
+    "Frontend is a routed SPA built on TanStack Router with a shared Layout (header/nav + footer) and auth-aware navigation (admin link gated by an admin query).",
+    "Frontend data access is centralized in custom hooks wrapping TanStack React Query (queries + mutations) with identity-scoped query keys and cache invalidation on mutations and actor changes.",
+    "Frontend creates an anonymous canister actor when logged out and an identity-backed actor when logged in; it runs backend RBAC initialization using a secret token extracted from the URL hash and persisted in sessionStorage.",
+    "Client cart state uses Zustand with persist middleware for local storage and provides derived totals helpers.",
+    "UI uses TailwindCSS + shadcn/ui components, lucide-react icons, next-themes, and sonner toasts; global brand styling relies on OKLCH design tokens and base-layer selectors to apply shimmering gold buttons and shimmering silver text across the app."
+  ],
+  "known_issues": [
+    "Backend RBAC initialization traps if CAFFEINE_ADMIN_TOKEN is not set; frontend calls _initializeAccessControlWithSecret on login, so missing env configuration breaks authenticated flows.",
+    "Privilege escalation vulnerability: backend saveCallerUserProfile auto-assigns admin role if profile.email equals \"aureliefinejewellery06@gmail.com\"; any user can self-grant admin by setting this email.",
+    "Data persistence risk: backend uses in-memory Maps/vars without stable storage in the shown code; upgrades may wipe state (products/orders/inquiries/site content) unless handled elsewhere.",
+    "CheckoutPage performs navigate(...) redirects during render when unauthenticated or cart is empty, which can cause React warnings; should be moved to route guards or useEffect.",
+    "Zustand persisted cart may be inconsistent because items contain bigint fields (priceInCents) and ExternalBlob instances; JSON persistence does not reliably serialize BigInt/custom classes without custom serialization.",
+    "Order creation trusts client-provided totalPriceInCents, quantity, productId, and does not validate price/stock or adjust inventory server-side.",
+    "Payment flow is effectively “UPI pending” (collects UPI ID and creates orders) without payment verification; Stripe session APIs exist but are not wired into the current checkout UI flow.",
+    "Stripe request body builder bug: shipping_address_collection[allowed_countries][0] is used for every allowed country (index not incremented), and urlEncode is incomplete for general form encoding.",
+    "Blob-storage env var appears misspelled as CAFFFEINE_STORAGE_CASHIER_PRINCIPAL (triple 'F'); a mismatch with deployment configuration can cause runtime traps.",
+    "Carousel reordering can trap: backend reorderCarouselSlides expects referenced slide indices to exist; frontend reorder array is generated from fixed slots and may reference null slots depending on current state.",
+    "Placeholder/empty frontend files exist (frontend/src/pages/OrdersPage.tsx, PaymentSuccessPage.tsx, PaymentFailurePage.tsx, frontend/src/components/StripeSetupModal.tsx), implying incomplete routes/features.",
+    "Duplicate global CSS files exist (frontend/index.css and frontend/src/index.css); only src/index.css is imported, which can confuse maintenance.",
+    "Backend getOrders is implemented as a shared (update) call rather than a query, which may add latency/cost for admin order listing.",
+    "UI theming regression: buttons are still rendering in navy blue instead of shimmering gold as intended (gold buttons + metallic silver text not applied globally)."
+  ],
+  "isFixRequest": true,
+  "gameProjectType": "none",
+  "projectName": "Aurelie Fine Jewellery Mobile App",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

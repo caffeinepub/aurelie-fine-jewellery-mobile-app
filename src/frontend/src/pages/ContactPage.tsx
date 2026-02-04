@@ -73,7 +73,7 @@ export default function ContactPage() {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        <Card className="gold-border bg-beige-light/80 backdrop-blur">
+        <Card className="gold-border bg-navy-medium/80 backdrop-blur">
           <CardHeader>
             <CardTitle className="gold-text flex items-center gap-2">
               <Mail className="h-5 w-5" />

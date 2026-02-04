@@ -52,7 +52,7 @@ export default function SiteContentManagement() {
 
   if (isLoading) {
     return (
-      <Card className="gold-border bg-card/80 backdrop-blur">
+      <Card className="gold-border chrome-surface backdrop-blur">
         <CardContent className="py-8">
           <div className="flex items-center justify-center gap-2 gold-text">
             <Loader2 className="h-5 w-5 animate-spin" />
@@ -64,7 +64,7 @@ export default function SiteContentManagement() {
   }
 
   return (
-    <Card className="gold-border bg-card/80 backdrop-blur">
+    <Card className="gold-border chrome-surface backdrop-blur">
       <CardHeader>
         <CardTitle className="gold-text">Edit Site Content</CardTitle>
         <CardDescription className="gold-text opacity-80">

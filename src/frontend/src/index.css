@@ -6,56 +6,93 @@
     :root {
         --radius: 0.625rem;
         
-        /* Aurelie Fine Jewellery - Multi-toned Beige with Dark Bottle Green & Gold */
-        /* Light Mode: Warm beige gradients with dark bottle green and gold accents */
-        --background: 0.92 0.025 55;
+        /* Aurelie Fine Jewellery - Navy Blue Body with Dark Bottle Green Header & Gold */
+        /* Light Mode: Navy blue body with dark bottle green header and gold accents */
+        --background: 0.25 0.08 250;
         --foreground: 0.70 0.12 75;
         
-        --card: 0.94 0.020 55;
+        --card: 0.30 0.08 250;
         --card-foreground: 0.70 0.12 75;
         
-        --popover: 0.94 0.020 55;
+        --popover: 0.30 0.08 250;
         --popover-foreground: 0.70 0.12 75;
         
         /* Primary: Rich Gold */
         --primary: 0.70 0.12 75;
-        --primary-foreground: 0.94 0.020 55;
+        --primary-foreground: 0.25 0.08 250;
         
         /* Secondary: Dark Bottle Green */
         --secondary: 0.32 0.08 155;
         --secondary-foreground: 0.94 0.020 55;
         
-        /* Muted: Soft Beige */
-        --muted: 0.88 0.025 55;
+        /* Muted: Lighter Navy */
+        --muted: 0.35 0.07 250;
         --muted-foreground: 0.70 0.12 75;
         
         /* Accent: Bright Gold */
         --accent: 0.75 0.15 70;
-        --accent-foreground: 0.25 0.04 155;
+        --accent-foreground: 0.25 0.08 250;
         
         --destructive: 0.577 0.245 27.325;
         --destructive-foreground: 0.985 0 0;
         
-        --border: 0.85 0.02 55;
-        --input: 0.90 0.020 55;
+        --border: 0.40 0.06 250;
+        --input: 0.35 0.07 250;
         --ring: 0.70 0.12 75;
         
-        /* Dark Bottle Green variations for backgrounds */
+        /* Dark Bottle Green variations for header */
         --bottle-green-dark: 0.25 0.10 155;
         --bottle-green-medium: 0.32 0.08 155;
         --bottle-green-light: 0.40 0.06 155;
         
-        /* Multi-toned Beige variations */
-        --beige-darkest: 0.82 0.030 50;
-        --beige-dark: 0.86 0.028 52;
-        --beige-medium: 0.90 0.025 55;
-        --beige-light: 0.94 0.020 58;
-        --beige-lightest: 0.97 0.015 60;
+        /* Blood Maroon for footer */
+        --blood-maroon: 0.28 0.15 15;
+        --blood-maroon-light: 0.35 0.14 15;
         
-        /* Gold variations for gradients */
-        --gold-dark: 0.60 0.10 75;
-        --gold-medium: 0.70 0.12 75;
-        --gold-light: 0.80 0.14 70;
+        /* Navy Blue variations for body */
+        --navy-darkest: 0.20 0.10 250;
+        --navy-dark: 0.25 0.08 250;
+        --navy-medium: 0.30 0.08 250;
+        --navy-light: 0.35 0.07 250;
+        --navy-lightest: 0.40 0.06 250;
+        
+        /* High-end jewellery gold palette */
+        --gold-dark: 0.60 0.14 65;
+        --gold-medium: 0.70 0.16 60;
+        --gold-light: 0.80 0.18 55;
+        --gold-bright: 0.88 0.20 50;
+        --gold-champagne: 0.75 0.12 58;
+        
+        /* Refined silver palette */
+        --silver-dark: 0.60 0.02 240;
+        --silver-medium: 0.70 0.02 240;
+        --silver-light: 0.80 0.02 240;
+        --silver-bright: 0.88 0.02 240;
+        --silver-platinum: 0.75 0.01 240;
+        
+        /* Luxury satin ivory variations */
+        --ivory-base: 0.92 0.03 65;
+        --ivory-highlight: 0.96 0.02 60;
+        --ivory-shadow: 0.88 0.04 68;
+        --ivory-bright: 0.98 0.01 58;
+        --ivory-pearl: 0.94 0.025 62;
+        
+        /* Sand Champagne Beige variations for main content */
+        --beige-sand: 0.82 0.04 65;
+        --beige-champagne: 0.85 0.03 60;
+        --beige-light: 0.88 0.02 58;
+        
+        /* Oxidized Silver variations for body */
+        --silver-oxidized: 0.65 0.01 240;
+        
+        /* Chrome finish colors */
+        --chrome-base: 0.75 0.01 240;
+        --chrome-highlight: 0.85 0.01 240;
+        --chrome-shadow: 0.65 0.01 240;
+        --chrome-mid: 0.70 0.01 240;
+        
+        /* Near-black for body text */
+        --text-near-black: 0.20 0.01 240;
         
         --chart-1: 0.70 0.12 75;
         --chart-2: 0.32 0.08 155;
@@ -65,37 +102,37 @@
     }
 
     .dark {
-        /* Dark Mode: Deep Bottle Green with Beige and Gold Accents */
-        --background: 0.22 0.06 155;
+        /* Dark Mode: Deep Navy with Gold Accents */
+        --background: 0.18 0.10 250;
         --foreground: 0.75 0.15 70;
         
-        --card: 0.28 0.06 155;
+        --card: 0.22 0.09 250;
         --card-foreground: 0.75 0.15 70;
         
-        --popover: 0.28 0.06 155;
+        --popover: 0.22 0.09 250;
         --popover-foreground: 0.75 0.15 70;
         
         /* Primary: Bright Gold */
         --primary: 0.75 0.15 70;
-        --primary-foreground: 0.22 0.06 155;
+        --primary-foreground: 0.18 0.10 250;
         
         /* Secondary: Medium Bottle Green */
         --secondary: 0.35 0.07 155;
         --secondary-foreground: 0.94 0.020 55;
         
-        /* Muted: Dark Bottle Green */
-        --muted: 0.30 0.05 155;
+        /* Muted: Dark Navy */
+        --muted: 0.25 0.08 250;
         --muted-foreground: 0.75 0.15 70;
         
         /* Accent: Bright Gold */
         --accent: 0.80 0.16 68;
-        --accent-foreground: 0.22 0.06 155;
+        --accent-foreground: 0.18 0.10 250;
         
         --destructive: 0.60 0.20 25;
-        --destructive-foreground: 0.22 0.06 155;
+        --destructive-foreground: 0.18 0.10 250;
         
-        --border: 0.35 0.05 155;
-        --input: 0.30 0.05 155;
+        --border: 0.30 0.08 250;
+        --input: 0.25 0.08 250;
         --ring: 0.75 0.15 70;
         
         /* Dark Bottle Green variations for dark mode */
@@ -103,17 +140,54 @@
         --bottle-green-medium: 0.25 0.06 155;
         --bottle-green-light: 0.35 0.05 155;
         
-        /* Beige variations for dark mode */
-        --beige-darkest: 0.70 0.020 55;
-        --beige-dark: 0.75 0.020 55;
-        --beige-medium: 0.82 0.020 55;
-        --beige-light: 0.88 0.020 55;
-        --beige-lightest: 0.93 0.015 55;
+        /* Blood Maroon for footer (dark mode) */
+        --blood-maroon: 0.25 0.16 15;
+        --blood-maroon-light: 0.32 0.15 15;
         
-        /* Gold variations for dark mode */
-        --gold-dark: 0.65 0.12 75;
-        --gold-medium: 0.75 0.15 70;
-        --gold-light: 0.85 0.17 68;
+        /* Navy variations for dark mode */
+        --navy-darkest: 0.15 0.12 250;
+        --navy-dark: 0.18 0.10 250;
+        --navy-medium: 0.22 0.09 250;
+        --navy-light: 0.28 0.08 250;
+        --navy-lightest: 0.35 0.07 250;
+        
+        /* High-end jewellery gold palette (dark mode) */
+        --gold-dark: 0.58 0.14 65;
+        --gold-medium: 0.68 0.16 60;
+        --gold-light: 0.78 0.18 55;
+        --gold-bright: 0.86 0.20 50;
+        --gold-champagne: 0.73 0.12 58;
+        
+        /* Refined silver palette (dark mode) */
+        --silver-dark: 0.50 0.02 240;
+        --silver-medium: 0.60 0.02 240;
+        --silver-light: 0.70 0.02 240;
+        --silver-bright: 0.78 0.02 240;
+        --silver-platinum: 0.65 0.01 240;
+        
+        /* Luxury satin ivory variations (dark mode) */
+        --ivory-base: 0.80 0.03 65;
+        --ivory-highlight: 0.85 0.02 60;
+        --ivory-shadow: 0.75 0.04 68;
+        --ivory-bright: 0.88 0.01 58;
+        --ivory-pearl: 0.82 0.025 62;
+        
+        /* Sand Champagne Beige variations for dark mode */
+        --beige-sand: 0.70 0.04 65;
+        --beige-champagne: 0.72 0.03 60;
+        --beige-light: 0.75 0.02 58;
+        
+        /* Oxidized Silver variations for dark mode */
+        --silver-oxidized: 0.50 0.01 240;
+        
+        /* Chrome finish colors (dark mode) */
+        --chrome-base: 0.60 0.01 240;
+        --chrome-highlight: 0.70 0.01 240;
+        --chrome-shadow: 0.50 0.01 240;
+        --chrome-mid: 0.55 0.01 240;
+        
+        /* Near-black for body text (dark mode) */
+        --text-near-black: 0.18 0.01 240;
         
         --chart-1: 0.75 0.15 70;
         --chart-2: 0.35 0.07 155;
@@ -130,19 +204,109 @@
         @apply bg-background text-foreground;
         font-feature-settings: "rlig" 1, "calt" 1;
     }
+}
+
+/* Keyframes for shimmering animations */
+@keyframes shimmer-gold {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+@keyframes shimmer-ivory {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Global shimmering gold button styling with metallic silver text */
+@layer base {
+    button,
+    input[type="submit"],
+    input[type="button"],
+    [role="button"] {
+        background: linear-gradient(
+            110deg,
+            oklch(var(--gold-dark)) 0%,
+            oklch(var(--gold-medium)) 25%,
+            oklch(var(--gold-champagne)) 35%,
+            oklch(var(--gold-light)) 50%,
+            oklch(var(--gold-bright)) 55%,
+            oklch(var(--gold-light)) 65%,
+            oklch(var(--gold-champagne)) 75%,
+            oklch(var(--gold-medium)) 85%,
+            oklch(var(--gold-dark)) 100%
+        ) !important;
+        background-size: 200% 100% !important;
+        animation: shimmer-gold 3s linear infinite !important;
+        color: oklch(var(--silver-bright)) !important;
+        font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
     
-    /* Elegant serif font for headings with gold gradient */
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'Playfair Display', 'Georgia', serif;
-        background: linear-gradient(135deg, oklch(var(--gold-light)), oklch(var(--gold-medium)), oklch(var(--gold-dark)));
+    /* Ensure button text and icons inherit metallic silver */
+    button *,
+    input[type="submit"] *,
+    input[type="button"] *,
+    [role="button"] * {
+        color: oklch(var(--silver-bright)) !important;
+        background: none !important;
+        -webkit-background-clip: unset !important;
+        -webkit-text-fill-color: oklch(var(--silver-bright)) !important;
+        background-clip: unset !important;
+        animation: none !important;
+    }
+    
+    /* Global static shimmering gold text styling (no animation) */
+    h1, h2, h3, h4, h5, h6,
+    p, span, a, label, div,
+    td, th, li,
+    input:not([type="submit"]):not([type="button"]), 
+    textarea, select {
+        background: linear-gradient(
+            110deg,
+            oklch(var(--gold-dark)) 0%,
+            oklch(var(--gold-medium)) 25%,
+            oklch(var(--gold-champagne)) 35%,
+            oklch(var(--gold-light)) 50%,
+            oklch(var(--gold-bright)) 55%,
+            oklch(var(--gold-light)) 65%,
+            oklch(var(--gold-champagne)) 75%,
+            oklch(var(--gold-medium)) 85%,
+            oklch(var(--gold-dark)) 100%
+        );
+        background-size: 100% 100%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        font-weight: 600;
     }
     
-    /* All text elements use metallic golden color */
-    p, span, a, label, input, textarea, select, button {
-        color: oklch(var(--foreground));
+    /* Respect reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+        button,
+        input[type="submit"],
+        input[type="button"],
+        [role="button"] {
+            animation: none !important;
+            background: linear-gradient(
+                135deg,
+                oklch(var(--gold-dark)) 0%,
+                oklch(var(--gold-medium)) 33%,
+                oklch(var(--gold-light)) 66%,
+                oklch(var(--gold-bright)) 100%
+            ) !important;
+            background-size: 100% 100% !important;
+        }
     }
 }
 
@@ -165,44 +329,95 @@
         @apply bg-primary/50;
     }
     
-    /* Gold gradient utilities */
-    .gold-gradient {
-        background: linear-gradient(135deg, oklch(var(--gold-light)), oklch(var(--gold-medium)), oklch(var(--gold-dark)));
+    /* Navy Blue gradient with minimal outline-only floral pattern overlay */
+    .navy-gradient-floral {
+        background-color: oklch(var(--navy-dark));
+        background-image: 
+            url('/assets/generated/floral-pattern-outline-gold-transparent-minimal.dim_400x400.png'),
+            linear-gradient(135deg, 
+                oklch(var(--navy-lightest)) 0%, 
+                oklch(var(--navy-light)) 25%, 
+                oklch(var(--navy-medium)) 50%, 
+                oklch(var(--navy-dark)) 75%, 
+                oklch(var(--navy-darkest)) 100%);
+        background-repeat: repeat, no-repeat;
+        background-size: 400px 400px, cover;
+        background-position: 0 0, center;
+        background-attachment: fixed, scroll;
     }
     
-    .gold-text {
-        background: linear-gradient(135deg, oklch(var(--gold-light)), oklch(var(--gold-medium)), oklch(var(--gold-dark)));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+    /* Sand Champagne Beige gradient with minimal outline-only navy floral pattern overlay */
+    .beige-gradient-floral {
+        background-color: oklch(var(--beige-champagne));
+        background-image: 
+            url('/assets/generated/floral-pattern-outline-navy-transparent-minimal.dim_400x400.png'),
+            linear-gradient(135deg, 
+                oklch(var(--beige-light)) 0%, 
+                oklch(var(--beige-champagne)) 50%, 
+                oklch(var(--beige-sand)) 100%);
+        background-repeat: repeat, no-repeat;
+        background-size: 400px 400px, cover;
+        background-position: 0 0, center;
+        background-attachment: fixed, scroll;
     }
     
-    /* Dark Bottle Green gradient utilities */
-    .bottle-green-gradient {
-        background: linear-gradient(135deg, oklch(var(--bottle-green-light)), oklch(var(--bottle-green-medium)), oklch(var(--bottle-green-dark)));
+    /* Animated luxury satin ivory shimmer background */
+    .shimmering-ivory {
+        background: linear-gradient(
+            135deg,
+            oklch(var(--ivory-shadow)) 0%,
+            oklch(var(--ivory-base)) 15%,
+            oklch(var(--ivory-pearl)) 30%,
+            oklch(var(--ivory-highlight)) 45%,
+            oklch(var(--ivory-bright)) 50%,
+            oklch(var(--ivory-highlight)) 55%,
+            oklch(var(--ivory-pearl)) 70%,
+            oklch(var(--ivory-base)) 85%,
+            oklch(var(--ivory-shadow)) 100%
+        );
+        background-size: 200% 200%;
+        animation: shimmer-ivory 6s ease-in-out infinite;
     }
     
-    /* Multi-toned Beige gradient utilities */
-    .beige-gradient {
+    /* Respect reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+        .shimmering-ivory {
+            animation: none;
+            background: linear-gradient(
+                135deg,
+                oklch(var(--ivory-shadow)) 0%,
+                oklch(var(--ivory-base)) 25%,
+                oklch(var(--ivory-pearl)) 50%,
+                oklch(var(--ivory-highlight)) 75%,
+                oklch(var(--ivory-bright)) 100%
+            );
+            background-size: 100% 100%;
+        }
+    }
+    
+    /* Mirror-polished chrome surface for cards and sections */
+    .chrome-surface {
         background: linear-gradient(135deg, 
-            oklch(var(--beige-lightest)) 0%, 
-            oklch(var(--beige-light)) 25%, 
-            oklch(var(--beige-medium)) 50%, 
-            oklch(var(--beige-dark)) 75%, 
-            oklch(var(--beige-darkest)) 100%);
+            oklch(var(--chrome-highlight)) 0%,
+            oklch(var(--chrome-base)) 25%,
+            oklch(var(--chrome-mid)) 50%,
+            oklch(var(--chrome-shadow)) 75%,
+            oklch(var(--chrome-base)) 100%);
+        position: relative;
     }
     
-    /* Dual-tone gradient: Dark Bottle Green to Beige with Gold accent */
-    .dual-tone-gradient {
-        background: linear-gradient(135deg, oklch(var(--bottle-green-dark)) 0%, oklch(var(--bottle-green-medium)) 50%, oklch(var(--gold-dark)) 100%);
-    }
-    
-    /* Gold border with gradient */
-    .gold-border {
-        border: 2px solid transparent;
-        background-image: linear-gradient(oklch(var(--background)), oklch(var(--background))), 
-                          linear-gradient(135deg, oklch(var(--gold-light)), oklch(var(--gold-medium)), oklch(var(--gold-dark)));
-        background-origin: border-box;
-        background-clip: padding-box, border-box;
+    .chrome-surface::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to bottom right,
+            oklch(var(--chrome-highlight) / 0.4) 0%,
+            transparent 30%,
+            transparent 70%,
+            oklch(var(--chrome-shadow) / 0.3) 100%
+        );
+        pointer-events: none;
+        border-radius: inherit;
     }
 }

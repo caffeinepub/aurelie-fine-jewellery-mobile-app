@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
 import { useInternetIdentity } from './useInternetIdentity';
-import type { Product, Order, CustomerInquiry, OrderStatus, SiteContent, CancelReason, OrderCreate, UserProfile } from '../backend';
+import type { Product, Order, CustomerInquiry, OrderStatus, SiteContent, CancelReason, OrderCreate, UserProfile, CarouselSlide, ProductCreate } from '../backend';
 
 // User Profile Queries
 export function useGetCallerUserProfile() {
@@ -39,6 +39,67 @@ export function useIsCallerAdmin() {
   });
 }
 
+// Carousel Queries
+export function useGetCarouselSlides() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<CarouselSlide[]>({
+    queryKey: ['carouselSlides'],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getAllCarouselSlides();
+    },
+    enabled: !!actor && !isFetching,
+    refetchOnWindowFocus: true,
+    refetchInterval: 30000, // Refetch every 30 seconds for real-time updates
+  });
+}
+
+export function useUpdateCarouselSlide() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ slideIndex, updatedSlide }: { slideIndex: number; updatedSlide: CarouselSlide }) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.updateCarouselSlide(BigInt(slideIndex), updatedSlide);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['carouselSlides'] });
+    },
+  });
+}
+
+export function useToggleCarouselSlide() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ slideIndex, enabled }: { slideIndex: number; enabled: boolean }) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.toggleCarouselSlide(BigInt(slideIndex), enabled);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['carouselSlides'] });
+    },
+  });
+}
+
+export function useReorderCarouselSlides() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (newOrder: number[]) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.reorderCarouselSlides(newOrder.map(n => BigInt(n)));
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['carouselSlides'] });
+    },
+  });
+}
+
 // Product Queries
 export function useGetProducts() {
   const { actor, isFetching } = useActor();
@@ -71,7 +132,7 @@ export function useAddProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (product: Product) => {
+    mutationFn: async (product: ProductCreate) => {
       if (!actor) throw new Error('Actor not available');
       await actor.addProduct(product);
     },
@@ -86,7 +147,7 @@ export function useUpdateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (product: Product) => {
+    mutationFn: async (product: ProductCreate) => {
       if (!actor) throw new Error('Actor not available');
       await actor.updateProduct(product);
     },

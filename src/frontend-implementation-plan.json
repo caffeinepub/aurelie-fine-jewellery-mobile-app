@@ -1,0 +1,55 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Global gold button backgrounds and static gold body text styling",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Force all buttons across the app to render with a shimmering gold background, overriding Tailwind/Shadcn background utilities without modifying immutable Shadcn source files.",
+      "acceptanceCriteria": [
+        "No visible buttons render with a navy/blue background in any major surfaces (Home, Product Detail, Cart, Checkout, Customer Dashboard, Admin Dashboard, header navigation).",
+        "Primary/secondary/outline/ghost/destructive Shadcn-based buttons still render with the shimmering gold background (or a gold-toned variant where appropriate), not default navy/blue.",
+        "Implementation does not modify files under frontend/src/components/ui (immutable)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Update the global button styling rules to (1) stop accidentally clearing button backgrounds and (2) apply a shimmering gold gradient background using higher-specificity selectors and !important on background-image/background-color so Tailwind/Shadcn bg-* utilities (e.g., bg-primary, bg-secondary, bg-transparent) cannot force navy/blue backgrounds across storefront, admin, and header/footer. Keep changes centralized in this global stylesheet."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Make all button label text (and icons) render with a metallic silver treatment on top of the shimmering gold background, isolated from global non-button text rules.",
+      "acceptanceCriteria": [
+        "All button text appears metallic silver (not dark/black, not gold) on all buttons across the app.",
+        "Button icons (if present) match the metallic silver color treatment.",
+        "Non-button text styling changes do not accidentally override button text styling."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Adjust global button typography styling so button text and button-contained icons inherit a metallic silver color treatment (using color/currentColor and appropriate overrides with !important), while ensuring global non-button text gradient rules never apply to button labels (scope exclusions to button descendants rather than the button element itself to avoid removing button backgrounds)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Replace the global shimmering silver body text effect with a static (non-animated) shimmering gold text finish for non-button text across the app.",
+      "acceptanceCriteria": [
+        "Non-button text no longer animates (no shimmer movement) anywhere in the app.",
+        "Non-button text uses a gold metallic/shimmer gradient appearance (static) instead of silver.",
+        "Buttons continue to render independently from the non-button text rules (no gold-text gradient applied to button labels unless explicitly intended by REQ-2)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Replace the current global silver shimmer text gradient with a gold metallic/shimmer gradient for non-button text and remove the animation (set animation: none). Keep text clipping behavior for the metallic look, and explicitly exclude buttons and button descendants from these non-button text rules so button labels remain governed by the button-specific metallic silver rules from REQ-2."
+        }
+      ]
+    }
+  ]
+}

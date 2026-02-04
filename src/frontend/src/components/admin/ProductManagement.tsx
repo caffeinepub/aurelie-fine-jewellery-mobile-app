@@ -60,7 +60,7 @@ export default function ProductManagement() {
 
   return (
     <>
-      <Card className="gold-border bg-card/80 backdrop-blur">
+      <Card className="gold-border chrome-surface backdrop-blur">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -85,52 +85,61 @@ export default function ProductManagement() {
             </div>
           ) : products && products.length > 0 ? (
             <div className="space-y-4">
-              {products.map((product) => (
-                <div
-                  key={product.id}
-                  className="flex items-center gap-4 p-4 border border-gold-medium/30 rounded-lg hover:bg-emerald-light/10 transition-colors"
-                >
-                  <img
-                    src={product.image.getDirectURL()}
-                    alt={product.name}
-                    className="h-20 w-20 object-cover rounded border-2 border-gold-medium/30"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold gold-text">{product.name}</h3>
-                      <Badge variant={product.inStock ? 'default' : 'secondary'} className={product.inStock ? 'bg-gold-medium text-secondary' : ''}>
-                        {product.inStock ? 'In Stock' : 'Out of Stock'}
-                      </Badge>
+              {products.map((product) => {
+                const firstImage = product.media.images[0];
+                return (
+                  <div
+                    key={product.id}
+                    className="flex items-center gap-4 p-4 border border-gold-medium/30 rounded-lg hover:bg-emerald-light/10 transition-colors"
+                  >
+                    {firstImage ? (
+                      <img
+                        src={firstImage.getDirectURL()}
+                        alt={product.name}
+                        className="h-20 w-20 object-cover rounded border-2 border-gold-medium/30"
+                      />
+                    ) : (
+                      <div className="h-20 w-20 flex items-center justify-center bg-muted rounded border-2 border-gold-medium/30">
+                        <Package className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold gold-text">{product.name}</h3>
+                        <Badge variant={product.inStock ? 'default' : 'secondary'} className={product.inStock ? 'bg-gold-medium text-secondary' : ''}>
+                          {product.inStock ? 'In Stock' : 'Out of Stock'}
+                        </Badge>
+                      </div>
+                      <p className="text-sm gold-text opacity-70 line-clamp-1">
+                        {product.description}
+                      </p>
+                      <p className="text-lg font-semibold gold-text mt-1">
+                        {formatINR(product.priceInCents)}
+                      </p>
                     </div>
-                    <p className="text-sm gold-text opacity-70 line-clamp-1">
-                      {product.description}
-                    </p>
-                    <p className="text-lg font-semibold gold-text mt-1">
-                      {formatINR(product.priceInCents)}
-                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(product)}
+                        className="gap-2 border-gold-medium hover:bg-gold-medium/20 gold-text"
+                      >
+                        <Edit className="h-4 w-4" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setDeletingProduct(product)}
+                        className="gap-2"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Delete
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(product)}
-                      className="gap-2 border-gold-medium hover:bg-gold-medium/20 gold-text"
-                    >
-                      <Edit className="h-4 w-4" />
-                      Edit
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => setDeletingProduct(product)}
-                      className="gap-2"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-12">
@@ -152,7 +161,7 @@ export default function ProductManagement() {
       />
 
       <AlertDialog open={!!deletingProduct} onOpenChange={() => setDeletingProduct(null)}>
-        <AlertDialogContent className="gold-border bg-card/95 backdrop-blur">
+        <AlertDialogContent className="gold-border chrome-surface backdrop-blur">
           <AlertDialogHeader>
             <AlertDialogTitle className="gold-text">Delete Product</AlertDialogTitle>
             <AlertDialogDescription className="gold-text opacity-70">

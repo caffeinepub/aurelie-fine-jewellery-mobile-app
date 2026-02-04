@@ -61,17 +61,32 @@ export default {
                     medium: 'oklch(var(--bottle-green-medium))',
                     light: 'oklch(var(--bottle-green-light))'
                 },
-                beige: {
-                    darkest: 'oklch(var(--beige-darkest))',
-                    dark: 'oklch(var(--beige-dark))',
-                    medium: 'oklch(var(--beige-medium))',
-                    light: 'oklch(var(--beige-light))',
-                    lightest: 'oklch(var(--beige-lightest))'
+                'blood-maroon': {
+                    DEFAULT: 'oklch(var(--blood-maroon))',
+                    light: 'oklch(var(--blood-maroon-light))'
+                },
+                navy: {
+                    darkest: 'oklch(var(--navy-darkest))',
+                    dark: 'oklch(var(--navy-dark))',
+                    medium: 'oklch(var(--navy-medium))',
+                    light: 'oklch(var(--navy-light))',
+                    lightest: 'oklch(var(--navy-lightest))'
                 },
                 gold: {
                     dark: 'oklch(var(--gold-dark))',
                     medium: 'oklch(var(--gold-medium))',
-                    light: 'oklch(var(--gold-light))'
+                    light: 'oklch(var(--gold-light))',
+                    shimmer: 'oklch(var(--gold-shimmer))'
+                },
+                beige: {
+                    sand: 'oklch(var(--beige-sand))',
+                    champagne: 'oklch(var(--beige-champagne))',
+                    light: 'oklch(var(--beige-light))'
+                },
+                silver: {
+                    oxidized: 'oklch(var(--silver-oxidized))',
+                    light: 'oklch(var(--silver-light))',
+                    dark: 'oklch(var(--silver-dark))'
                 }
             },
             borderRadius: {
@@ -83,7 +98,10 @@ export default {
                 xs: '0 1px 2px 0 rgba(0,0,0,0.05)',
                 elegant: '0 4px 20px rgba(0,0,0,0.08)',
                 gold: '0 4px 20px rgba(184, 134, 11, 0.3)',
-                'bottle-green': '0 4px 20px rgba(30, 70, 50, 0.3)'
+                'bottle-green': '0 4px 20px rgba(30, 70, 50, 0.3)',
+                'blood-maroon': '0 4px 20px rgba(80, 20, 20, 0.3)',
+                'navy': '0 4px 20px rgba(20, 30, 80, 0.3)',
+                'silver': '0 4px 20px rgba(180, 180, 190, 0.3)'
             },
             fontFamily: {
                 serif: ['Playfair Display', 'Georgia', 'serif'],
@@ -111,8 +129,11 @@ export default {
             backgroundImage: {
                 'gold-gradient': 'linear-gradient(135deg, oklch(var(--gold-light)), oklch(var(--gold-medium)), oklch(var(--gold-dark)))',
                 'bottle-green-gradient': 'linear-gradient(135deg, oklch(var(--bottle-green-light)), oklch(var(--bottle-green-medium)), oklch(var(--bottle-green-dark)))',
-                'beige-gradient': 'linear-gradient(135deg, oklch(var(--beige-lightest)) 0%, oklch(var(--beige-light)) 25%, oklch(var(--beige-medium)) 50%, oklch(var(--beige-dark)) 75%, oklch(var(--beige-darkest)) 100%)',
-                'dual-tone': 'linear-gradient(135deg, oklch(var(--bottle-green-dark)) 0%, oklch(var(--bottle-green-medium)) 50%, oklch(var(--gold-dark)) 100%)'
+                'blood-maroon-gradient': 'linear-gradient(135deg, oklch(var(--blood-maroon-light)), oklch(var(--blood-maroon)))',
+                'navy-gradient': 'linear-gradient(135deg, oklch(var(--navy-lightest)) 0%, oklch(var(--navy-light)) 25%, oklch(var(--navy-medium)) 50%, oklch(var(--navy-dark)) 75%, oklch(var(--navy-darkest)) 100%)',
+                'beige-gradient': 'linear-gradient(135deg, oklch(var(--beige-light)) 0%, oklch(var(--beige-champagne)) 50%, oklch(var(--beige-sand)) 100%)',
+                'silver-gradient': 'linear-gradient(135deg, oklch(var(--silver-light)) 0%, oklch(var(--silver-oxidized)) 50%, oklch(var(--silver-dark)) 100%)',
+                'dual-tone': 'linear-gradient(135deg, oklch(var(--bottle-green-dark)) 0%, oklch(var(--navy-medium)) 50%, oklch(var(--gold-dark)) 100%)'
             }
         }
     },

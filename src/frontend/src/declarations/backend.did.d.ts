@@ -11,6 +11,12 @@ import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
 export interface CancelReason { 'reason' : string }
+export interface CarouselSlide {
+  'order' : bigint,
+  'enabled' : boolean,
+  'visualContent' : ExternalBlob,
+  'urlRedirect' : string,
+}
 export interface CustomerInquiry {
   'id' : string,
   'customer' : Principal,
@@ -30,6 +36,7 @@ export interface Order {
   'timestamp' : bigint,
   'upiId' : string,
   'quantity' : bigint,
+  'shippingAddress' : ShippingAddress,
 }
 export interface OrderCreate {
   'id' : string,
@@ -38,6 +45,7 @@ export interface OrderCreate {
   'productId' : string,
   'upiId' : string,
   'quantity' : bigint,
+  'shippingAddress' : ShippingAddress,
 }
 export type OrderStatus = { 'shipped' : null } |
   { 'cancelled' : { 'reason' : string } } |
@@ -46,11 +54,29 @@ export type OrderStatus = { 'shipped' : null } |
   { 'confirmed' : null };
 export interface Product {
   'id' : string,
+  'media' : ProductMedia,
   'inStock' : boolean,
   'name' : string,
   'description' : string,
-  'image' : ExternalBlob,
   'priceInCents' : bigint,
+}
+export interface ProductCreate {
+  'id' : string,
+  'media' : ProductMedia,
+  'inStock' : boolean,
+  'name' : string,
+  'description' : string,
+  'priceInCents' : bigint,
+}
+export interface ProductMedia {
+  'video' : [] | [ExternalBlob],
+  'images' : Array<ExternalBlob>,
+}
+export interface ShippingAddress {
+  'name' : string,
+  'email' : string,
+  'address' : string,
+  'phone' : string,
 }
 export interface ShoppingItem {
   'productName' : string,
@@ -133,7 +159,8 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
-  'addProduct' : ActorMethod<[Product], undefined>,
+  'addCarouselSlide' : ActorMethod<[CarouselSlide], undefined>,
+  'addProduct' : ActorMethod<[ProductCreate], undefined>,
   'assignAdminRole' : ActorMethod<[Principal], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'cancelOrder' : ActorMethod<[string, CancelReason], undefined>,
@@ -143,6 +170,7 @@ export interface _SERVICE {
   >,
   'createOrder' : ActorMethod<[OrderCreate], undefined>,
   'deleteProduct' : ActorMethod<[string], undefined>,
+  'getAllCarouselSlides' : ActorMethod<[], Array<CarouselSlide>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getContactInfo' : ActorMethod<
@@ -171,13 +199,17 @@ export interface _SERVICE {
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'isOrderCancellable' : ActorMethod<[string], boolean>,
   'isStripeConfigured' : ActorMethod<[], boolean>,
+  'removeCarouselSlide' : ActorMethod<[bigint], undefined>,
+  'reorderCarouselSlides' : ActorMethod<[Array<bigint>], undefined>,
   'respondToInquiry' : ActorMethod<[string, string], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'setStripeConfiguration' : ActorMethod<[StripeConfiguration], undefined>,
   'submitInquiry' : ActorMethod<[CustomerInquiry], undefined>,
+  'toggleCarouselSlide' : ActorMethod<[bigint, boolean], undefined>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
+  'updateCarouselSlide' : ActorMethod<[bigint, CarouselSlide], undefined>,
   'updateOrderStatus' : ActorMethod<[string, OrderStatus], undefined>,
-  'updateProduct' : ActorMethod<[Product], undefined>,
+  'updateProduct' : ActorMethod<[ProductCreate], undefined>,
   'updateSiteContent' : ActorMethod<[SiteContent], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
