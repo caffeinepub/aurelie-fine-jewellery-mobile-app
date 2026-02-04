@@ -1,17 +1,18 @@
 import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useQueryClient } from '@tanstack/react-query';
-import { Button } from './ui/button';
-import { ShoppingCart, LayoutDashboard, LogIn, LogOut, Mail, Phone, MapPin } from 'lucide-react';
-import { useIsCallerAdmin, useGetContactInfo } from '../hooks/useQueries';
+import { ShoppingCart, LayoutDashboard, LogIn, LogOut } from 'lucide-react';
+import { useIsCallerAdmin, useGetContactInfo, useGetSiteContent } from '../hooks/useQueries';
 import { useCart } from '../hooks/useCart';
-import { Heart } from 'lucide-react';
 import { Badge } from './ui/badge';
+import { useState, useEffect } from 'react';
+import FooterSystem from './footer/FooterSystem';
 
 export default function Layout() {
   const { login, clear, loginStatus, identity } = useInternetIdentity();
   const { data: isAdmin } = useIsCallerAdmin();
   const { data: contactInfo } = useGetContactInfo();
+  const { data: siteContent } = useGetSiteContent();
   const { getTotalItems } = useCart();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -20,6 +21,18 @@ export default function Layout() {
   const isAuthenticated = !!identity;
   const disabled = loginStatus === 'logging-in';
   const cartItemCount = getTotalItems();
+
+  const [scrolled, setScrolled] = useState(false);
+
+  // Scroll listener for compress behavior
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleAuth = async () => {
     if (isAuthenticated) {
@@ -43,31 +56,38 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-gold-medium/30 bg-secondary/95 backdrop-blur supports-[backdrop-filter]:bg-secondary/90">
-        <div className="container flex h-20 items-center justify-between px-4">
+      {/* Header with New Branding - Fully Transparent */}
+      <header
+        className={`sticky top-0 z-50 w-full border-b border-gold-medium/20 bg-transparent transition-all duration-300 ${
+          scrolled ? 'h-16' : 'h-20'
+        }`}
+      >
+        <div className="container flex items-center justify-between px-4 h-full">
           <button
             onClick={() => navigate({ to: '/' })}
-            className="flex items-center gap-3 transition-opacity hover:opacity-80"
+            className={`header-brand-btn flex items-center gap-3 transition-all duration-300 hover:opacity-80 ${
+              scrolled ? 'scale-90' : 'scale-100'
+            }`}
           >
             <img
-              src="/assets/IMG_20260122_212029_590-2.webp"
-              alt="Aurelie Fine Jewellery"
-              className="h-14 w-14 object-contain"
+              src="/assets/generated/aurelie-icon-transparent.dim_512x512.png"
+              alt="Aurelie Icon"
+              className={`object-contain transition-all duration-300 ${scrolled ? 'h-10 w-10' : 'h-14 w-14'}`}
             />
-            <span className="font-serif text-2xl font-bold tracking-tight">
-              Aurelie
-            </span>
+            <img
+              src="/assets/generated/aurelie-wordmark-goldshine-transparent.dim_1600x500.png"
+              alt="Aurelie Fine Jewellery"
+              className={`object-contain transition-all duration-300 ${scrolled ? 'h-6' : 'h-8'}`}
+              style={{ width: 'auto' }}
+            />
           </button>
 
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-1">
             {isAuthenticated && (
               <>
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <button
                   onClick={() => navigate({ to: '/cart' })}
-                  className="gap-2 relative"
+                  className="header-nav-btn-didot gap-2 relative px-3 py-2 rounded-md transition-opacity hover:opacity-70"
                 >
                   <ShoppingCart className="h-4 w-4" />
                   {cartItemCount > 0 && (
@@ -75,105 +95,62 @@ export default function Layout() {
                       {cartItemCount}
                     </Badge>
                   )}
-                  <span className="hidden sm:inline">Cart</span>
-                </Button>
-                <Button
-                  variant={currentPath === '/dashboard' ? 'default' : 'ghost'}
-                  size="sm"
+                  <span className="hidden sm:inline text-sm font-light tracking-wide">Cart</span>
+                </button>
+                <button
                   onClick={() => navigate({ to: '/dashboard' })}
-                  className="gap-2"
+                  className={`header-nav-btn-didot gap-2 px-3 py-2 rounded-md transition-opacity hover:opacity-70 ${
+                    currentPath === '/dashboard' ? 'opacity-100' : 'opacity-70'
+                  }`}
                 >
                   <LayoutDashboard className="h-4 w-4" />
-                  <span className="hidden sm:inline">Dashboard</span>
-                </Button>
+                  <span className="hidden sm:inline text-sm font-light tracking-wide">Dashboard</span>
+                </button>
                 {isAdmin && (
-                  <Button
-                    variant={currentPath === '/admin' ? 'default' : 'ghost'}
-                    size="sm"
+                  <button
                     onClick={() => navigate({ to: '/admin' })}
-                    className="gap-2"
+                    className={`header-nav-btn-didot gap-2 px-3 py-2 rounded-md transition-opacity hover:opacity-70 ${
+                      currentPath === '/admin' ? 'opacity-100' : 'opacity-70'
+                    }`}
                   >
                     <LayoutDashboard className="h-4 w-4" />
-                    <span className="hidden sm:inline">Admin</span>
-                  </Button>
+                    <span className="hidden sm:inline text-sm font-light tracking-wide">Admin</span>
+                  </button>
                 )}
               </>
             )}
-            <Button
+            <button
               onClick={handleAuth}
               disabled={disabled}
-              size="sm"
-              variant={isAuthenticated ? 'outline' : 'default'}
+              className="header-nav-btn-didot gap-2 px-4 py-2 rounded-md transition-opacity hover:opacity-70"
             >
               {isAuthenticated ? (
                 <>
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">Logout</span>
+                  <span className="hidden sm:inline text-sm font-light tracking-wide">Logout</span>
                 </>
               ) : (
                 <>
                   <LogIn className="h-4 w-4" />
-                  <span className="hidden sm:inline">Login</span>
+                  <span className="hidden sm:inline text-sm font-light tracking-wide">Login</span>
                 </>
               )}
-            </Button>
+            </button>
           </nav>
         </div>
+        <div className="hairline-gold-divider" />
       </header>
 
-      {/* Main Content with Animated Luxury Satin Ivory Shimmer Background */}
-      <main className="flex-1 shimmering-ivory">
+      {/* Main Content with Shimmering Beige Background */}
+      <main className="flex-1 shimmering-beige">
         <Outlet />
       </main>
 
-      {/* Footer with Blood Maroon Background */}
-      <footer className="border-t border-gold-medium/30 bg-blood-maroon backdrop-blur py-8">
-        <div className="container px-4">
-          <div className="flex flex-col items-center gap-6 text-center">
-            <img
-              src="/assets/IMG_20260122_212029_590-2.webp"
-              alt="Aurelie Fine Jewellery"
-              className="h-16 w-16 object-contain"
-            />
-            
-            {/* Contact Details */}
-            {contactInfo && (
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 items-center justify-center text-sm">
-                <a 
-                  href={`mailto:${contactInfo.contactEmail}`}
-                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-                >
-                  <Mail className="h-4 w-4" />
-                  <span>{contactInfo.contactEmail}</span>
-                </a>
-                <a 
-                  href={`tel:${contactInfo.phoneNumber}`}
-                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-                >
-                  <Phone className="h-4 w-4" />
-                  <span>{contactInfo.phoneNumber}</span>
-                </a>
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  <span>{contactInfo.address}</span>
-                </div>
-              </div>
-            )}
-
-            <p className="text-sm">
-              © 2026. Built with <Heart className="inline h-4 w-4 fill-current" /> using{' '}
-              <a
-                href="https://caffeine.ai"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium hover:opacity-80 hover:underline transition-opacity"
-              >
-                caffeine.ai
-              </a>
-            </p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer System - Always Split Layout */}
+      <FooterSystem
+        contactInfo={contactInfo}
+        footerContent={siteContent?.footerContent}
+      />
     </div>
   );
 }

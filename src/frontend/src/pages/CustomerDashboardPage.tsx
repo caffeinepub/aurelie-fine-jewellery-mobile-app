@@ -73,7 +73,7 @@ export default function CustomerDashboardPage() {
 
       {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-2 mb-8">
-        <Card className="gold-border bg-navy-medium/80 backdrop-blur">
+        <Card className="gold-border chrome-surface backdrop-blur">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium gold-text">My Orders</CardTitle>
             <Package className="h-4 w-4 text-gold-medium" />
@@ -83,7 +83,7 @@ export default function CustomerDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="gold-border bg-navy-medium/80 backdrop-blur">
+        <Card className="gold-border chrome-surface backdrop-blur">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium gold-text">My Inquiries</CardTitle>
             <MessageSquare className="h-4 w-4 text-gold-medium" />
@@ -129,7 +129,7 @@ export default function CustomerDashboardPage() {
                 return (
                   <Card 
                     key={order.id} 
-                    className="overflow-hidden gold-border bg-navy-medium/80 backdrop-blur shadow-gold cursor-pointer hover:shadow-gold-lg transition-shadow"
+                    className="overflow-hidden gold-border chrome-surface backdrop-blur shadow-gold cursor-pointer hover:shadow-gold-lg transition-shadow"
                     onClick={() => handleOrderClick(order)}
                   >
                     <CardHeader className="bg-bottle-green-medium/20">
@@ -200,7 +200,7 @@ export default function CustomerDashboardPage() {
           ) : inquiries && inquiries.length > 0 ? (
             <div className="space-y-4">
               {inquiries.map((inquiry) => (
-                <Card key={inquiry.id} className="overflow-hidden gold-border bg-navy-medium/80 backdrop-blur">
+                <Card key={inquiry.id} className="overflow-hidden gold-border chrome-surface backdrop-blur">
                   <CardHeader className="bg-bottle-green-medium/20">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg font-medium gold-text">Inquiry #{inquiry.id.slice(-8)}</CardTitle>

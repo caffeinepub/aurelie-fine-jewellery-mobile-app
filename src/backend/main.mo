@@ -7,7 +7,6 @@ import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
 import Time "mo:core/Time";
 
-
 // Component imports
 import Storage "blob-storage/Storage";
 import Stripe "stripe/stripe";
@@ -15,7 +14,6 @@ import OutCall "http-outcalls/outcall";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
-
 
 actor {
   // Time Constants

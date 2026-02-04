@@ -183,6 +183,8 @@ export function useGetOrders() {
       return actor.getOrders();
     },
     enabled: !!actor && !isFetching,
+    refetchOnWindowFocus: true,
+    refetchInterval: 15000, // Refetch every 15 seconds for real-time admin order updates
   });
 }
 

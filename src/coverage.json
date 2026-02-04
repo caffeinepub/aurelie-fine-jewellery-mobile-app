@@ -1,45 +1,36 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-04T06:49:50.544Z",
+  "generatedAt": "2026-02-04T15:11:32.508Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 2,
+    "implemented": 2,
     "items": [
       {
-        "id": "REQ-1",
-        "summary": "Update the global styling so every button across the app (storefront + admin + header/footer) renders with a shimmering gold background (not navy blue), overriding any Tailwind/Shadcn button background classes that currently force navy/primary styling, without editing any immutable Shadcn UI component source files.",
+        "id": "REQ-6",
+        "summary": "Extract the floral logo icon from the newly uploaded image (1770214375269~2.png), remove its background to full transparency, and replace the existing generated icon asset so the app’s header and footer use the updated icon everywhere without changing image references.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css"
+          "frontend/public/assets/generated/aurelie-icon-transparent.dim_512x512.png"
         ],
         "matchedFiles": [
-          "frontend/src/index.css"
+          "frontend/public/assets/generated/aurelie-icon-transparent.dim_512x512.png"
         ]
       },
       {
-        "id": "REQ-2",
-        "summary": "Change button label text color to a metallic silver treatment on top of the shimmering gold button background, ensuring the button text is not affected by the global non-button text shimmer rules and remains readable.",
+        "id": "REQ-7",
+        "summary": "Update the global header (frontend/src/components/Layout.tsx) to be fully transparent and remove the orange/gold background/button styling that appears behind the brand name/logo area, while preserving the current sticky + scroll-compress behavior and keeping the brand area clickable for navigation to '/'.",
         "status": "implemented",
         "plannedFiles": [
+          "frontend/src/components/Layout.tsx",
           "frontend/src/index.css"
         ],
         "matchedFiles": [
-          "frontend/src/index.css"
-        ]
-      },
-      {
-        "id": "REQ-3",
-        "summary": "Replace the current global shimmering silver body text effect with a shimmering gold text finish that is static (no animation), applied consistently to non-button text across pages (including header/footer text where applicable).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/index.css"
-        ],
-        "matchedFiles": [
+          "frontend/src/components/Layout.tsx",
           "frontend/src/index.css"
         ]
       }
@@ -50,6 +41,8 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/aurelie-icon-transparent.dim_512x512.png",
+    "frontend/src/components/Layout.tsx",
     "frontend/src/index.css",
     "project_state.json",
     "scratch/component-selection.json",

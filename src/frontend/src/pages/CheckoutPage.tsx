@@ -194,7 +194,7 @@ export default function CheckoutPage() {
           {/* Shipping Address Step */}
           {checkoutStep === 'address' && (
             <Card className="gold-border chrome-surface backdrop-blur-sm shadow-elegant">
-              <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-navy-light to-navy-medium">
+              <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-bottle-green-light/20 to-bottle-green-medium/20">
                 <CardTitle className="gold-text flex items-center gap-3 text-2xl">
                   <div className="p-2 rounded-lg bg-gold-gradient">
                     <MapPin className="h-6 w-6 text-white" />
@@ -220,7 +220,7 @@ export default function CheckoutPage() {
                         placeholder="Enter your full name"
                         value={shippingAddress.name}
                         onChange={(e) => setShippingAddress({ ...shippingAddress, name: e.target.value })}
-                        className="h-12 text-base border-2 border-gold-medium/30 focus:border-gold-medium focus:ring-gold-medium/20 bg-navy-lightest/50"
+                        className="h-12 text-base border-2 border-gold-medium/30 focus:border-gold-medium focus:ring-gold-medium/20 bg-ivory-base/30"
                       />
                     </div>
 
@@ -235,7 +235,7 @@ export default function CheckoutPage() {
                         placeholder="your.email@example.com"
                         value={shippingAddress.email}
                         onChange={(e) => setShippingAddress({ ...shippingAddress, email: e.target.value })}
-                        className="h-12 text-base border-2 border-gold-medium/30 focus:border-gold-medium focus:ring-gold-medium/20 bg-navy-lightest/50"
+                        className="h-12 text-base border-2 border-gold-medium/30 focus:border-gold-medium focus:ring-gold-medium/20 bg-ivory-base/30"
                       />
                     </div>
 
@@ -250,7 +250,7 @@ export default function CheckoutPage() {
                         placeholder="+91 XXXXX XXXXX"
                         value={shippingAddress.phone}
                         onChange={(e) => setShippingAddress({ ...shippingAddress, phone: e.target.value })}
-                        className="h-12 text-base border-2 border-gold-medium/30 focus:border-gold-medium focus:ring-gold-medium/20 bg-navy-lightest/50"
+                        className="h-12 text-base border-2 border-gold-medium/30 focus:border-gold-medium focus:ring-gold-medium/20 bg-ivory-base/30"
                       />
                     </div>
 
@@ -265,7 +265,7 @@ export default function CheckoutPage() {
                         value={shippingAddress.address}
                         onChange={(e) => setShippingAddress({ ...shippingAddress, address: e.target.value })}
                         rows={4}
-                        className="w-full px-4 py-3 text-base border-2 border-gold-medium/30 rounded-md focus:border-gold-medium focus:ring-2 focus:ring-gold-medium/20 bg-navy-lightest/50 resize-none text-foreground"
+                        className="w-full px-4 py-3 text-base border-2 border-gold-medium/30 rounded-md focus:border-gold-medium focus:ring-2 focus:ring-gold-medium/20 bg-ivory-base/30 resize-none text-foreground"
                       />
                     </div>
 
@@ -302,7 +302,7 @@ export default function CheckoutPage() {
             <>
               {/* Confirmed Address Display */}
               <Card className="gold-border chrome-surface backdrop-blur-sm shadow-elegant">
-                <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-navy-light to-navy-medium">
+                <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-bottle-green-light/20 to-bottle-green-medium/20">
                   <div className="flex items-center justify-between">
                     <CardTitle className="gold-text flex items-center gap-3 text-xl">
                       <MapPin className="h-5 w-5 text-gold-medium" />
@@ -330,7 +330,7 @@ export default function CheckoutPage() {
 
               {/* UPI Payment Card */}
               <Card className="gold-border chrome-surface backdrop-blur-sm shadow-elegant">
-                <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-navy-light to-navy-medium">
+                <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-bottle-green-light/20 to-bottle-green-medium/20">
                   <CardTitle className="gold-text flex items-center gap-3 text-2xl">
                     <div className="p-2 rounded-lg bg-gold-gradient">
                       <CreditCard className="h-6 w-6 text-white" />
@@ -349,7 +349,7 @@ export default function CheckoutPage() {
                       placeholder="yourname@upi"
                       value={upiId}
                       onChange={(e) => setUpiId(e.target.value)}
-                      className="h-14 text-lg border-2 border-gold-medium/30 focus:border-gold-medium focus:ring-gold-medium/20 bg-navy-lightest/50"
+                      className="h-14 text-lg border-2 border-gold-medium/30 focus:border-gold-medium focus:ring-gold-medium/20 bg-ivory-base/30"
                     />
                     <p className="text-sm text-muted-foreground flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-gold-medium mt-0.5 flex-shrink-0" />
@@ -366,7 +366,7 @@ export default function CheckoutPage() {
                     <h3 className="font-serif text-xl font-semibold gold-text">
                       Order Summary
                     </h3>
-                    <div className="bg-gradient-to-br from-navy-lightest to-navy-light p-6 rounded-xl border-2 border-gold-medium/20 space-y-3">
+                    <div className="bg-gradient-to-br from-ivory-base/40 to-chrome-base/20 p-6 rounded-xl border-2 border-gold-medium/20 space-y-3">
                       {items.map((item) => (
                         <div
                           key={item.product.id}

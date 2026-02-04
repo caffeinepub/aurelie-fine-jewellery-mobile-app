@@ -73,7 +73,7 @@ export default function ContactPage() {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        <Card className="gold-border bg-navy-medium/80 backdrop-blur">
+        <Card className="gold-border chrome-surface backdrop-blur">
           <CardHeader>
             <CardTitle className="gold-text flex items-center gap-2">
               <Mail className="h-5 w-5" />
@@ -92,7 +92,7 @@ export default function ContactPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your full name"
-                  className="border-gold-medium/30 gold-text"
+                  className="border-gold-medium/30 gold-text bg-ivory-base/30"
                   required
                 />
               </div>
@@ -105,7 +105,7 @@ export default function ContactPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your.email@example.com"
-                  className="border-gold-medium/30 gold-text"
+                  className="border-gold-medium/30 gold-text bg-ivory-base/30"
                   required
                 />
               </div>
@@ -118,7 +118,7 @@ export default function ContactPage() {
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Tell us how we can help you..."
                   rows={6}
-                  className="border-gold-medium/30 gold-text"
+                  className="border-gold-medium/30 gold-text bg-ivory-base/30"
                   required
                 />
               </div>

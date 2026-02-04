@@ -364,7 +364,7 @@ export default function OrderManagement() {
             </div>
             
             <div class="footer">
-              <p>© 2025 Aurelie Fine Jewellery. All rights reserved.</p>
+              <p>© 2026 Aurelie Fine Jewellery. All rights reserved.</p>
               <p style="margin-top: 4px;">Built with love using caffeine.ai</p>
             </div>
           </div>
@@ -445,7 +445,8 @@ export default function OrderManagement() {
                         variant="outline"
                         onClick={() => handlePrintOrder(order)}
                         className="h-8 w-8 border-gold-medium/30 hover:bg-gold-medium/10"
-                        title="Print Order"
+                        title="Print Order Receipt"
+                        aria-label="Print Order Receipt"
                       >
                         <Printer className="h-4 w-4 text-gold-medium" />
                       </Button>
@@ -473,7 +474,7 @@ export default function OrderManagement() {
                     </div>
                   </div>
 
-                  {/* Shipping Address Section */}
+                  {/* Shipping Address Section - Prominently Displayed */}
                   <div className="mb-3 p-3 bg-emerald-light/10 rounded-lg border border-gold-medium/20">
                     <div className="flex items-center gap-2 mb-2">
                       <MapPin className="h-4 w-4 text-gold-medium" />

@@ -104,7 +104,7 @@ export default {
                 'silver': '0 4px 20px rgba(180, 180, 190, 0.3)'
             },
             fontFamily: {
-                serif: ['Playfair Display', 'Georgia', 'serif'],
+                serif: ['Didot', 'Bodoni MT', 'Playfair Display', 'Georgia', 'serif'],
                 sans: ['Inter', 'system-ui', 'sans-serif']
             },
             keyframes: {

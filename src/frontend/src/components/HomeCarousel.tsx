@@ -63,7 +63,7 @@ export default function HomeCarousel() {
   if (isLoading) {
     return (
       <div className="relative w-full mb-8">
-        <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+        <div className="relative w-full aspect-video">
           <Skeleton className="absolute inset-0 rounded-2xl" />
         </div>
       </div>
@@ -81,45 +81,43 @@ export default function HomeCarousel() {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Carousel Container with 16:9 aspect ratio */}
-      <div className="relative overflow-hidden rounded-2xl shadow-bottle-green">
-        <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-          {enabledSlides.map((slide, index) => {
-            const isActive = index === currentIndex;
-            const isPrev = index === (currentIndex - 1 + enabledSlides.length) % enabledSlides.length;
-            const isNext = index === (currentIndex + 1) % enabledSlides.length;
-            
-            let slideClass = 'opacity-0 translate-x-full';
-            
-            if (isActive) {
-              slideClass = 'opacity-100 translate-x-0';
-            } else if (direction === 'right' && isPrev) {
-              slideClass = 'opacity-0 -translate-x-full';
-            } else if (direction === 'left' && isNext) {
-              slideClass = 'opacity-0 translate-x-full';
-            } else {
-              slideClass = 'opacity-0 translate-x-full';
-            }
+      <div className="relative w-full aspect-video overflow-hidden rounded-2xl shadow-bottle-green">
+        {enabledSlides.map((slide, index) => {
+          const isActive = index === currentIndex;
+          const isPrev = index === (currentIndex - 1 + enabledSlides.length) % enabledSlides.length;
+          const isNext = index === (currentIndex + 1) % enabledSlides.length;
+          
+          let slideClass = 'opacity-0 translate-x-full';
+          
+          if (isActive) {
+            slideClass = 'opacity-100 translate-x-0';
+          } else if (direction === 'right' && isPrev) {
+            slideClass = 'opacity-0 -translate-x-full';
+          } else if (direction === 'left' && isNext) {
+            slideClass = 'opacity-0 translate-x-full';
+          } else {
+            slideClass = 'opacity-0 translate-x-full';
+          }
 
-            return (
+          return (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-all duration-700 ease-in-out ${slideClass}`}
+              style={{ pointerEvents: isActive ? 'auto' : 'none' }}
+            >
               <div
-                key={index}
-                className={`absolute inset-0 transition-all duration-700 ease-in-out ${slideClass}`}
-                style={{ pointerEvents: isActive ? 'auto' : 'none' }}
+                className="w-full h-full cursor-pointer"
+                onClick={() => handleSlideClick(slide.urlRedirect)}
               >
-                <div
-                  className="w-full h-full cursor-pointer"
-                  onClick={() => handleSlideClick(slide.urlRedirect)}
-                >
-                  <img
-                    src={slide.visualContent.getDirectURL()}
-                    alt={`Slide ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                <img
+                  src={slide.visualContent.getDirectURL()}
+                  alt={`Slide ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
 
         {/* Navigation Arrows */}
         {enabledSlides.length > 1 && (
