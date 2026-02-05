@@ -2,8 +2,8 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-extract-the-floral-logo-icon-from-the-newly-uploaded-image-1770214375269-2-png-remove-its-background-to-full-transparency-and-replace-the-existing-generated-icon-asset-so-the-app-s-header-and-footer-use-the-updated-icon-everywhere-without-changing-image-references",
-      "featureTitle": "Extract the floral logo icon from the newly uploaded image (1770214375269~2.png), remove its background to full transparency, and replace the existing generated icon asset so the app’s header and footer use the updated icon everywhere without changing image references.",
+      "featureId": "feature-create-a-new-transparent-png-asset-by-cropping-the-uploaded-image-1770306231356-png-to-include-only-the-flower-like-logo-the-word-aurelie-and-the-smaller-text-fine-jewellery-remove-all-surrounding-background-and-add-it-to-the-frontend-static-assets-under-frontend-public-assets-generated",
+      "featureTitle": "Create a new transparent PNG asset by cropping the uploaded image `1770306231356.png` to include only the flower-like logo, the word “Aurelie”, and the smaller text “Fine Jewellery” (remove all surrounding background), and add it to the frontend static assets under `frontend/public/assets/generated/`.",
       "files": [],
       "components": [
         "authorization@4.0.0",
@@ -17,16 +17,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-6"
+        "REQ-1"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-global-header-frontend-src-components-layout-tsx-to-be-fully-transparent-and-remove-the-orange-gold-background-button-styling-that-appears-behind-the-brand-name-logo-area-while-preserving-the-current-sticky-scroll-compress-behavior-and-keeping-the-brand-area-clickable-for-navigation-to",
-      "featureTitle": "Update the global header (frontend/src/components/Layout.tsx) to be fully transparent and remove the orange/gold background/button styling that appears behind the brand name/logo area, while preserving the current sticky + scroll-compress behavior and keeping the brand area clickable for navigation to '/'.",
+      "featureId": "feature-replace-the-header-branding-image-in-frontend-src-components-layout-tsx-so-it-uses-the-newly-generated-transparent-logo-lockup-asset-instead-of-assets-1770304385246-2-png-keeping-the-existing-header-layout-behavior-sticky-header-scroll-resize-navigation-button",
+      "featureTitle": "Replace the header branding image in `frontend/src/components/Layout.tsx` so it uses the newly generated transparent logo lockup asset instead of `/assets/1770304385246~2.png`, keeping the existing header layout/behavior (sticky header, scroll resize, navigation button).",
       "files": [
-        "frontend/src/components/Layout.tsx",
-        "frontend/src/index.css"
+        "frontend/src/components/Layout.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -40,7 +39,29 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-7"
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-replace-the-footer-branding-in-frontend-src-components-footer-footersystem-tsx-so-the-left-column-brand-block-uses-the-newly-generated-transparent-logo-lockup-as-a-single-image-remove-the-existing-separate-logo-image-and-separate-aurelie-fine-jewellery-text-while-keeping-the-rest-of-the-footer-content-unchanged",
+      "featureTitle": "Replace the footer branding in `frontend/src/components/footer/FooterSystem.tsx` so the left-column brand block uses the newly generated transparent logo lockup as a single image (remove the existing separate logo image and separate “Aurelie”/“Fine Jewellery” text), while keeping the rest of the footer content unchanged.",
+      "files": [
+        "frontend/src/components/footer/FooterSystem.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
       ],
       "confidence": "high"
     }

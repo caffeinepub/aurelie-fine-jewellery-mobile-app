@@ -1,17 +1,21 @@
 import { RouterProvider, createRouter, createRoute, createRootRoute } from '@tanstack/react-router';
+import { lazy, Suspense } from 'react';
 import HomePage from './pages/HomePage';
-import ProductDetailPage from './pages/ProductDetailPage';
-import CustomerDashboardPage from './pages/CustomerDashboardPage';
-import ContactPage from './pages/ContactPage';
-import AdminDashboardPage from './pages/AdminDashboardPage';
-import CartPage from './pages/CartPage';
-import CheckoutPage from './pages/CheckoutPage';
 import Layout from './components/Layout';
 import { Toaster } from './components/ui/sonner';
 import { ThemeProvider } from 'next-themes';
 import ProfileSetupModal from './components/ProfileSetupModal';
 import { useInternetIdentity } from './hooks/useInternetIdentity';
 import { useGetCallerUserProfile } from './hooks/useQueries';
+import RouteLoadingFallback from './components/RouteLoadingFallback';
+
+// Lazy load non-home routes for code splitting
+const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage'));
+const CustomerDashboardPage = lazy(() => import('./pages/CustomerDashboardPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage'));
+const CartPage = lazy(() => import('./pages/CartPage'));
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
 
 function AppContent() {
   const { identity } = useInternetIdentity();

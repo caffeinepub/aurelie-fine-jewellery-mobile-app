@@ -559,6 +559,49 @@
         animation: none !important;
     }
     
+    /* Header Brand Image: Edge-blended fade effect for cross-browser support */
+    .header-brand-image {
+        mask-image: radial-gradient(ellipse 100% 100% at center, 
+            rgba(0, 0, 0, 1) 0%, 
+            rgba(0, 0, 0, 1) 60%, 
+            rgba(0, 0, 0, 0.8) 75%, 
+            rgba(0, 0, 0, 0.4) 90%, 
+            rgba(0, 0, 0, 0) 100%);
+        -webkit-mask-image: radial-gradient(ellipse 100% 100% at center, 
+            rgba(0, 0, 0, 1) 0%, 
+            rgba(0, 0, 0, 1) 60%, 
+            rgba(0, 0, 0, 0.8) 75%, 
+            rgba(0, 0, 0, 0.4) 90%, 
+            rgba(0, 0, 0, 0) 100%);
+        mask-size: 100% 100%;
+        -webkit-mask-size: 100% 100%;
+        mask-repeat: no-repeat;
+        -webkit-mask-repeat: no-repeat;
+        mask-position: center;
+        -webkit-mask-position: center;
+    }
+    
+    /* Brand Text with Didot Font and Glossy Gold Polish */
+    .brand-text-didot {
+        background: linear-gradient(
+            110deg,
+            oklch(var(--gold-dark)) 0%,
+            oklch(var(--gold-medium)) 25%,
+            oklch(var(--gold-champagne)) 35%,
+            oklch(var(--gold-light)) 50%,
+            oklch(var(--gold-bright)) 55%,
+            oklch(var(--gold-light)) 65%,
+            oklch(var(--gold-champagne)) 75%,
+            oklch(var(--gold-medium)) 85%,
+            oklch(var(--gold-dark)) 100%
+        );
+        background-size: 100% 100%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-family: 'Didot', 'Bodoni MT', 'Playfair Display', Georgia, serif;
+    }
+    
     /* Header Navigation with Didot Font */
     .header-nav-btn-didot {
         background: none !important;

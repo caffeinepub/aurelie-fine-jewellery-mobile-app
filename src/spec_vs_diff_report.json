@@ -1,41 +1,41 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-04T15:11:32.489Z",
-  "summary": "REQ-7 appears partially implemented in Layout.tsx (header set to bg-transparent and sticky + scroll-compress retained). REQ-6 (replacing the generated icon PNG asset with a newly extracted transparent icon) is not evidenced in the provided diff summary. Several additional non-requested changes (theme/CSS variables and project metadata/summaries) are present.",
+  "generatedAt": "2026-02-05T16:51:58.219Z",
+  "summary": "Header and footer components were updated to reference a new generated transparent logo lockup image under `/assets/generated/`, but the required PNG asset itself was not added to `frontend/public/assets/generated/`. Additional non-requested documentation/state files were also modified.",
   "missing_requirements": [
     {
-      "id": "REQ-6",
-      "requirement": "Extract the floral logo icon from 1770214375269~2.png, remove its background to full transparency, and replace the existing generated icon asset at frontend/public/assets/generated/aurelie-icon-transparent.dim_512x512.png so header/footer use it everywhere without changing references.",
-      "reason": "The diff summary shows Layout.tsx referencing the existing icon path, but there is no evidence that the PNG asset itself was replaced/updated (binary asset changes are not shown; no file entry for the PNG in the modified files list).",
+      "id": "REQ-1",
+      "requirement": "Create a new transparent PNG asset by cropping `1770306231356.png` to only the logo + “Aurelie” + “Fine Jewellery” with a transparent background, and add it under `frontend/public/assets/generated/`.",
+      "reason": "The diff shows `Added: 0` files and no new asset under `frontend/public/assets/generated/`, so the required generated PNG is not present in the changes.",
       "evidence": [
-        "frontend/src/components/Layout.tsx (shows reference to /assets/generated/aurelie-icon-transparent.dim_512x512.png)",
-        "Modified files list does not include frontend/public/assets/generated/aurelie-icon-transparent.dim_512x512.png"
+        "file-diff summary: \"Added: 0\"",
+        "frontend/src/components/Layout.tsx (references `/assets/generated/aurelie-lockup-transparent.dim_1000x320.png`, but asset file not added)",
+        "frontend/src/components/footer/FooterSystem.tsx (references `/assets/generated/aurelie-lockup-transparent.dim_1000x320.png`, but asset file not added)"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Large update/addition of theme/color CSS variable definitions and branding-related comments in global CSS.",
-      "reason": "Not requested by REQ-6 or REQ-7, which focus on replacing an icon asset and making the header transparent/removing brand-area background styling.",
+      "description": "Modified project tracking/state file `project_state.json`.",
+      "reason": "BuildRequest requirements focus on adding an image asset and updating header/footer branding components; it does not request changes to project state metadata files.",
       "evidence": [
-        "frontend/src/index.css"
+        "project_state.json"
       ]
     },
     {
-      "description": "Updates to project metadata / documentation-like summary files.",
-      "reason": "Not requested by REQ-6 or REQ-7.",
+      "description": "Modified `frontend-file-summaries.txt`.",
+      "reason": "BuildRequest does not ask to update repository summary/documentation files.",
       "evidence": [
-        "frontend-file-summaries.txt",
-        "project_state.json"
+        "frontend-file-summaries.txt"
       ]
     }
   ],
-  "confidence": 0.62,
+  "confidence": 0.74,
   "changed_files": [
     "frontend-file-summaries.txt",
     "frontend/src/components/Layout.tsx",
-    "frontend/src/index.css",
+    "frontend/src/components/footer/FooterSystem.tsx",
     "project_state.json"
   ]
 }

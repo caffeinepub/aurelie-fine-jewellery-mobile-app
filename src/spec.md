@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Update the Aurelie floral icon asset from the newly uploaded artwork and make the site header fully transparent (including removing the orange/gold background behind the brand area) while keeping existing behavior intact.
+**Goal:** Extract a transparent Aurelie logo lockup from the provided brand image and use it as the sole branding element in both the header and footer.
 
 **Planned changes:**
-- Extract the floral emblem from `1770214375269~2.png`, remove the background to full transparency, tightly crop to the mark, and replace `frontend/public/assets/generated/aurelie-icon-transparent.dim_512x512.png` so existing references remain unchanged.
-- Update `frontend/src/components/Layout.tsx` header styling so the header and brand/logo click target render fully transparent (no background/gradient/shimmer), while preserving sticky positioning and the current scroll-compress behavior (h-20 to h-16).
-- Leave navigation buttons (Cart/Dashboard/Admin/Login/Logout) styling and behavior unchanged.
+- Create a new transparent PNG by tightly cropping `1770306231356.png` to include only the flower mark, “Aurelie”, and “Fine Jewellery”, removing the beige/cream background, and save it under `frontend/public/assets/generated/`.
+- Update `frontend/src/components/Layout.tsx` to use the new transparent logo lockup asset for the header branding image, keeping the existing header layout/behavior unchanged.
+- Update `frontend/src/components/footer/FooterSystem.tsx` to replace the footer’s current branding block (separate logo + text) with the new single-image transparent logo lockup, leaving all other footer content unchanged.
 
-**User-visible outcome:** The header shows no colored background behind the brand area and remains sticky/compressing as before, and the updated floral icon appears everywhere the app uses the shared icon (including header and footer) without any broken image links.
+**User-visible outcome:** The site header and footer both display the same Aurelie logo lockup with a truly transparent background (no visible background box/edges), while the rest of the layout and behavior remains the same.

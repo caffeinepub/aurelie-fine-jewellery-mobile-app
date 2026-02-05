@@ -1,37 +1,46 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-04T15:11:32.508Z",
+  "generatedAt": "2026-02-05T16:51:58.222Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-6",
-        "summary": "Extract the floral logo icon from the newly uploaded image (1770214375269~2.png), remove its background to full transparency, and replace the existing generated icon asset so the app’s header and footer use the updated icon everywhere without changing image references.",
+        "id": "REQ-1",
+        "summary": "Create a new transparent PNG asset by cropping the uploaded image `1770306231356.png` to include only the flower-like logo, the word “Aurelie”, and the smaller text “Fine Jewellery” (remove all surrounding background), and add it to the frontend static assets under `frontend/public/assets/generated/`.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/public/assets/generated/aurelie-icon-transparent.dim_512x512.png"
+          "frontend/public/assets/generated/aurelie-lockup-transparent.dim_1000x320.png"
         ],
         "matchedFiles": [
-          "frontend/public/assets/generated/aurelie-icon-transparent.dim_512x512.png"
+          "frontend/public/assets/generated/aurelie-lockup-transparent.dim_1000x320.png"
         ]
       },
       {
-        "id": "REQ-7",
-        "summary": "Update the global header (frontend/src/components/Layout.tsx) to be fully transparent and remove the orange/gold background/button styling that appears behind the brand name/logo area, while preserving the current sticky + scroll-compress behavior and keeping the brand area clickable for navigation to '/'.",
+        "id": "REQ-2",
+        "summary": "Replace the header branding image in `frontend/src/components/Layout.tsx` so it uses the newly generated transparent logo lockup asset instead of `/assets/1770304385246~2.png`, keeping the existing header layout/behavior (sticky header, scroll resize, navigation button).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/Layout.tsx",
-          "frontend/src/index.css"
+          "frontend/src/components/Layout.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/Layout.tsx",
-          "frontend/src/index.css"
+          "frontend/src/components/Layout.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Replace the footer branding in `frontend/src/components/footer/FooterSystem.tsx` so the left-column brand block uses the newly generated transparent logo lockup as a single image (remove the existing separate logo image and separate “Aurelie”/“Fine Jewellery” text), while keeping the rest of the footer content unchanged.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/footer/FooterSystem.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/footer/FooterSystem.tsx"
         ]
       }
     ]
@@ -41,9 +50,9 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/public/assets/generated/aurelie-icon-transparent.dim_512x512.png",
+    "frontend/public/assets/generated/aurelie-lockup-transparent.dim_1000x320.png",
     "frontend/src/components/Layout.tsx",
-    "frontend/src/index.css",
+    "frontend/src/components/footer/FooterSystem.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

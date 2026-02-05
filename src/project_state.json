@@ -1,291 +1,35 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "A full-stack Internet Computer (ICP) e-commerce dapp for “Aurelie Fine Jewellery Mobile App”. A single Motoko backend canister provides role-based access control (admin/user/guest) bootstrapped via an environment admin token and a user-provided secret, and exposes APIs for product catalog CRUD (including rich media via ExternalBlob), homepage carousel slide management (5-slot, enable/disable, reorder), order creation and admin-managed fulfillment lifecycle, customer order cancellation within a 12-hour window (with reason capture), customer inquiries with an admin response workflow, and editable site content/contact information. The React + TypeScript frontend uses Internet Identity for authentication, TanStack Router for SPA routing, TanStack React Query for canister I/O with caching/polling and mutations, and a persisted Zustand cart store, all styled with a luxury Tailwind/shadcn theme and Didot-style typography. Global branding uses separate generated icon and wordmark assets in the shared header/footer, and the footer is locked to the Split layout variant.",
+  "summary": "Update site branding by cropping the existing image to only the logo + “Aurelie” + “Fine Jewellery”, ensuring a transparent background, and replacing the header and footer images with this new transparent version.",
+  "architectural_notes": [
+    "Header background uses bg-transparent (no background color applied)."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Edit Images\n- Crop to the logo + “Aurelie” + “Fine Jewellery” only and remove all background to transparent (1770306231356.png > aurelie-lockup-transparent.dim_1000x320.png)",
   "existing_features": [
     {
-      "id": "IF-1",
-      "title": "Internet Identity authentication provider",
-      "synonyms": [
-        "InternetIdentityProvider",
-        "AuthClient integration",
-        "II login/logout"
-      ],
-      "description": "Provides a React context around Internet Identity (@dfinity/auth-client) with identity restoration on reload, login/logout helpers, configurable AuthClient options, and detailed login status flags.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-2",
-      "title": "Identity-scoped backend actor creation with RBAC initialization",
-      "synonyms": [
-        "useActor",
-        "identity-backed actor",
-        "anonymous actor",
-        "_initializeAccessControlWithSecret"
-      ],
-      "description": "Creates an anonymous backend actor when logged out and an identity-backed actor when logged in; on authenticated actor creation, initializes backend RBAC by calling _initializeAccessControlWithSecret using a secret read from the URL hash, then invalidates/refetches dependent React Query caches.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-3",
-      "title": "Secret token extraction from URL hash with session persistence",
-      "synonyms": [
-        "urlParams utilities",
-        "getSecretParameter",
-        "hash secret handling"
-      ],
-      "description": "Utilities to extract sensitive parameters from the URL hash, persist them in sessionStorage for the session, and remove them from the URL to reduce leakage (used for admin bootstrap secret handling).",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-4",
-      "title": "Role-based access control (RBAC) with admin bootstrap token",
-      "synonyms": [
-        "AccessControl",
-        "CAFFEINE_ADMIN_TOKEN bootstrap",
-        "admin/user/guest roles"
-      ],
-      "description": "Motoko access control that registers principals on initialization, supports admin checks and role retrieval, and allows admin-only role assignment. Admin bootstrap requires a secret matching the CAFFEINE_ADMIN_TOKEN environment variable.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-5",
-      "title": "Centralized React Query hooks for backend APIs",
-      "synonyms": [
-        "useQueries",
-        "TanStack React Query hooks",
-        "cache invalidation",
-        "polling queries"
-      ],
-      "description": "Central query/mutation hooks for user profile, admin check, products, orders, inquiries, site content/contact info, and carousel slides, including enabled guards, identity-scoped query keys, polling intervals, and cache invalidation on successful mutations.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-6",
-      "title": "User profile storage with first-login setup gating",
-      "synonyms": [
-        "UserProfile",
-        "getCallerUserProfile",
-        "saveCallerUserProfile",
-        "ProfileSetupModal"
-      ],
-      "description": "Backend stores per-principal user profiles (name/email/phone/address). Frontend detects missing profile after login and blocks progression with a modal until the profile is saved.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-7",
-      "title": "Persistent shopping cart store",
-      "synonyms": [
-        "Zustand cart",
-        "useCart",
-        "localStorage persistence"
-      ],
-      "description": "Client-side cart with add/remove/update quantity/clear operations and derived totals (item count and total price), persisted to localStorage via Zustand middleware.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-8",
-      "title": "Product catalog browsing (list and detail)",
-      "synonyms": [
-        "HomePage product grid",
-        "ProductDetailPage",
-        "INR formatting",
-        "stock gating"
-      ],
-      "description": "Displays product collection grid and product detail pages with INR price formatting, stock status badges, quantity selection, and authenticated add-to-cart / buy-now flows.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-9",
-      "title": "Product rich media support (images + optional video)",
-      "synonyms": [
-        "ExternalBlob media",
-        "ProductFormModal media uploads",
-        "ProductMediaCarousel"
-      ],
-      "description": "Supports up to 5 images and an optional product video stored as ExternalBlob. Admin UI provides upload/preview/remove flows; customer UI renders mixed-media carousel (video first, then images).",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-10",
-      "title": "Homepage carousel (customer-facing)",
-      "synonyms": [
-        "HomeCarousel",
-        "autoplay carousel",
-        "slide click-through"
-      ],
-      "description": "Fetches carousel slides, filters enabled slides, sorts by order, enforces 16:9 display, auto-rotates with hover pause, offers manual arrows/dots navigation, and supports click-through redirects per slide.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-11",
-      "title": "Admin carousel management (5 slots)",
-      "synonyms": [
-        "CarouselManagement",
-        "updateCarouselSlide",
-        "toggleCarouselSlide",
-        "reorderCarouselSlides"
-      ],
-      "description": "Admin UI manages up to 5 carousel slots: upload/replace images (with upload progress), configure click URLs, enable/disable slides, and reorder slides via move up/down controls.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-12",
-      "title": "Two-step checkout with UPI ID capture and order creation",
-      "synonyms": [
-        "CheckoutPage",
-        "address confirmation step",
-        "UPI payment step",
-        "createOrder"
-      ],
-      "description": "Checkout flow confirms shipping address (auto-filled from user profile) then captures UPI ID and creates one backend order per cart item; clears cart and routes to the customer dashboard.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-13",
-      "title": "Orders lifecycle management (customer + admin)",
-      "synonyms": [
-        "getCustomerOrders",
-        "getOrders",
-        "getOrder",
-        "updateOrderStatus"
-      ],
-      "description": "Backend supports order creation and retrieval (per-customer and admin-all). Admin UI polls for updates, supports status updates across fulfillment states, and customer UI shows order lists with a detail modal.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-14",
-      "title": "Order cancellation within 12-hour window with reason capture",
-      "synonyms": [
-        "cancelOrder",
-        "isOrderCancellable",
-        "CancelReason",
-        "OrderDetailModal cancel flow"
-      ],
-      "description": "Order owners can cancel within a 12-hour window by providing a reason; backend stores the reason in the cancelled status variant and exposes an isOrderCancellable check used by the UI.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-15",
-      "title": "Customer inquiries submission and admin response workflow",
-      "synonyms": [
-        "ContactPage inquiry form",
-        "submitInquiry",
-        "getCustomerInquiries",
-        "respondToInquiry",
-        "InquiryManagement"
-      ],
-      "description": "Authenticated users can submit inquiries and view their own inquiries; admins can view all inquiries and respond with text replies; UI shows pending/answered state.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-16",
-      "title": "Site content CMS-lite and contact info APIs",
-      "synonyms": [
-        "SiteContentManagement",
-        "getSiteContent",
-        "updateSiteContent",
-        "getContactInfo"
-      ],
-      "description": "Backend stores editable site-wide content (contact details, about, policies, disclaimer, footer content). Admin UI edits and saves content; Layout/Footer fetch and display contact info and footer content.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-17",
-      "title": "Admin dashboard gated by admin check",
-      "synonyms": [
-        "AdminDashboardPage",
-        "isCallerAdmin",
-        "tabbed admin UI"
-      ],
-      "description": "Admin-only dashboard gated via isCallerAdmin, presenting stats and tabbed management interfaces for products, orders, inquiries, carousel, and site content.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-18",
-      "title": "Printable order receipt generation (admin)",
-      "synonyms": [
-        "print order",
-        "order slip",
-        "window.print receipt"
-      ],
-      "description": "Admin order management can generate a printable receipt/order slip in a new window with formatted order, customer, status, cancellation, and shipping details.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-19",
-      "title": "Stripe integration APIs via IC HTTP outcalls (backend)",
-      "synonyms": [
-        "createCheckoutSession",
-        "getStripeSessionStatus",
-        "setStripeConfiguration",
-        "HTTP transform"
-      ],
-      "description": "Backend supports configuring Stripe, creating checkout sessions, and querying session status using IC HTTP outcalls with a transform function that strips response headers.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-20",
-      "title": "Caffeine blob-storage maintenance endpoints (backend)",
-      "synonyms": [
-        "gateway principal sync",
-        "dead blob pruning",
-        "cashier refill",
-        "upload certificate"
-      ],
-      "description": "Backend exposes maintenance endpoints for syncing authorized gateway principals, checking blob liveness, listing/pruning dead blobs, creating upload certificates, and topping up a cashier canister with cycles.",
-      "reqIds": [],
-      "version": 1
-    },
-    {
-      "id": "IF-21",
-      "title": "Global luxury branding, typography, and fixed footer layout",
-      "synonyms": [
-        "Header/Footer branding assets",
-        "Didot font styling",
-        "scroll-compress header",
-        "fixed split footer"
-      ],
-      "description": "Shared Layout header and footer render separate icon + “Aurelie Fine Jewellery” wordmark image assets, apply Didot-style typography to header/footer navigation/text, preserve scroll-compress header behavior, and always render the Split footer variant (ignoring any stored footer preference).",
+      "id": "feature-create-a-new-transparent-png-asset-by-cropping-the-uploaded-image-1770306231356-png-to-include-only-the-flower-like-logo-the-word-aurelie-and-the-smaller-text-fine-jewellery-remove-all-surrounding-background-and-add-it-to-the-frontend-static-assets-under-frontend-public-assets-generated",
+      "title": "Create a new transparent PNG asset by cropping the uploaded image `1770306231356.png` to include only the flower-like logo, the word “Aurelie”, and the smaller text “Fine Jewellery” (remove all surrounding background), and add it to the frontend static assets under `frontend/public/assets/generated/`.",
       "reqIds": [
-        "REQ-3",
-        "REQ-4",
-        "REQ-5"
+        "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-extract-the-floral-logo-icon-from-the-newly-uploaded-image-1770214375269-2-png-remove-its-background-to-full-transparency-and-replace-the-existing-generated-icon-asset-so-the-app-s-header-and-footer-use-the-updated-icon-everywhere-without-changing-image-references",
-      "title": "Extract the floral logo icon from the newly uploaded image (1770214375269~2.png), remove its background to full transparency, and replace the existing generated icon asset so the app’s header and footer use the updated icon everywhere without changing image references.",
+      "id": "feature-replace-the-header-branding-image-in-frontend-src-components-layout-tsx-so-it-uses-the-newly-generated-transparent-logo-lockup-asset-instead-of-assets-1770304385246-2-png-keeping-the-existing-header-layout-behavior-sticky-header-scroll-resize-navigation-button",
+      "title": "Replace the header branding image in `frontend/src/components/Layout.tsx` so it uses the newly generated transparent logo lockup asset instead of `/assets/1770304385246~2.png`, keeping the existing header layout/behavior (sticky header, scroll resize, navigation button).",
       "reqIds": [
-        "REQ-6"
+        "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-update-the-global-header-frontend-src-components-layout-tsx-to-be-fully-transparent-and-remove-the-orange-gold-background-button-styling-that-appears-behind-the-brand-name-logo-area-while-preserving-the-current-sticky-scroll-compress-behavior-and-keeping-the-brand-area-clickable-for-navigation-to",
-      "title": "Update the global header (frontend/src/components/Layout.tsx) to be fully transparent and remove the orange/gold background/button styling that appears behind the brand name/logo area, while preserving the current sticky + scroll-compress behavior and keeping the brand area clickable for navigation to '/'.",
+      "id": "feature-replace-the-footer-branding-in-frontend-src-components-footer-footersystem-tsx-so-the-left-column-brand-block-uses-the-newly-generated-transparent-logo-lockup-as-a-single-image-remove-the-existing-separate-logo-image-and-separate-aurelie-fine-jewellery-text-while-keeping-the-rest-of-the-footer-content-unchanged",
+      "title": "Replace the footer branding in `frontend/src/components/footer/FooterSystem.tsx` so the left-column brand block uses the newly generated transparent logo lockup as a single image (remove the existing separate logo image and separate “Aurelie”/“Fine Jewellery” text), while keeping the rest of the footer content unchanged.",
       "reqIds": [
-        "REQ-7"
+        "REQ-3"
       ],
       "version": 1
     }
@@ -293,53 +37,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Extract logo icon from the provided branding image, update header + footer branding across all pages, and remove the orange background/button behind the brand name by making the header fully transparent.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Lock the homepage carousel to a true 16:9 aspect ratio across all breakpoints (not fixed heights) to match uploaded slide images consistently.",
+      "summary": "Crop existing brand image to only logo + “Aurelie” + “Fine Jewellery” with transparent background, then replace header and footer images with the new asset",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "architectural_notes": [
-    "Single Motoko canister (backend/main.mo) implements products, orders, inquiries, carousel, user profiles, site content, and Stripe configuration in one actor.",
-    "Backend cross-cutting concerns are composed via Motoko mixins (authorization + Caffeine blob-storage maintenance endpoints).",
-    "RBAC bootstrap depends on CAFFEINE_ADMIN_TOKEN; first initializing principal with the correct secret can become admin; others become users; anonymous principals are treated as guests.",
-    "Frontend authentication is handled via an Internet Identity provider wrapping @dfinity/auth-client; identity is restored on reload and uses long-lived delegations (30 days).",
-    "Frontend creates an identity-scoped canister actor via React Query (useActor); when identity/actor changes it invalidates and refetches dependent queries.",
-    "Frontend canister I/O is centralized in React Query hooks (useQueries) with identity-scoped query keys, polling for near-real-time admin views (orders) and carousel refresh.",
-    "Shopping cart state is a Zustand store persisted to localStorage with derived totals (item count and total price).",
-    "Media (product images/video and carousel images) are sent as ExternalBlob bytes from the frontend and rendered via getDirectURL() in the UI.",
-    "SPA layout uses a shared Layout component (header + main outlet + footer) and TanStack Router route tree configuration.",
-    "UI uses shadcn/ui components and Tailwind design tokens with a luxury theme (gold gradients, chrome surfaces, Didot-style header/footer typography)."
-  ],
-  "known_issues": [
-    "RBAC initialization traps if CAFFEINE_ADMIN_TOKEN is not set; authenticated actor creation always calls _initializeAccessControlWithSecret, so misconfigured deployments can break login flows.",
-    "Critical privilege escalation: backend auto-assigns admin role if profile email equals \"aureliefinejewellery06@gmail.com\"; any user can self-grant admin by setting that email.",
-    "Canister upgrade persistence risk: core domain state is stored in in-memory Maps/vars without stable vars and pre/post-upgrade hooks; upgrades may wipe products/orders/inquiries/carousel/userProfiles/siteContent/stripeConfig.",
-    "Order integrity risk: createOrder trusts client-provided totalPriceInCents and does not validate product pricing/stock or decrement inventory server-side.",
-    "Cart persistence risk: Zustand persist stores Product objects containing BigInt; default JSON serialization/hydration can fail without custom transforms.",
-    "React Query invalidation mismatch: cancelOrder invalidates ['order'] but the order detail query key is ['order', orderId], so cached order details may not refresh reliably.",
-    "CheckoutPage performs navigation during render when unauthenticated or cart is empty; should use route guards or a useEffect redirect to avoid React warnings/loops.",
-    "Carousel reorder bug: admin reorder uses fixed 0..4 indices and can trap in backend if swapping with an empty slot (missing slide) because backend requires the referenced slide to exist.",
-    "Stripe integration exists in backend but is not wired into the checkout flow; current checkout captures UPI ID only and has no payment verification.",
-    "Environment variable typo risk: blob-storage cashier principal uses CAFFFEINE_STORAGE_CASHIER_PRINCIPAL (triple 'F'), which can trap if deployed with the expected spelling."
-  ],
-  "isFixRequest": false,
-  "imageRequirements": "## Edit Images\n- Extract the floral emblem as a standalone transparent icon with clean edges and no background (1770214375269~2.png > aurelie-icon-transparent.dim_512x512.png)",
-  "generatedImages": [
-    {
-      "filename": "aurelie-icon-transparent.dim_512x512.png",
-      "description": "Extract the floral emblem as a standalone transparent icon with clean edges and no background",
-      "targetWidth": 512,
-      "targetHeight": 512
-    }
-  ],
-  "gameProjectType": "none",
-  "projectName": "Aurelie Fine Jewellery Mobile App",
+  "projectName": "Crop uploaded brand image to transparent logo lockup and replace header/footer branding",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

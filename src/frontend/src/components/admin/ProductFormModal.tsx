@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { ExternalBlob, type Product, type ProductCreate } from '../../backend';
 import { Upload, Image as ImageIcon, Video, X } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
+import { optimizeImage, optimizeVideo } from '../../utils/mediaOptimization';
 
 interface ProductFormModalProps {
   open: boolean;
@@ -32,6 +33,7 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [existingVideo, setExistingVideo] = useState<ExternalBlob | null>(null);
   const [existingImages, setExistingImages] = useState<ExternalBlob[]>([]);
+  const [isOptimizing, setIsOptimizing] = useState(false);
 
   useEffect(() => {
     if (product) {
@@ -68,26 +70,34 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
     }
   }, [product, open]);
 
-  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVideoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setVideoFile(file);
-      setExistingVideo(null);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setVideoPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      setIsOptimizing(true);
+      try {
+        const optimized = await optimizeVideo(file);
+        setVideoFile(optimized.file);
+        setVideoPreview(optimized.previewUrl);
+        setExistingVideo(null);
+      } catch (error) {
+        console.error('Video optimization failed:', error);
+        toast.error('Failed to process video');
+      } finally {
+        setIsOptimizing(false);
+      }
     }
   };
 
   const handleRemoveVideo = () => {
+    if (videoPreview && videoPreview.startsWith('blob:')) {
+      URL.revokeObjectURL(videoPreview);
+    }
     setVideoFile(null);
     setVideoPreview('');
     setExistingVideo(null);
   };
 
-  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const totalImages = imageFiles.length + existingImages.length + files.length;
     
@@ -96,26 +106,25 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
       return;
     }
 
-    const newImageFiles = [...imageFiles, ...files].slice(0, 5 - existingImages.length);
-    setImageFiles(newImageFiles);
+    const filesToOptimize = files.slice(0, 5 - existingImages.length - imageFiles.length);
+    
+    setIsOptimizing(true);
+    try {
+      const optimizedImages = await Promise.all(
+        filesToOptimize.map(file => optimizeImage(file, 1200, 0.85))
+      );
 
-    // Generate previews for new files
-    const newPreviews: string[] = [];
-    let loadedCount = 0;
+      const newImageFiles = [...imageFiles, ...optimizedImages.map(opt => opt.file)];
+      const newPreviews = [...imagePreviews, ...optimizedImages.map(opt => opt.previewUrl)];
 
-    newImageFiles.forEach((file, index) => {
-      if (index >= imageFiles.length) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          newPreviews.push(reader.result as string);
-          loadedCount++;
-          if (loadedCount === newImageFiles.length - imageFiles.length) {
-            setImagePreviews([...imagePreviews, ...newPreviews]);
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+      setImageFiles(newImageFiles);
+      setImagePreviews(newPreviews);
+    } catch (error) {
+      console.error('Image optimization failed:', error);
+      toast.error('Failed to process some images');
+    } finally {
+      setIsOptimizing(false);
+    }
   };
 
   const handleRemoveImage = (index: number) => {
@@ -128,6 +137,10 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
     } else {
       // Remove from new image files
       const newIndex = index - totalExisting;
+      const previewToRevoke = imagePreviews[index];
+      if (previewToRevoke && previewToRevoke.startsWith('blob:')) {
+        URL.revokeObjectURL(previewToRevoke);
+      }
       setImageFiles(imageFiles.filter((_, i) => i !== newIndex));
       setImagePreviews(imagePreviews.filter((_, i) => i !== index));
     }
@@ -267,10 +280,10 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
                   variant="outline"
                   onClick={() => document.getElementById('video')?.click()}
                   className="gap-2 border-gold-medium gold-text hover:bg-gold-medium/20"
-                  disabled={!!videoFile || !!existingVideo}
+                  disabled={!!videoFile || !!existingVideo || isOptimizing}
                 >
                   <Video className="h-4 w-4" />
-                  {videoFile || existingVideo ? 'Video Added' : 'Upload Video'}
+                  {isOptimizing ? 'Processing...' : videoFile || existingVideo ? 'Video Added' : 'Upload Video'}
                 </Button>
                 <input
                   id="video"
@@ -309,10 +322,10 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
                   variant="outline"
                   onClick={() => document.getElementById('images')?.click()}
                   className="gap-2 border-gold-medium gold-text hover:bg-gold-medium/20"
-                  disabled={!canAddMoreImages}
+                  disabled={!canAddMoreImages || isOptimizing}
                 >
                   <Upload className="h-4 w-4" />
-                  {totalImages > 0 ? 'Add More Images' : 'Upload Images'}
+                  {isOptimizing ? 'Optimizing...' : totalImages > 0 ? 'Add More Images' : 'Upload Images'}
                 </Button>
                 <input
                   id="images"
@@ -375,7 +388,7 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
               <Button
                 type="submit"
                 className="flex-1 gold-gradient text-secondary shadow-gold"
-                disabled={addProduct.isPending || updateProduct.isPending}
+                disabled={addProduct.isPending || updateProduct.isPending || isOptimizing}
               >
                 {addProduct.isPending || updateProduct.isPending
                   ? 'Saving...'

@@ -49,32 +49,41 @@ export default function ProductMediaCarousel({ media, productName }: ProductMedi
       {/* Media Container with square aspect ratio */}
       <div className="relative overflow-hidden rounded-lg gold-border bg-bottle-green-light/20 shadow-gold">
         <div className="relative w-full" style={{ paddingBottom: '100%' }}>
-          {mediaItems.map((item, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-500 ${
-                index === currentIndex ? 'opacity-100' : 'opacity-0'
-              }`}
-              style={{ pointerEvents: index === currentIndex ? 'auto' : 'none' }}
-            >
-              {item.type === 'video' ? (
-                <video
-                  src={item.url}
-                  controls
-                  className="w-full h-full object-cover"
-                  preload="metadata"
-                >
-                  Your browser does not support the video tag.
-                </video>
-              ) : (
-                <img
-                  src={item.url}
-                  alt={`${productName} - ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              )}
-            </div>
-          ))}
+          {mediaItems.map((item, index) => {
+            const isActive = index === currentIndex;
+            const isAdjacent = Math.abs(index - currentIndex) <= 1 || 
+                              (currentIndex === 0 && index === mediaItems.length - 1) ||
+                              (currentIndex === mediaItems.length - 1 && index === 0);
+            
+            return (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-opacity duration-500 ${
+                  isActive ? 'opacity-100' : 'opacity-0'
+                }`}
+                style={{ pointerEvents: isActive ? 'auto' : 'none' }}
+              >
+                {item.type === 'video' ? (
+                  <video
+                    src={item.url}
+                    controls
+                    className="w-full h-full object-cover"
+                    preload={isActive ? 'auto' : 'metadata'}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                ) : (
+                  <img
+                    src={item.url}
+                    alt={`${productName} - ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    loading={isAdjacent ? 'eager' : 'lazy'}
+                    decoding="async"
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Navigation Arrows */}

@@ -18,7 +18,7 @@ export default function FooterSystem({
   return <SplitLayoutFooter contactInfo={contactInfo} footerContent={footerContent} />;
 }
 
-// Split Layout Footer with New Branding
+// Split Layout Footer with Transparent Logo Lockup
 function SplitLayoutFooter({
   contactInfo,
   footerContent,
@@ -31,21 +31,13 @@ function SplitLayoutFooter({
       <div className="hairline-gold-divider" />
       <div className="container px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          {/* Left Column: Brand + Tagline */}
+          {/* Left Column: Transparent Logo Lockup */}
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <img
-                src="/assets/generated/aurelie-icon-transparent.dim_512x512.png"
-                alt="Aurelie Icon"
-                className="h-12 w-12 object-contain"
-              />
-              <img
-                src="/assets/generated/aurelie-wordmark-goldshine-transparent.dim_1600x500.png"
-                alt="Aurelie Fine Jewellery"
-                className="h-6 object-contain"
-                style={{ width: 'auto' }}
-              />
-            </div>
+            <img
+              src="/assets/generated/aurelie-lockup-transparent.dim_1000x320.png"
+              alt="Aurelie Fine Jewellery"
+              className="h-16 w-auto object-contain object-left"
+            />
             <p className="footer-text-didot text-sm font-light max-w-xs">
               Exquisite handcrafted jewellery inspired by timeless elegance
             </p>

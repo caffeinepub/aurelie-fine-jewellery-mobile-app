@@ -9,6 +9,7 @@ import { Skeleton } from '../components/ui/skeleton';
 import { ShoppingCart, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import HomeCarousel from '../components/HomeCarousel';
+import CategoryCarousel from '../components/CategoryCarousel';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -53,8 +54,18 @@ export default function HomePage() {
 
   return (
     <div className="container px-4 py-8">
-      {/* Carousel Section */}
+      {/* Homepage Carousel Section */}
       <HomeCarousel />
+
+      {/* Category Carousels Section - 2x3 Grid */}
+      <div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <CategoryCarousel category="bridal" title="Bridal Jewellery" />
+        <CategoryCarousel category="rings" title="Rings" />
+        <CategoryCarousel category="essentials" title="Anti Tarnish Jewellery" />
+        <CategoryCarousel category="everydaywear" title="Necklace" />
+        <CategoryCarousel category="birthstone" title="Anklets" />
+        <CategoryCarousel category="engagement" title="Earrings" />
+      </div>
 
       {/* Products Section */}
       <section>
@@ -98,6 +109,8 @@ export default function HomePage() {
                         src={firstImage.getDirectURL()}
                         alt={product.name}
                         className="h-64 w-full object-cover transition-transform group-hover:scale-105"
+                        loading="lazy"
+                        decoding="async"
                       />
                     ) : (
                       <div className="h-64 w-full flex items-center justify-center bg-muted">

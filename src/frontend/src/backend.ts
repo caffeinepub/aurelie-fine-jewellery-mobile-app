@@ -256,7 +256,7 @@ export interface backendInterface {
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
-    addCarouselSlide(newSlide: CarouselSlide): Promise<void>;
+    addCategorySlide(category: string, newSlide: CarouselSlide): Promise<void>;
     addProduct(product: ProductCreate): Promise<void>;
     assignAdminRole(userPrincipal: Principal): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
@@ -264,7 +264,7 @@ export interface backendInterface {
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;
     createOrder(input: OrderCreate): Promise<void>;
     deleteProduct(productId: string): Promise<void>;
-    getAllCarouselSlides(): Promise<Array<CarouselSlide>>;
+    getAllCategorySlides(category: string): Promise<Array<CarouselSlide>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getContactInfo(): Promise<{
@@ -291,15 +291,15 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     isOrderCancellable(orderId: string): Promise<boolean>;
     isStripeConfigured(): Promise<boolean>;
-    removeCarouselSlide(slideIndex: bigint): Promise<void>;
-    reorderCarouselSlides(newOrder: Array<bigint>): Promise<void>;
+    removeCategorySlide(category: string, slideIndex: bigint): Promise<void>;
+    reorderCategorySlides(category: string, newOrder: Array<bigint>): Promise<void>;
     respondToInquiry(inquiryId: string, response: string): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     setStripeConfiguration(config: StripeConfiguration): Promise<void>;
     submitInquiry(inquiry: CustomerInquiry): Promise<void>;
-    toggleCarouselSlide(slideIndex: bigint, enabled: boolean): Promise<void>;
+    toggleCategorySlide(category: string, slideIndex: bigint, enabled: boolean): Promise<void>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
-    updateCarouselSlide(slideIndex: bigint, updatedSlide: CarouselSlide): Promise<void>;
+    updateCategorySlide(category: string, slideIndex: bigint, updatedSlide: CarouselSlide): Promise<void>;
     updateOrderStatus(orderId: string, status: OrderStatus): Promise<void>;
     updateProduct(product: ProductCreate): Promise<void>;
     updateSiteContent(newContent: SiteContent): Promise<void>;
@@ -405,17 +405,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async addCarouselSlide(arg0: CarouselSlide): Promise<void> {
+    async addCategorySlide(arg0: string, arg1: CarouselSlide): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.addCarouselSlide(await to_candid_CarouselSlide_n8(this._uploadFile, this._downloadFile, arg0));
+                const result = await this.actor.addCategorySlide(arg0, await to_candid_CarouselSlide_n8(this._uploadFile, this._downloadFile, arg1));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.addCarouselSlide(await to_candid_CarouselSlide_n8(this._uploadFile, this._downloadFile, arg0));
+            const result = await this.actor.addCategorySlide(arg0, await to_candid_CarouselSlide_n8(this._uploadFile, this._downloadFile, arg1));
             return result;
         }
     }
@@ -517,17 +517,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getAllCarouselSlides(): Promise<Array<CarouselSlide>> {
+    async getAllCategorySlides(arg0: string): Promise<Array<CarouselSlide>> {
         if (this.processError) {
             try {
-                const result = await this.actor.getAllCarouselSlides();
+                const result = await this.actor.getAllCategorySlides(arg0);
                 return from_candid_vec_n18(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getAllCarouselSlides();
+            const result = await this.actor.getAllCategorySlides(arg0);
             return from_candid_vec_n18(this._uploadFile, this._downloadFile, result);
         }
     }
@@ -791,31 +791,31 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async removeCarouselSlide(arg0: bigint): Promise<void> {
+    async removeCategorySlide(arg0: string, arg1: bigint): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.removeCarouselSlide(arg0);
+                const result = await this.actor.removeCategorySlide(arg0, arg1);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.removeCarouselSlide(arg0);
+            const result = await this.actor.removeCategorySlide(arg0, arg1);
             return result;
         }
     }
-    async reorderCarouselSlides(arg0: Array<bigint>): Promise<void> {
+    async reorderCategorySlides(arg0: string, arg1: Array<bigint>): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.reorderCarouselSlides(arg0);
+                const result = await this.actor.reorderCategorySlides(arg0, arg1);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.reorderCarouselSlides(arg0);
+            const result = await this.actor.reorderCategorySlides(arg0, arg1);
             return result;
         }
     }
@@ -875,17 +875,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async toggleCarouselSlide(arg0: bigint, arg1: boolean): Promise<void> {
+    async toggleCategorySlide(arg0: string, arg1: bigint, arg2: boolean): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.toggleCarouselSlide(arg0, arg1);
+                const result = await this.actor.toggleCategorySlide(arg0, arg1, arg2);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.toggleCarouselSlide(arg0, arg1);
+            const result = await this.actor.toggleCategorySlide(arg0, arg1, arg2);
             return result;
         }
     }
@@ -903,17 +903,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async updateCarouselSlide(arg0: bigint, arg1: CarouselSlide): Promise<void> {
+    async updateCategorySlide(arg0: string, arg1: bigint, arg2: CarouselSlide): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.updateCarouselSlide(arg0, await to_candid_CarouselSlide_n8(this._uploadFile, this._downloadFile, arg1));
+                const result = await this.actor.updateCategorySlide(arg0, arg1, await to_candid_CarouselSlide_n8(this._uploadFile, this._downloadFile, arg2));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.updateCarouselSlide(arg0, await to_candid_CarouselSlide_n8(this._uploadFile, this._downloadFile, arg1));
+            const result = await this.actor.updateCategorySlide(arg0, arg1, await to_candid_CarouselSlide_n8(this._uploadFile, this._downloadFile, arg2));
             return result;
         }
     }

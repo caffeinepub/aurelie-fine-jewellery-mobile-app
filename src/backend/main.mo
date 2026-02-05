@@ -135,6 +135,13 @@ actor {
   let orders = Map.empty<Text, Order>();
   let inquiries = Map.empty<Text, CustomerInquiry>();
   let carouselSlides = Map.empty<Nat, CarouselSlide>();
+  let bridalSlides = Map.empty<Nat, CarouselSlide>();
+  let essentialsSlides = Map.empty<Nat, CarouselSlide>();
+  let everydayWearSlides = Map.empty<Nat, CarouselSlide>();
+  let engagementSlides = Map.empty<Nat, CarouselSlide>();
+  let birthstoneSlides = Map.empty<Nat, CarouselSlide>();
+  let ringsSlides = Map.empty<Nat, CarouselSlide>();
+
   let userProfiles = Map.empty<Principal, UserProfile>();
 
   var siteContent : SiteContent = {
@@ -162,41 +169,56 @@ actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
-  // --------------- Carousel Slide Management (Unchanged) ---------------
-  public shared ({ caller }) func addCarouselSlide(newSlide : CarouselSlide) : async () {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can add carousel slides");
+  func getCategoryMap(category : Text) : Map.Map<Nat, CarouselSlide> {
+    switch (category) {
+      case ("homepage") { carouselSlides };
+      case ("bridal") { bridalSlides };
+      case ("essentials") { essentialsSlides };
+      case ("everydaywear") { everydayWearSlides };
+      case ("engagement") { engagementSlides };
+      case ("birthstone") { birthstoneSlides };
+      case ("rings") { ringsSlides };
+      case (_) { Runtime.trap("Invalid category") };
     };
-
-    if (carouselSlides.size() >= 5) {
-      Runtime.trap("Maximum of 5 slides allowed in the carousel");
-    };
-
-    carouselSlides.add(newSlide.order, newSlide);
   };
 
-  public shared ({ caller }) func updateCarouselSlide(slideIndex : Nat, updatedSlide : CarouselSlide) : async () {
+  // ------------- Generic Category Slide Management --------------
+  public shared ({ caller }) func addCategorySlide(category : Text, newSlide : CarouselSlide) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can update carousel slides");
+      Runtime.trap("Unauthorized: Only admins can add category slides");
+    };
+
+    let categoryMap = getCategoryMap(category);
+
+    if (categoryMap.size() >= 5) {
+      Runtime.trap("Maximum of 5 slides allowed in the category");
+    };
+
+    categoryMap.add(newSlide.order, newSlide);
+  };
+
+  public shared ({ caller }) func updateCategorySlide(category : Text, slideIndex : Nat, updatedSlide : CarouselSlide) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can update category slides");
     };
 
     if (slideIndex >= 5) {
       Runtime.trap("Invalid slide index. Maximum of 5 slides allowed.");
     };
 
-    carouselSlides.add(slideIndex, updatedSlide);
+    getCategoryMap(category).add(slideIndex, updatedSlide);
   };
 
-  public shared ({ caller }) func toggleCarouselSlide(slideIndex : Nat, enabled : Bool) : async () {
+  public shared ({ caller }) func toggleCategorySlide(category : Text, slideIndex : Nat, enabled : Bool) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can toggle carousel slides");
+      Runtime.trap("Unauthorized: Only admins can toggle category slides");
     };
 
     if (slideIndex >= 5) {
       Runtime.trap("Invalid slide index. Maximum of 5 slides allowed.");
     };
 
-    switch (carouselSlides.get(slideIndex)) {
+    switch (getCategoryMap(category).get(slideIndex)) {
       case (null) { Runtime.trap("Slide does not exist") };
       case (?slide) {
         let updatedSlide : CarouselSlide = {
@@ -205,35 +227,37 @@ actor {
           enabled;
           order = slide.order;
         };
-        carouselSlides.add(slideIndex, updatedSlide);
+        getCategoryMap(category).add(slideIndex, updatedSlide);
       };
     };
   };
 
-  public shared ({ caller }) func removeCarouselSlide(slideIndex : Nat) : async () {
+  public shared ({ caller }) func removeCategorySlide(category : Text, slideIndex : Nat) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can remove carousel slides");
+      Runtime.trap("Unauthorized: Only admins can remove category slides");
     };
 
     if (slideIndex >= 5) {
       Runtime.trap("Invalid slide index. Maximum of 5 slides allowed.");
     };
 
-    carouselSlides.remove(slideIndex);
+    getCategoryMap(category).remove(slideIndex);
   };
 
-  public shared ({ caller }) func reorderCarouselSlides(newOrder : [Nat]) : async () {
+  public shared ({ caller }) func reorderCategorySlides(category : Text, newOrder : [Nat]) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can reorder carousel slides");
+      Runtime.trap("Unauthorized: Only admins can reorder category slides");
     };
 
     if (newOrder.size() > 5) {
-      Runtime.trap("Maximum of 5 slides allowed in the carousel");
+      Runtime.trap("Maximum of 5 slides allowed in the category");
     };
 
-    let newCarouselSlides = Map.empty<Nat, CarouselSlide>();
+    let categoryMap = getCategoryMap(category);
+    let newCategorySlides = Map.empty<Nat, CarouselSlide>();
+
     for ((index, slideIndex) in newOrder.enumerate()) {
-      switch (carouselSlides.get(slideIndex)) {
+      switch (categoryMap.get(slideIndex)) {
         case (null) { Runtime.trap("Slide does not exist") };
         case (?slide) {
           let updatedSlide : CarouselSlide = {
@@ -242,23 +266,22 @@ actor {
             enabled = slide.enabled;
             order = index;
           };
-          newCarouselSlides.add(index, updatedSlide);
+          newCategorySlides.add(index, updatedSlide);
         };
       };
     };
 
-    // Replace old carousel with new one using map
-    let mappedSlides = newCarouselSlides.map<Nat, CarouselSlide, CarouselSlide>(
+    let mappedSlides = newCategorySlides.map<Nat, CarouselSlide, CarouselSlide>(
       func(_index, slide) { slide }
     );
-    carouselSlides.clear();
+    categoryMap.clear();
     for ((index, slide) in mappedSlides.entries()) {
-      carouselSlides.add(index, slide);
+      categoryMap.add(index, slide);
     };
   };
 
-  public query ({ caller }) func getAllCarouselSlides() : async [CarouselSlide] {
-    carouselSlides.values().toArray();
+  public query ({ caller }) func getAllCategorySlides(category : Text) : async [CarouselSlide] {
+    getCategoryMap(category).values().toArray();
   };
 
   // --------------- Stripe Integration (Unchanged) ---------------

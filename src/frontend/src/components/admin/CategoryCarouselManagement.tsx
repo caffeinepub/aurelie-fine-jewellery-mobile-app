@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useGetCarouselSlides, useUpdateCarouselSlide, useToggleCarouselSlide, useReorderCarouselSlides } from '../../hooks/useQueries';
+import { useGetCategorySlides, useUpdateCategorySlide, useToggleCategorySlide, useReorderCategorySlides } from '../../hooks/useQueries';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -11,11 +11,16 @@ import { toast } from 'sonner';
 import { ExternalBlob, type CarouselSlide } from '../../backend';
 import { optimizeImage } from '../../utils/mediaOptimization';
 
-export default function CarouselManagement() {
-  const { data: slides, isLoading } = useGetCarouselSlides();
-  const updateSlide = useUpdateCarouselSlide();
-  const toggleSlide = useToggleCarouselSlide();
-  const reorderSlides = useReorderCarouselSlides();
+interface CategoryCarouselManagementProps {
+  category: string;
+  title: string;
+}
+
+export default function CategoryCarouselManagement({ category, title }: CategoryCarouselManagementProps) {
+  const { data: slides, isLoading } = useGetCategorySlides(category);
+  const updateSlide = useUpdateCategorySlide(category);
+  const toggleSlide = useToggleCategorySlide(category);
+  const reorderSlides = useReorderCategorySlides(category);
 
   const [editingSlides, setEditingSlides] = useState<Record<number, { url: string; image: File | null; uploadProgress: number; isOptimizing: boolean }>>({});
 
@@ -174,10 +179,10 @@ export default function CarouselManagement() {
     return (
       <Card className="gold-border chrome-surface backdrop-blur mb-6">
         <CardHeader>
-          <CardTitle className="gold-text">Homepage Carousel Management</CardTitle>
+          <CardTitle className="gold-text">{title}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {[1, 2, 3, 4, 5].map((i) => (
+          {[1, 2, 3].map((i) => (
             <Skeleton key={i} className="h-32 w-full" />
           ))}
         </CardContent>
@@ -188,9 +193,9 @@ export default function CarouselManagement() {
   return (
     <Card className="gold-border chrome-surface backdrop-blur mb-6">
       <CardHeader>
-        <CardTitle className="gold-text">Homepage Carousel Management</CardTitle>
+        <CardTitle className="gold-text">{title}</CardTitle>
         <p className="text-sm gold-text opacity-70">
-          Manage up to 5 carousel slides. Images are automatically optimized. Auto-rotates every 2.5 seconds on the homepage.
+          Manage up to 5 carousel slides. Images are automatically optimized.
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -227,7 +232,7 @@ export default function CarouselManagement() {
                 <div className="space-y-2">
                   <Label className="gold-text">Image</Label>
                   {slide && !editing?.image ? (
-                    <div className="relative aspect-video rounded-lg overflow-hidden border border-gold-medium/30">
+                    <div className="relative aspect-[21/9] rounded-lg overflow-hidden border border-gold-medium/30">
                       <img
                         src={slide.visualContent.getDirectURL()}
                         alt={`Slide ${index + 1}`}
@@ -235,7 +240,7 @@ export default function CarouselManagement() {
                       />
                     </div>
                   ) : editing?.image ? (
-                    <div className="relative aspect-video rounded-lg overflow-hidden border border-gold-medium/30">
+                    <div className="relative aspect-[21/9] rounded-lg overflow-hidden border border-gold-medium/30">
                       <img
                         src={URL.createObjectURL(editing.image)}
                         alt={`Preview ${index + 1}`}
@@ -248,7 +253,7 @@ export default function CarouselManagement() {
                       )}
                     </div>
                   ) : (
-                    <div className="aspect-video rounded-lg border-2 border-dashed border-gold-medium/30 flex items-center justify-center">
+                    <div className="aspect-[21/9] rounded-lg border-2 border-dashed border-gold-medium/30 flex items-center justify-center">
                       {editing?.isOptimizing ? (
                         <div className="text-gold-medium text-sm">Optimizing...</div>
                       ) : (
@@ -271,11 +276,11 @@ export default function CarouselManagement() {
                 {/* URL and Controls */}
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor={`url-${index}`} className="gold-text">
+                    <Label htmlFor={`url-${category}-${index}`} className="gold-text">
                       Click URL (Product Category/Page)
                     </Label>
                     <Input
-                      id={`url-${index}`}
+                      id={`url-${category}-${index}`}
                       type="url"
                       placeholder="https://example.com/category"
                       value={editing?.url !== undefined ? editing.url : slide?.urlRedirect || ''}
@@ -285,11 +290,11 @@ export default function CarouselManagement() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <Label htmlFor={`enabled-${index}`} className="gold-text">
+                    <Label htmlFor={`enabled-${category}-${index}`} className="gold-text">
                       Enabled
                     </Label>
                     <Switch
-                      id={`enabled-${index}`}
+                      id={`enabled-${category}-${index}`}
                       checked={slide?.enabled ?? false}
                       onCheckedChange={(checked) => handleToggle(index, checked)}
                       disabled={!slide}

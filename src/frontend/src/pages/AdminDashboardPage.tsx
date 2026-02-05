@@ -2,12 +2,14 @@ import { useIsCallerAdmin, useGetProducts, useGetOrders, useGetInquiries } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Skeleton } from '../components/ui/skeleton';
+import { ScrollArea } from '../components/ui/scroll-area';
 import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Settings, Image } from 'lucide-react';
 import ProductManagement from '../components/admin/ProductManagement';
 import OrderManagement from '../components/admin/OrderManagement';
 import InquiryManagement from '../components/admin/InquiryManagement';
 import SiteContentManagement from '../components/admin/SiteContentManagement';
 import CarouselManagement from '../components/admin/CarouselManagement';
+import CategoryCarouselManagement from '../components/admin/CategoryCarouselManagement';
 
 export default function AdminDashboardPage() {
   const { data: isAdmin, isLoading: adminLoading } = useIsCallerAdmin();
@@ -135,7 +137,29 @@ export default function AdminDashboardPage() {
         </TabsContent>
 
         <TabsContent value="carousel">
-          <CarouselManagement />
+          <ScrollArea className="h-[calc(100vh-300px)]">
+            <div className="pr-4">
+              <div className="mb-6">
+                <h2 className="font-serif text-2xl font-semibold tracking-tight mb-2 gold-text">Carousel Management</h2>
+                <p className="text-sm gold-text opacity-70">
+                  Manage homepage and category carousels. Each carousel supports up to 5 slides with automatic optimization.
+                </p>
+              </div>
+              
+              <CarouselManagement />
+              
+              <div className="mt-8 mb-4">
+                <h3 className="font-serif text-xl font-semibold tracking-tight gold-text">Category Carousels</h3>
+              </div>
+              
+              <CategoryCarouselManagement category="bridal" title="Bridal Jewellery Carousel" />
+              <CategoryCarouselManagement category="rings" title="Rings Carousel" />
+              <CategoryCarouselManagement category="essentials" title="Anti Tarnish Jewellery Carousel" />
+              <CategoryCarouselManagement category="everydaywear" title="Necklace Carousel" />
+              <CategoryCarouselManagement category="birthstone" title="Anklets Carousel" />
+              <CategoryCarouselManagement category="engagement" title="Earrings Carousel" />
+            </div>
+          </ScrollArea>
         </TabsContent>
 
         <TabsContent value="edit">

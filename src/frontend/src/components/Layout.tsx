@@ -5,8 +5,9 @@ import { ShoppingCart, LayoutDashboard, LogIn, LogOut } from 'lucide-react';
 import { useIsCallerAdmin, useGetContactInfo, useGetSiteContent } from '../hooks/useQueries';
 import { useCart } from '../hooks/useCart';
 import { Badge } from './ui/badge';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import FooterSystem from './footer/FooterSystem';
+import RouteLoadingFallback from './RouteLoadingFallback';
 
 export default function Layout() {
   const { login, clear, loginStatus, identity } = useInternetIdentity();
@@ -56,7 +57,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header with New Branding - Fully Transparent */}
+      {/* Header with Transparent Logo Lockup */}
       <header
         className={`sticky top-0 z-50 w-full border-b border-gold-medium/20 bg-transparent transition-all duration-300 ${
           scrolled ? 'h-16' : 'h-20'
@@ -65,20 +66,16 @@ export default function Layout() {
         <div className="container flex items-center justify-between px-4 h-full">
           <button
             onClick={() => navigate({ to: '/' })}
-            className={`header-brand-btn flex items-center gap-3 transition-all duration-300 hover:opacity-80 ${
+            className={`header-brand-btn flex items-center transition-all duration-300 hover:opacity-80 ${
               scrolled ? 'scale-90' : 'scale-100'
             }`}
           >
             <img
-              src="/assets/generated/aurelie-icon-transparent.dim_512x512.png"
-              alt="Aurelie Icon"
-              className={`object-contain transition-all duration-300 ${scrolled ? 'h-10 w-10' : 'h-14 w-14'}`}
-            />
-            <img
-              src="/assets/generated/aurelie-wordmark-goldshine-transparent.dim_1600x500.png"
+              src="/assets/generated/aurelie-lockup-transparent.dim_1000x320.png"
               alt="Aurelie Fine Jewellery"
-              className={`object-contain transition-all duration-300 ${scrolled ? 'h-6' : 'h-8'}`}
-              style={{ width: 'auto' }}
+              className={`object-contain transition-all duration-300 ${
+                scrolled ? 'h-12' : 'h-16'
+              }`}
             />
           </button>
 
@@ -143,7 +140,9 @@ export default function Layout() {
 
       {/* Main Content with Shimmering Beige Background */}
       <main className="flex-1 shimmering-beige">
-        <Outlet />
+        <Suspense fallback={<RouteLoadingFallback />}>
+          <Outlet />
+        </Suspense>
       </main>
 
       {/* Footer System - Always Split Layout */}

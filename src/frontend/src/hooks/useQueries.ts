@@ -39,19 +39,19 @@ export function useIsCallerAdmin() {
   });
 }
 
-// Carousel Queries
+// Carousel Queries (Homepage)
 export function useGetCarouselSlides() {
   const { actor, isFetching } = useActor();
 
   return useQuery<CarouselSlide[]>({
-    queryKey: ['carouselSlides'],
+    queryKey: ['carouselSlides', 'homepage'],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getAllCarouselSlides();
+      return actor.getAllCategorySlides('homepage');
     },
     enabled: !!actor && !isFetching,
     refetchOnWindowFocus: true,
-    refetchInterval: 30000, // Refetch every 30 seconds for real-time updates
+    refetchInterval: 30000,
   });
 }
 
@@ -62,10 +62,10 @@ export function useUpdateCarouselSlide() {
   return useMutation({
     mutationFn: async ({ slideIndex, updatedSlide }: { slideIndex: number; updatedSlide: CarouselSlide }) => {
       if (!actor) throw new Error('Actor not available');
-      await actor.updateCarouselSlide(BigInt(slideIndex), updatedSlide);
+      await actor.updateCategorySlide('homepage', BigInt(slideIndex), updatedSlide);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carouselSlides'] });
+      queryClient.invalidateQueries({ queryKey: ['carouselSlides', 'homepage'] });
     },
   });
 }
@@ -77,10 +77,10 @@ export function useToggleCarouselSlide() {
   return useMutation({
     mutationFn: async ({ slideIndex, enabled }: { slideIndex: number; enabled: boolean }) => {
       if (!actor) throw new Error('Actor not available');
-      await actor.toggleCarouselSlide(BigInt(slideIndex), enabled);
+      await actor.toggleCategorySlide('homepage', BigInt(slideIndex), enabled);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carouselSlides'] });
+      queryClient.invalidateQueries({ queryKey: ['carouselSlides', 'homepage'] });
     },
   });
 }
@@ -92,10 +92,71 @@ export function useReorderCarouselSlides() {
   return useMutation({
     mutationFn: async (newOrder: number[]) => {
       if (!actor) throw new Error('Actor not available');
-      await actor.reorderCarouselSlides(newOrder.map(n => BigInt(n)));
+      await actor.reorderCategorySlides('homepage', newOrder.map(n => BigInt(n)));
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carouselSlides'] });
+      queryClient.invalidateQueries({ queryKey: ['carouselSlides', 'homepage'] });
+    },
+  });
+}
+
+// Category Carousel Queries
+export function useGetCategorySlides(category: string) {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<CarouselSlide[]>({
+    queryKey: ['carouselSlides', category],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getAllCategorySlides(category);
+    },
+    enabled: !!actor && !isFetching,
+    refetchOnWindowFocus: true,
+    refetchInterval: 30000,
+  });
+}
+
+export function useUpdateCategorySlide(category: string) {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ slideIndex, updatedSlide }: { slideIndex: number; updatedSlide: CarouselSlide }) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.updateCategorySlide(category, BigInt(slideIndex), updatedSlide);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['carouselSlides', category] });
+    },
+  });
+}
+
+export function useToggleCategorySlide(category: string) {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ slideIndex, enabled }: { slideIndex: number; enabled: boolean }) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.toggleCategorySlide(category, BigInt(slideIndex), enabled);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['carouselSlides', category] });
+    },
+  });
+}
+
+export function useReorderCategorySlides(category: string) {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (newOrder: number[]) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.reorderCategorySlides(category, newOrder.map(n => BigInt(n)));
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['carouselSlides', category] });
     },
   });
 }
@@ -184,7 +245,7 @@ export function useGetOrders() {
     },
     enabled: !!actor && !isFetching,
     refetchOnWindowFocus: true,
-    refetchInterval: 15000, // Refetch every 15 seconds for real-time admin order updates
+    refetchInterval: 15000,
   });
 }
 

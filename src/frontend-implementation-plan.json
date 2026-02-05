@@ -1,43 +1,52 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Update floral icon asset + transparent global header branding area",
+  "title": "Transparent Aurelie logo lockup asset + header/footer branding swap",
   "requirements": [
     {
-      "id": "REQ-6",
-      "summary": "Replace the generated floral icon asset with a newly extracted, tightly-cropped transparent PNG while keeping all existing image references unchanged so header/footer update automatically.",
+      "id": "REQ-1",
+      "summary": "Generate a tightly cropped transparent PNG logo lockup from the uploaded brand image and add it as a static frontend asset.",
       "acceptanceCriteria": [
-        "A new transparent PNG icon is produced from the uploaded image and saved as frontend/public/assets/generated/aurelie-icon-transparent.dim_512x512.png (replacing the prior version).",
-        "The icon has a tightly-cropped bounding box around the floral mark (no visible beige background).",
-        "Header and footer both display the updated icon automatically (no broken image links)."
+        "A new PNG file exists at `frontend/public/assets/generated/` created from `1770306231356.png`.",
+        "The new PNG contains only the logo + “Aurelie” + “Fine Jewellery” with a transparent background (alpha channel), with no visible beige/cream background around the mark.",
+        "The crop is tight with modest padding so no parts of the mark are cut off."
       ],
       "file_operations": [
         {
-          "path": "frontend/public/assets/generated/aurelie-icon-transparent.dim_512x512.png",
-          "operation": "modify",
-          "description": "Replace this existing generated asset with a new transparent PNG extracted from the uploaded source image (1770214375269~2.png), ensuring tight crop around the floral mark and fully transparent background; keep the same filename/path to avoid changing any references."
+          "path": "frontend/public/assets/generated/aurelie-lockup-transparent.dim_1000x320.png",
+          "operation": "create",
+          "description": "Create the cropped transparent logo lockup PNG from `1770306231356.png` per image edit requirement (remove background to alpha; include flower-like logo + “Aurelie” + “Fine Jewellery” only)."
         }
       ]
     },
     {
-      "id": "REQ-7",
-      "summary": "Make the global header fully transparent and remove any button/background styling behind the brand (icon/wordmark) while preserving sticky + scroll-compress behavior and homepage navigation on brand click.",
+      "id": "REQ-2",
+      "summary": "Update the header branding image to use the new transparent logo lockup asset without changing existing header behavior.",
       "acceptanceCriteria": [
-        "The header background renders as fully transparent at rest and while scrolled (no ivory fill, no backdrop tint).",
-        "The brand/logo click target does NOT render any button background/gradient/shimmer behind the icon/wordmark (it appears visually transparent).",
-        "The header remains sticky and continues to compress from h-20 to h-16 on scroll exactly as before.",
-        "Navigation buttons (Cart/Dashboard/Admin/Login/Logout) retain their current appearance and behavior."
+        "Header logo `<img>` `src` points to the new generated asset path under `/assets/generated/`.",
+        "Header branding renders correctly at both scroll states (`h-16` and `h-20`) with no background box/edge visible behind the mark."
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/Layout.tsx",
           "operation": "modify",
-          "description": "Update the header container styling to remove opaque/background and backdrop tint so it renders fully transparent while keeping the existing sticky positioning and scroll-based height compression; also update the brand click target styling (currently a button) to neutralize any global button background/shimmer so the icon/wordmark area is visually transparent while remaining clickable and navigating to '/'."
-        },
+          "description": "Replace the header branding `<img>` source from `/assets/1770304385246~2.png` to `/assets/generated/aurelie-lockup-transparent.dim_1000x320.png`, keeping sticky header, scroll-resize behavior, and navigation button behavior unchanged."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Replace the footer brand block with a single transparent logo lockup image while keeping the rest of the footer unchanged.",
+      "acceptanceCriteria": [
+        "Footer brand section no longer renders `/assets/1770214375269~2-2.png` or separate “Aurelie”/“Fine Jewellery” text nodes.",
+        "Footer brand section renders the new generated transparent asset under `/assets/generated/` as a single `<img>`.",
+        "Footer layout remains aligned and responsive (no overflow or broken spacing on mobile and desktop)."
+      ],
+      "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/components/footer/FooterSystem.tsx",
           "operation": "modify",
-          "description": "Add/adjust a dedicated utility class for the header brand click target that overrides the global button shimmer/background/text-shadow rules (and any descendant styling) so the brand area can be a visually transparent click target without affecting the existing navigation button styling."
+          "description": "Update the left-column brand block to render a single `<img>` using `/assets/generated/aurelie-lockup-transparent.dim_1000x320.png`, removing the existing small logo image and the separate “Aurelie”/“Fine Jewellery” text nodes; keep all other footer content, links, and structure unchanged."
         }
       ]
     }

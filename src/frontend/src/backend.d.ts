@@ -163,7 +163,7 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
-    addCarouselSlide(newSlide: CarouselSlide): Promise<void>;
+    addCategorySlide(category: string, newSlide: CarouselSlide): Promise<void>;
     addProduct(product: ProductCreate): Promise<void>;
     assignAdminRole(userPrincipal: Principal): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
@@ -171,7 +171,7 @@ export interface backendInterface {
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;
     createOrder(input: OrderCreate): Promise<void>;
     deleteProduct(productId: string): Promise<void>;
-    getAllCarouselSlides(): Promise<Array<CarouselSlide>>;
+    getAllCategorySlides(category: string): Promise<Array<CarouselSlide>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getContactInfo(): Promise<{
@@ -198,15 +198,15 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     isOrderCancellable(orderId: string): Promise<boolean>;
     isStripeConfigured(): Promise<boolean>;
-    removeCarouselSlide(slideIndex: bigint): Promise<void>;
-    reorderCarouselSlides(newOrder: Array<bigint>): Promise<void>;
+    removeCategorySlide(category: string, slideIndex: bigint): Promise<void>;
+    reorderCategorySlides(category: string, newOrder: Array<bigint>): Promise<void>;
     respondToInquiry(inquiryId: string, response: string): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     setStripeConfiguration(config: StripeConfiguration): Promise<void>;
     submitInquiry(inquiry: CustomerInquiry): Promise<void>;
-    toggleCarouselSlide(slideIndex: bigint, enabled: boolean): Promise<void>;
+    toggleCategorySlide(category: string, slideIndex: bigint, enabled: boolean): Promise<void>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
-    updateCarouselSlide(slideIndex: bigint, updatedSlide: CarouselSlide): Promise<void>;
+    updateCategorySlide(category: string, slideIndex: bigint, updatedSlide: CarouselSlide): Promise<void>;
     updateOrderStatus(orderId: string, status: OrderStatus): Promise<void>;
     updateProduct(product: ProductCreate): Promise<void>;
     updateSiteContent(newContent: SiteContent): Promise<void>;
