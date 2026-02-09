@@ -1,16 +1,40 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
+  "summary": "E-commerce/site UI updates: rename header category label to “Our Products”, make dropdown background transparent, and show the relevant category carousel (configured in admin) at the top of each product page.",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-remove-the-orange-gold-button-style-background-that-appears-behind-the-header-logo-brand-lockup-by-overriding-the-global-button-background-styles-for-the-logo-button-only-the-element-with-class-header-brand-btn-in-frontend-src-components-layout-tsx-the-header-background-and-the-logo-brand-position-size-behavior-including-the-scroll-compress-behavior-must-remain-unchanged-and-other-header-buttons-cart-dashboard-admin-login-logout-must-keep-their-existing-styling",
-      "title": "Remove the orange/gold button-style background that appears behind the header logo/brand lockup by overriding the global button background styles for the logo button only (the element with class `header-brand-btn` in `frontend/src/components/Layout.tsx`). The header background and the logo/brand position/size behavior (including the scroll-compress behavior) must remain unchanged, and other header buttons (Cart/Dashboard/Admin/Login/Logout) must keep their existing styling.",
+      "id": "feature-update-the-header-navigation-dropdown-label-from-categories-to-our-products",
+      "title": "Update the header navigation dropdown label from “Categories” to “Our Products”.",
       "reqIds": [
         "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-header-dropdown-menu-background-transparent-the-dropdown-box-itself",
+      "title": "Make the header dropdown menu background transparent (the dropdown box itself).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-persistent-category-identifier-to-products-so-the-app-can-determine-a-product-s-relevant-category-for-category-carousel-display-ensure-this-category-value-is-editable-in-the-admin-product-management-flow-and-is-returned-by-product-apis",
+      "title": "Add a persistent category identifier to products so the app can determine a product’s relevant category for category carousel display. Ensure this category value is editable in the admin product management flow and is returned by product APIs.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-on-the-product-detail-page-render-only-the-category-carousel-s-for-the-product-s-relevant-category-as-configured-via-the-existing-admin-category-carousel-management-at-the-top-of-the-page-content",
+      "title": "On the product detail page, render only the category carousel(s) for the product’s relevant category (as configured via the existing admin category carousel management) at the top of the page content.",
+      "reqIds": [
+        "REQ-4"
       ],
       "version": 1
     }
@@ -18,12 +42,24 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Update header to remove the orange container/background behind the logo and brand name while keeping the header background and layout unchanged",
+      "summary": "Replace header label “Category” with “Our Products”",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Make the header dropdown box background transparent",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "On each product page, display the carousel for the product’s relevant category (as configured in admin) at the top of the page",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Remove orange background behind header logo/brand lockup",
+  "projectName": "Rename header dropdown to “Our Products”, make dropdown transparent, and show relevant category carousel on product pages",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

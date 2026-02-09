@@ -1,43 +1,104 @@
 {
   "kind": "build_request",
-  "title": "Remove orange background behind header logo/brand lockup",
+  "title": "Rename header dropdown to “Our Products”, make dropdown transparent, and show relevant category carousel on product pages",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove the orange/gold button-style background that appears behind the header logo/brand lockup by overriding the global button background styles for the logo button only (the element with class `header-brand-btn` in `frontend/src/components/Layout.tsx`). The header background and the logo/brand position/size behavior (including the scroll-compress behavior) must remain unchanged, and other header buttons (Cart/Dashboard/Admin/Login/Logout) must keep their existing styling.",
+      "text": "Update the header navigation dropdown label from “Categories” to “Our Products”.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6",
-          "msg-8",
-          "msg-12"
+          "msg-1"
         ],
         "quotes": [
-          "Remove the orange colour background button which is behind logo and brandname image",
-          "It is orange colour container behind logo/brandname",
-          "no, just remove orange colour behind logo not the header background"
+          "Instead of the name Category. Replace the name as Our Products in header."
         ]
       },
       "acceptanceCriteria": [
-        "On all pages, the clickable logo/brand area in the header has no colored/gradient background behind it (transparent), including on hover/focus/active states.",
-        "The header container background remains unchanged.",
-        "The logo/brand remains in the same position and retains the same sizing/scroll-compress behavior as before.",
-        "Other header navigation/auth buttons retain their existing (gold shimmer) styling."
+        "In the site header, the dropdown trigger text reads “Our Products” (not “Categories” or “Category”).",
+        "No other header labels are changed."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Make the header dropdown menu background transparent (the dropdown box itself).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Give a transparent background to the drop-down box"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Opening the “Our Products” dropdown shows a transparent dropdown background (menu container), not an opaque panel.",
+        "Dropdown items remain readable and clickable."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Add a persistent category identifier to products so the app can determine a product’s relevant category for category carousel display. Ensure this category value is editable in the admin product management flow and is returned by product APIs.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2",
+          "msg-4"
+        ],
+        "quotes": [
+          "Proceed and link the carousel of each category available in admin control to be visible when product page is open",
+          "2 only the carousel for relevant category"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend Product data includes a category slug/identifier that can be stored per product.",
+        "Admin UI for creating/editing a product includes a control to set the product’s category slug (using the same slug values as the customer category routes).",
+        "Fetching a product via existing frontend hooks returns the product category value without breaking existing products (products created before this change continue to load)."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "On the product detail page, render only the category carousel(s) for the product’s relevant category (as configured via the existing admin category carousel management) at the top of the page content.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2",
+          "msg-4"
+        ],
+        "quotes": [
+          "Proceed and link the carousel of each category available in admin control to be visible when product page is open",
+          "3 yes on top of each product page"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When a product has a category slug set, the product detail page shows the category-specific carousel content at the top of the page (above the product media/details grid).",
+        "Only the carousel(s) for that single relevant category are shown (no other categories’ carousels).",
+        "If a product has no category slug set (legacy data), the product detail page does not crash and simply omits the category carousel section."
       ]
     }
   ],
   "constraints": [
-    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui/*.",
-    "Keep backend unchanged (no schema/state changes)."
+    "Frontend files under frontend/src/components/ui must not be edited directly; achieve styling changes by composing/overriding via className on consuming components (e.g., Layout).",
+    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo if required for compatibility with existing stored state."
   ],
   "nonGoals": [
-    "Do not redesign the header layout, spacing, or navigation.",
-    "Do not change the logo image asset or replace it.",
-    "Do not change the styling of non-logo header buttons."
+    "Do not add new category pages or change category routing behavior beyond what is needed to display the relevant category carousel on product detail pages.",
+    "Do not change how admin category carousel images are uploaded/reordered/enabled aside from using the existing configured data for display.",
+    "Do not implement showing all categories’ carousels on the product detail page."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

@@ -20,6 +20,7 @@ export interface Product {
     inStock: boolean;
     name: string;
     description: string;
+    category: string;
     priceInCents: bigint;
 }
 export interface CarouselSlide {
@@ -108,6 +109,7 @@ export interface ProductCreate {
     inStock: boolean;
     name: string;
     description: string;
+    category: string;
     priceInCents: bigint;
 }
 export interface TransformationInput {
@@ -174,6 +176,7 @@ export interface backendInterface {
     getAllCategorySlides(category: string): Promise<Array<CarouselSlide>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
+    getCategoryCarousel(category: string, carouselNumber: bigint): Promise<Array<ExternalBlob>>;
     getContactInfo(): Promise<{
         address: string;
         contactEmail: string;
@@ -206,6 +209,7 @@ export interface backendInterface {
     submitInquiry(inquiry: CustomerInquiry): Promise<void>;
     toggleCategorySlide(category: string, slideIndex: bigint, enabled: boolean): Promise<void>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
+    updateCategoryCarousel(category: string, carouselNumber: bigint, images: Array<ExternalBlob>): Promise<void>;
     updateCategorySlide(category: string, slideIndex: bigint, updatedSlide: CarouselSlide): Promise<void>;
     updateOrderStatus(orderId: string, status: OrderStatus): Promise<void>;
     updateProduct(product: ProductCreate): Promise<void>;

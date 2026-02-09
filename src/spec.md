@@ -1,11 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Remove the orange/gold button-style background behind the header logo/brand lockup without affecting the header background, layout, or other header button styles.
+**Goal:** Update the header dropdown labeling/styling and show only the relevant category carousel at the top of each product detail page based on a per-product category identifier.
 
 **Planned changes:**
-- Override global button background styles for the header logo button only (the element with class `header-brand-btn` in `frontend/src/components/Layout.tsx`) so its background is transparent.
-- Ensure the logo button’s hover/focus/active states remain transparent while preserving the existing logo/brand sizing, positioning, and scroll-compress behavior.
-- Keep all other header buttons (Cart/Dashboard/Admin/Login/Logout) using their current styling.
+- Rename the header navigation dropdown label from “Categories” to “Our Products”.
+- Make the header dropdown menu container background transparent while keeping menu items readable and clickable.
+- Add a persistent category slug/identifier field to Product data, ensure it’s editable in the admin product create/edit flow, and returned by product APIs (without breaking legacy products).
+- Update the product detail page to render only the carousel(s) for the product’s configured category (as defined by existing admin category carousel configuration) at the top of the page; omit the section if no category is set.
 
-**User-visible outcome:** The header logo/brand area remains clickable but no longer shows any orange/gold background behind it on any page or interaction state, while the rest of the header appearance stays the same.
+**User-visible outcome:** The header shows “Our Products” with a transparent dropdown menu, and each product page displays only its relevant category carousel at the top (or no carousel if the product has no category set).

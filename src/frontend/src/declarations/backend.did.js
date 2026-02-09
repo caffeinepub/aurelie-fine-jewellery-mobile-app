@@ -36,6 +36,7 @@ export const ProductCreate = IDL.Record({
   'inStock' : IDL.Bool,
   'name' : IDL.Text,
   'description' : IDL.Text,
+  'category' : IDL.Text,
   'priceInCents' : IDL.Nat,
 });
 export const UserRole = IDL.Variant({
@@ -105,6 +106,7 @@ export const Product = IDL.Record({
   'inStock' : IDL.Bool,
   'name' : IDL.Text,
   'description' : IDL.Text,
+  'category' : IDL.Text,
   'priceInCents' : IDL.Nat,
 });
 export const SiteContent = IDL.Record({
@@ -198,6 +200,11 @@ export const idlService = IDL.Service({
     ),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getCategoryCarousel' : IDL.Func(
+      [IDL.Text, IDL.Nat],
+      [IDL.Vec(ExternalBlob)],
+      ['query'],
+    ),
   'getContactInfo' : IDL.Func(
       [],
       [
@@ -250,6 +257,11 @@ export const idlService = IDL.Service({
       [TransformationOutput],
       ['query'],
     ),
+  'updateCategoryCarousel' : IDL.Func(
+      [IDL.Text, IDL.Nat, IDL.Vec(ExternalBlob)],
+      [],
+      [],
+    ),
   'updateCategorySlide' : IDL.Func([IDL.Text, IDL.Nat, CarouselSlide], [], []),
   'updateOrderStatus' : IDL.Func([IDL.Text, OrderStatus], [], []),
   'updateProduct' : IDL.Func([ProductCreate], [], []),
@@ -287,6 +299,7 @@ export const idlFactory = ({ IDL }) => {
     'inStock' : IDL.Bool,
     'name' : IDL.Text,
     'description' : IDL.Text,
+    'category' : IDL.Text,
     'priceInCents' : IDL.Nat,
   });
   const UserRole = IDL.Variant({
@@ -356,6 +369,7 @@ export const idlFactory = ({ IDL }) => {
     'inStock' : IDL.Bool,
     'name' : IDL.Text,
     'description' : IDL.Text,
+    'category' : IDL.Text,
     'priceInCents' : IDL.Nat,
   });
   const SiteContent = IDL.Record({
@@ -446,6 +460,11 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getCategoryCarousel' : IDL.Func(
+        [IDL.Text, IDL.Nat],
+        [IDL.Vec(ExternalBlob)],
+        ['query'],
+      ),
     'getContactInfo' : IDL.Func(
         [],
         [
@@ -501,6 +520,11 @@ export const idlFactory = ({ IDL }) => {
         [TransformationInput],
         [TransformationOutput],
         ['query'],
+      ),
+    'updateCategoryCarousel' : IDL.Func(
+        [IDL.Text, IDL.Nat, IDL.Vec(ExternalBlob)],
+        [],
+        [],
       ),
     'updateCategorySlide' : IDL.Func(
         [IDL.Text, IDL.Nat, CarouselSlide],

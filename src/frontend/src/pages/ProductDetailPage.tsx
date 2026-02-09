@@ -11,6 +11,8 @@ import { ArrowLeft, ShoppingCart, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import ProductMediaCarousel from '../components/ProductMediaCarousel';
 import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
+import CategoryImageCarousel from '../components/CategoryImageCarousel';
+import { isValidCategorySlug } from '../utils/productCategories';
 
 export default function ProductDetailPage() {
   const { productId } = useParams({ from: '/product/$productId' });
@@ -67,6 +69,9 @@ export default function ProductDetailPage() {
     navigate({ to: '/checkout' });
   };
 
+  // Check if product has a valid category for carousel display
+  const hasValidCategory = product?.category && isValidCategorySlug(product.category);
+
   if (isLoading) {
     return (
       <CustomerPageStyleScope>
@@ -75,13 +80,16 @@ export default function ProductDetailPage() {
             <ArrowLeft className="h-4 w-4" />
             Back to Collection
           </Button>
-          <div className="grid gap-8 lg:grid-cols-2">
-            <Skeleton className="h-96 w-full rounded-lg" />
-            <div className="space-y-4">
-              <Skeleton className="h-10 w-3/4" />
-              <Skeleton className="h-6 w-1/4" />
-              <Skeleton className="h-24 w-full" />
-              <Skeleton className="h-12 w-full" />
+          <div className="space-y-8">
+            <Skeleton className="h-64 w-full rounded-lg" />
+            <div className="grid gap-8 lg:grid-cols-2">
+              <Skeleton className="h-96 w-full rounded-lg" />
+              <div className="space-y-4">
+                <Skeleton className="h-10 w-3/4" />
+                <Skeleton className="h-6 w-1/4" />
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-12 w-full" />
+              </div>
             </div>
           </div>
         </div>
@@ -112,6 +120,20 @@ export default function ProductDetailPage() {
           <ArrowLeft className="h-4 w-4" />
           Back to Collection
         </Button>
+
+        {/* Category Carousel Section - Only show if product has valid category */}
+        {hasValidCategory && (
+          <div className="mb-8 space-y-6">
+            <CategoryImageCarousel 
+              categorySlug={product.category} 
+              carouselIndex={1}
+            />
+            <CategoryImageCarousel 
+              categorySlug={product.category} 
+              carouselIndex={2}
+            />
+          </div>
+        )}
 
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Product Media Carousel */}

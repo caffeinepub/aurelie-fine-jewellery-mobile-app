@@ -1,13 +1,28 @@
 import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useQueryClient } from '@tanstack/react-query';
-import { ShoppingCart, LayoutDashboard, LogIn, LogOut } from 'lucide-react';
+import { ShoppingCart, LayoutDashboard, LogIn, LogOut, ChevronDown } from 'lucide-react';
 import { useIsCallerAdmin, useGetContactInfo, useGetSiteContent } from '../hooks/useQueries';
 import { useCart } from '../hooks/useCart';
 import { Badge } from './ui/badge';
 import { useState, useEffect, Suspense } from 'react';
 import FooterSystem from './footer/FooterSystem';
 import RouteLoadingFallback from './RouteLoadingFallback';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+
+const CATEGORIES = [
+  { slug: 'necklace', label: 'Necklace' },
+  { slug: 'earrings', label: 'Earrings' },
+  { slug: 'rings', label: 'Rings' },
+  { slug: 'anklets', label: 'Anklets' },
+  { slug: 'lab-diamonds-jewellery', label: 'Lab Diamonds Jewellery' },
+  { slug: 'bridal-jewellery', label: 'Bridal Jewellery' },
+];
 
 export default function Layout() {
   const { login, clear, loginStatus, identity } = useInternetIdentity();
@@ -53,6 +68,10 @@ export default function Layout() {
     }
   };
 
+  const handleCategoryClick = (slug: string) => {
+    navigate({ to: '/category/$categorySlug', params: { categorySlug: slug } });
+  };
+
   const currentPath = routerState.location.pathname;
 
   return (
@@ -80,6 +99,30 @@ export default function Layout() {
           </button>
 
           <nav className="flex items-center gap-1">
+            {/* Our Products Dropdown with Transparent Background */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="header-nav-btn-didot gap-1 px-3 py-2 rounded-md transition-opacity hover:opacity-70">
+                  <span className="text-sm font-light tracking-wide">Our Products</span>
+                  <ChevronDown className="h-3 w-3" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                align="end" 
+                className="w-56 bg-transparent backdrop-blur-md border-gold-medium/30"
+              >
+                {CATEGORIES.map((category) => (
+                  <DropdownMenuItem
+                    key={category.slug}
+                    onClick={() => handleCategoryClick(category.slug)}
+                    className="cursor-pointer text-foreground hover:bg-gold-medium/20"
+                  >
+                    {category.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {isAuthenticated && (
               <>
                 <button

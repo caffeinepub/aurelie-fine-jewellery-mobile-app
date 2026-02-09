@@ -14,7 +14,10 @@ import OutCall "http-outcalls/outcall";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
+import Migration "migration";
 
+// For data migration on upgrades
+(with migration = Migration.run)
 actor {
   // Time Constants
   let cancellationWindowHours = 12;
@@ -23,8 +26,6 @@ actor {
 
   // Media Constants
   let maxImagesPerProduct = 5;
-
-  // --------------- Type Definitions ---------------
 
   public type ProductMedia = {
     video : ?Storage.ExternalBlob;
@@ -37,7 +38,23 @@ actor {
     description : Text;
     priceInCents : Nat;
     inStock : Bool;
+    category : Text;
     media : ProductMedia;
+  };
+
+  public type ProductCreate = {
+    id : Text;
+    name : Text;
+    description : Text;
+    priceInCents : Nat;
+    inStock : Bool;
+    category : Text;
+    media : ProductMedia;
+  };
+
+  public type CategoryCarousels = {
+    images1 : [Storage.ExternalBlob];
+    images2 : [Storage.ExternalBlob];
   };
 
   public type CarouselSlide = {
@@ -120,17 +137,7 @@ actor {
     reason : Text;
   };
 
-  public type ProductCreate = {
-    id : Text;
-    name : Text;
-    description : Text;
-    priceInCents : Nat;
-    inStock : Bool;
-    media : ProductMedia;
-  };
-
-  // --------------- Storage ---------------
-
+  // Storage
   let products = Map.empty<Text, Product>();
   let orders = Map.empty<Text, Order>();
   let inquiries = Map.empty<Text, CustomerInquiry>();
@@ -141,7 +148,7 @@ actor {
   let engagementSlides = Map.empty<Nat, CarouselSlide>();
   let birthstoneSlides = Map.empty<Nat, CarouselSlide>();
   let ringsSlides = Map.empty<Nat, CarouselSlide>();
-
+  let categoryCarousels = Map.empty<Text, CategoryCarousels>();
   let userProfiles = Map.empty<Principal, UserProfile>();
 
   var siteContent : SiteContent = {
@@ -162,10 +169,9 @@ actor {
   // Stripe Integration
   var stripeConfig : ?Stripe.StripeConfiguration = null;
 
-  // Include components
   include MixinStorage();
 
-  // Authorization (API Only)
+  // Authorization
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
@@ -182,7 +188,7 @@ actor {
     };
   };
 
-  // ------------- Generic Category Slide Management --------------
+  // ------------- Slide Management --------------
   public shared ({ caller }) func addCategorySlide(category : Text, newSlide : CarouselSlide) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can add category slides");
@@ -284,7 +290,42 @@ actor {
     getCategoryMap(category).values().toArray();
   };
 
-  // --------------- Stripe Integration (Unchanged) ---------------
+  // -------------- Category Carousel Management --------------
+  public shared ({ caller }) func updateCategoryCarousel(category : Text, carouselNumber : Nat, images : [Storage.ExternalBlob]) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can update the carousel");
+    };
+
+    if (carouselNumber != 1 and carouselNumber != 2) {
+      Runtime.trap("Invalid carousel number");
+    };
+
+    let carousels = switch (categoryCarousels.get(category)) {
+      case (null) { { images1 = []; images2 = [] } };
+      case (?existing) { existing };
+    };
+
+    let updatedCarousels = if (carouselNumber == 1) {
+      { carousels with images1 = images };
+    } else {
+      { carousels with images2 = images };
+    };
+
+    categoryCarousels.add(category, updatedCarousels);
+  };
+
+  public query func getCategoryCarousel(category : Text, carouselNumber : Nat) : async [Storage.ExternalBlob] {
+    switch (categoryCarousels.get(category)) {
+      case (null) { [] };
+      case (?carousels) {
+        if (carouselNumber == 1) { carousels.images1 } else if (carouselNumber == 2) { carousels.images2 } else {
+          [];
+        };
+      };
+    };
+  };
+
+  // --------------- Stripe Integration ---------------
   public query func isStripeConfigured() : async Bool {
     switch stripeConfig {
       case (null) { false };
@@ -324,7 +365,7 @@ actor {
     OutCall.transform(input);
   };
 
-  // --------------- User Profile Management (Unchanged) ---------------
+  // --------------- User Profile Management ---------------
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can access profiles");
@@ -345,7 +386,6 @@ actor {
     };
     userProfiles.add(caller, profile);
 
-    // Auto-assign admin role if email matches
     if (profile.email == "aureliefinejewellery06@gmail.com") {
       AccessControl.assignRole(accessControlState, caller, caller, #admin);
     };
@@ -358,7 +398,7 @@ actor {
     AccessControl.assignRole(accessControlState, caller, userPrincipal, #admin);
   };
 
-  // --------------- Site Content Management (Admin Only, Unchanged) ---------------
+  // --------------- Site Content Management (Admin Only) ---------------
   public shared ({ caller }) func updateSiteContent(newContent : SiteContent) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can update site content");
@@ -366,11 +406,11 @@ actor {
     siteContent := newContent;
   };
 
-  public query ({ caller }) func getSiteContent() : async SiteContent {
+  public query func getSiteContent() : async SiteContent {
     siteContent;
   };
 
-  public query ({ caller }) func getWebsiteMetadata() : async {
+  public query func getWebsiteMetadata() : async {
     officialName : Text;
     termsOfService : Text;
     privacyPolicy : Text;
@@ -382,7 +422,7 @@ actor {
     };
   };
 
-  public query ({ caller }) func getContactInfo() : async {
+  public query func getContactInfo() : async {
     contactEmail : Text;
     phoneNumber : Text;
     address : Text;
@@ -394,7 +434,7 @@ actor {
     };
   };
 
-  // --------------- Product Management (Admin Only - Revised for Media Support) ---------------
+  // --------------- Product Management (Admin Only) ---------------
   public shared ({ caller }) func addProduct(product : ProductCreate) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can add products");
@@ -408,6 +448,7 @@ actor {
       description = product.description;
       priceInCents = product.priceInCents;
       inStock = product.inStock;
+      category = product.category;
       media = product.media;
     };
     products.add(product.id, productEntity);
@@ -426,6 +467,7 @@ actor {
       description = product.description;
       priceInCents = product.priceInCents;
       inStock = product.inStock;
+      category = product.category;
       media = product.media;
     };
     products.add(product.id, productEntity);
@@ -449,7 +491,7 @@ actor {
     };
   };
 
-  // --------------- Order Management (Unchanged) ---------------
+  // --------------- Order Management ---------------
   public shared ({ caller }) func createOrder(input : OrderCreate) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only authenticated users can create orders");

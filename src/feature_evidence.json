@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-the-orange-gold-button-style-background-that-appears-behind-the-header-logo-brand-lockup-by-overriding-the-global-button-background-styles-for-the-logo-button-only-the-element-with-class-header-brand-btn-in-frontend-src-components-layout-tsx-the-header-background-and-the-logo-brand-position-size-behavior-including-the-scroll-compress-behavior-must-remain-unchanged-and-other-header-buttons-cart-dashboard-admin-login-logout-must-keep-their-existing-styling",
-      "featureTitle": "Remove the orange/gold button-style background that appears behind the header logo/brand lockup by overriding the global button background styles for the logo button only (the element with class `header-brand-btn` in `frontend/src/components/Layout.tsx`). The header background and the logo/brand position/size behavior (including the scroll-compress behavior) must remain unchanged, and other header buttons (Cart/Dashboard/Admin/Login/Logout) must keep their existing styling.",
+      "featureId": "feature-update-the-header-navigation-dropdown-label-from-categories-to-our-products",
+      "featureTitle": "Update the header navigation dropdown label from “Categories” to “Our Products”.",
       "files": [
-        "frontend/src/index.css"
+        "frontend/src/components/Layout.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -20,6 +20,74 @@
       ],
       "testIds": [
         "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-make-the-header-dropdown-menu-background-transparent-the-dropdown-box-itself",
+      "featureTitle": "Make the header dropdown menu background transparent (the dropdown box itself).",
+      "files": [
+        "frontend/src/components/Layout.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-persistent-category-identifier-to-products-so-the-app-can-determine-a-product-s-relevant-category-for-category-carousel-display-ensure-this-category-value-is-editable-in-the-admin-product-management-flow-and-is-returned-by-product-apis",
+      "featureTitle": "Add a persistent category identifier to products so the app can determine a product’s relevant category for category carousel display. Ensure this category value is editable in the admin product management flow and is returned by product APIs.",
+      "files": [
+        "frontend/src/components/admin/ProductFormModal.tsx",
+        "frontend/src/utils/productCategories.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-on-the-product-detail-page-render-only-the-category-carousel-s-for-the-product-s-relevant-category-as-configured-via-the-existing-admin-category-carousel-management-at-the-top-of-the-page-content",
+      "featureTitle": "On the product detail page, render only the category carousel(s) for the product’s relevant category (as configured via the existing admin category carousel management) at the top of the page content.",
+      "files": [
+        "frontend/src/components/CategoryImageCarousel.tsx",
+        "frontend/src/pages/ProductDetailPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
       ],
       "confidence": "high"
     }

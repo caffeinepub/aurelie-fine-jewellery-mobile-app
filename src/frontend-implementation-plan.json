@@ -1,22 +1,77 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Make header logo button background transparent without affecting other header buttons",
+  "title": "Header dropdown adjustments and category-specific carousel on product detail pages",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Override the global shimmering gold button background so only the header logo/brand button (.header-brand-btn) renders with a fully transparent background across all interaction states, while preserving header layout/scroll-compress behavior and keeping other header buttons unchanged.",
+      "summary": "Rename the header dropdown trigger label to “Our Products” without changing other header labels.",
       "acceptanceCriteria": [
-        "On all pages, the clickable logo/brand area in the header has no colored/gradient background behind it (transparent), including on hover/focus/active states.",
-        "The header container background remains unchanged.",
-        "The logo/brand remains in the same position and retains the same sizing/scroll-compress behavior as before.",
-        "Other header navigation/auth buttons retain their existing (gold shimmer) styling."
+        "In the site header, the dropdown trigger text reads “Our Products” (not “Categories” or “Category”).",
+        "No other header labels are changed."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/components/Layout.tsx",
           "operation": "modify",
-          "description": "Add a targeted CSS override for the .header-brand-btn in the base layer to neutralize the global button background (set background to transparent, remove shimmer animation/background-size) for default + hover/focus-visible/active states, without changing any other button styles. Ensure specificity/!important is sufficient to override the global button rule that uses !important."
+          "description": "Change the DropdownMenuTrigger label text from “Categories” to “Our Products” while leaving the rest of the header navigation unchanged."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Make the header dropdown menu container background transparent while keeping items readable and clickable.",
+      "acceptanceCriteria": [
+        "Opening the “Our Products” dropdown shows a transparent dropdown background (menu container), not an opaque panel.",
+        "Dropdown items remain readable and clickable."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Layout.tsx",
+          "operation": "modify",
+          "description": "Override styling via className on the DropdownMenuContent used in the header (do not edit anything under frontend/src/components/ui). Apply transparent background (and adjust border/shadow as needed) while preserving accessible contrast and pointer interactions for menu items."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Expose an editable product category slug in the admin product form and ensure the frontend product create/edit payload includes the category slug value.",
+      "acceptanceCriteria": [
+        "Backend Product data includes a category slug/identifier that can be stored per product.",
+        "Admin UI for creating/editing a product includes a control to set the product’s category slug (using the same slug values as the customer category routes).",
+        "Fetching a product via existing frontend hooks returns the product category value without breaking existing products (products created before this change continue to load)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/admin/ProductFormModal.tsx",
+          "operation": "modify",
+          "description": "Add a category slug field to the admin product create/edit form. Source allowed values from frontend/src/utils/productCategories.ts (customer category route slugs). Persist the selected value in local component state, prefill when editing an existing product, and include it on the ProductCreate object submitted via useAddProduct/useUpdateProduct. Ensure legacy/empty category values don’t break editing existing products."
+        },
+        {
+          "path": "frontend/src/utils/productCategories.ts",
+          "operation": "modify",
+          "description": "Ensure the exported category list and helpers can be reused by admin product editing to supply the same slug values as customer category routes (e.g., keep slugs as the single source of truth and add any small helper/export needed for form options)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Show only the relevant category carousel(s) at the top of the product detail page based on the product’s category slug.",
+      "acceptanceCriteria": [
+        "When a product has a category slug set, the product detail page shows the category-specific carousel content at the top of the page (above the product media/details grid).",
+        "Only the carousel(s) for that single relevant category are shown (no other categories’ carousels).",
+        "If a product has no category slug set (legacy data), the product detail page does not crash and simply omits the category carousel section."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/ProductDetailPage.tsx",
+          "operation": "modify",
+          "description": "Render the category-specific carousel section above the existing product media/details grid, using the existing CategoryImageCarousel component and the product.category slug. Guard rendering with slug presence and validity (using helpers from frontend/src/utils/productCategories.ts) so legacy products without a category do not crash and simply omit the carousel section."
+        },
+        {
+          "path": "frontend/src/components/CategoryImageCarousel.tsx",
+          "operation": "modify",
+          "description": "Harden the carousel component for product-page usage by ensuring it behaves safely when provided an empty/invalid categorySlug (e.g., avoid unnecessary fetch/render), while keeping existing category page behavior intact."
         }
       ]
     }

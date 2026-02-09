@@ -5,12 +5,14 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { Switch } from '../ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useAddProduct, useUpdateProduct } from '../../hooks/useQueries';
 import { toast } from 'sonner';
 import { ExternalBlob, type Product, type ProductCreate } from '../../backend';
 import { Upload, Image as ImageIcon, Video, X } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { optimizeImage, optimizeVideo } from '../../utils/mediaOptimization';
+import { PRODUCT_CATEGORIES } from '../../utils/productCategories';
 
 interface ProductFormModalProps {
   open: boolean;
@@ -25,6 +27,7 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [inStock, setInStock] = useState(true);
+  const [category, setCategory] = useState('');
   
   // Media state
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -41,6 +44,7 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
       setDescription(product.description);
       setPrice((Number(product.priceInCents) / 100).toFixed(0));
       setInStock(product.inStock);
+      setCategory(product.category || '');
       
       // Set existing media
       setExistingVideo(product.media.video || null);
@@ -61,6 +65,7 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
       setDescription('');
       setPrice('');
       setInStock(true);
+      setCategory('');
       setVideoFile(null);
       setVideoPreview('');
       setImageFiles([]);
@@ -187,6 +192,7 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
         description: description.trim(),
         priceInCents: BigInt(priceInCents),
         inStock,
+        category: category || 'uncategorized',
         media: {
           video: videoBlob,
           images: imageBlobs,
@@ -249,6 +255,22 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="category" className="admin-label-text">Category</Label>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="border-gold-medium/30 text-bottle-green-dark">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PRODUCT_CATEGORIES.map((cat) => (
+                    <SelectItem key={cat.slug} value={cat.slug}>
+                      {cat.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="price" className="admin-label-text">Price (₹ INR)</Label>
               <Input
                 id="price"
@@ -292,30 +314,32 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
                   onChange={handleVideoChange}
                   className="hidden"
                 />
-              </div>
-              {videoPreview && (
-                <div className="relative mt-2">
-                  <video
-                    src={videoPreview}
-                    controls
-                    className="w-full max-h-48 rounded border-2 border-gold-medium/30"
-                  />
+                {(videoFile || existingVideo) && (
                   <Button
                     type="button"
-                    variant="destructive"
-                    size="icon"
-                    className="absolute top-2 right-2"
+                    variant="ghost"
+                    size="sm"
                     onClick={handleRemoveVideo}
+                    className="text-destructive hover:text-destructive"
                   >
                     <X className="h-4 w-4" />
                   </Button>
+                )}
+              </div>
+              {videoPreview && (
+                <div className="relative w-full max-w-xs aspect-video rounded-lg overflow-hidden border border-gold-medium/30">
+                  <video
+                    src={videoPreview}
+                    controls
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               )}
             </div>
 
             {/* Images Upload Section */}
             <div className="space-y-2">
-              <Label className="admin-label-text">Product Images ({totalImages}/5)</Label>
+              <Label className="admin-label-text">Product Images (Max 5)</Label>
               <div className="flex items-center gap-4">
                 <Button
                   type="button"
@@ -324,8 +348,8 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
                   className="gap-2 border-gold-medium text-bottle-green-dark hover:bg-gold-medium/20"
                   disabled={!canAddMoreImages || isOptimizing}
                 >
-                  <Upload className="h-4 w-4" />
-                  {isOptimizing ? 'Optimizing...' : totalImages > 0 ? 'Add More Images' : 'Upload Images'}
+                  <ImageIcon className="h-4 w-4" />
+                  {isOptimizing ? 'Processing...' : `Upload Images (${totalImages}/5)`}
                 </Button>
                 <input
                   id="images"
@@ -335,66 +359,59 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
                   onChange={handleImagesChange}
                   className="hidden"
                 />
-                <span className="text-xs text-bottle-green-medium">
-                  {canAddMoreImages ? `${5 - totalImages} more allowed` : 'Maximum reached'}
-                </span>
               </div>
-              
-              {imagePreviews.length > 0 ? (
-                <div className="grid grid-cols-3 gap-2 mt-2">
+              {imagePreviews.length > 0 && (
+                <div className="grid grid-cols-3 gap-3">
                   {imagePreviews.map((preview, index) => (
-                    <div key={index} className="relative">
+                    <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-gold-medium/30 group">
                       <img
                         src={preview}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-24 object-cover rounded border-2 border-gold-medium/30"
+                        alt={`Product ${index + 1}`}
+                        className="w-full h-full object-cover"
                       />
                       <Button
                         type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-1 right-1 h-6 w-6"
+                        variant="ghost"
+                        size="sm"
                         onClick={() => handleRemoveImage(index)}
+                        className="absolute top-1 right-1 bg-black/60 hover:bg-black/80 text-white opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
                       >
-                        <X className="h-3 w-3" />
+                        <X className="h-4 w-4" />
                       </Button>
-                      <div className="absolute bottom-1 left-1 bg-black/50 text-white text-xs px-1 rounded">
-                        {index + 1}
-                      </div>
                     </div>
                   ))}
-                </div>
-              ) : (
-                <div className="mt-2 h-24 flex items-center justify-center border-2 border-dashed border-gold-medium/30 rounded">
-                  <ImageIcon className="h-8 w-8 text-gold-medium opacity-50" />
                 </div>
               )}
             </div>
 
-            <div className="flex items-center justify-between p-4 border border-gold-medium/30 rounded-lg">
-              <div>
-                <Label htmlFor="inStock" className="admin-label-text font-medium">In Stock</Label>
-                <p className="text-xs text-bottle-green-medium mt-1">
-                  Toggle product availability status
-                </p>
+            <div className="flex items-center justify-between pt-4 border-t border-gold-medium/30">
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="inStock"
+                  checked={inStock}
+                  onCheckedChange={setInStock}
+                />
+                <Label htmlFor="inStock" className="admin-label-text cursor-pointer">
+                  In Stock
+                </Label>
               </div>
-              <Switch id="inStock" checked={inStock} onCheckedChange={setInStock} />
             </div>
 
-            <div className="flex gap-2 pt-4">
-              <Button type="button" variant="outline" onClick={onClose} className="flex-1 border-gold-medium text-bottle-green-dark">
+            <div className="flex gap-3 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                className="flex-1 border-gold-medium text-bottle-green-dark hover:bg-gold-medium/20"
+              >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="flex-1 gold-gradient text-secondary shadow-gold"
                 disabled={addProduct.isPending || updateProduct.isPending || isOptimizing}
+                className="flex-1 admin-btn"
               >
-                {addProduct.isPending || updateProduct.isPending
-                  ? 'Saving...'
-                  : product
-                  ? 'Update Product'
-                  : 'Add Product'}
+                {addProduct.isPending || updateProduct.isPending ? 'Saving...' : product ? 'Update Product' : 'Add Product'}
               </Button>
             </div>
           </form>

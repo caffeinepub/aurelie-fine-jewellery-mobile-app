@@ -58,6 +58,7 @@ export interface Product {
   'inStock' : boolean,
   'name' : string,
   'description' : string,
+  'category' : string,
   'priceInCents' : bigint,
 }
 export interface ProductCreate {
@@ -66,6 +67,7 @@ export interface ProductCreate {
   'inStock' : boolean,
   'name' : string,
   'description' : string,
+  'category' : string,
   'priceInCents' : bigint,
 }
 export interface ProductMedia {
@@ -173,6 +175,7 @@ export interface _SERVICE {
   'getAllCategorySlides' : ActorMethod<[string], Array<CarouselSlide>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getCategoryCarousel' : ActorMethod<[string, bigint], Array<ExternalBlob>>,
   'getContactInfo' : ActorMethod<
     [],
     { 'address' : string, 'contactEmail' : string, 'phoneNumber' : string }
@@ -207,6 +210,10 @@ export interface _SERVICE {
   'submitInquiry' : ActorMethod<[CustomerInquiry], undefined>,
   'toggleCategorySlide' : ActorMethod<[string, bigint, boolean], undefined>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
+  'updateCategoryCarousel' : ActorMethod<
+    [string, bigint, Array<ExternalBlob>],
+    undefined
+  >,
   'updateCategorySlide' : ActorMethod<
     [string, bigint, CarouselSlide],
     undefined

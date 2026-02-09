@@ -16,6 +16,7 @@ const ContactPage = lazy(() => import('./pages/ContactPage'));
 const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage'));
 const CartPage = lazy(() => import('./pages/CartPage'));
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
+const ProductCategoryPage = lazy(() => import('./pages/ProductCategoryPage'));
 
 function AppContent() {
   const { identity } = useInternetIdentity();
@@ -55,6 +56,13 @@ const productRoute = createRoute({
   component: ProductDetailPage,
 });
 
+// New unified category route for /category/<slug>
+const categoryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/category/$categorySlug',
+  component: ProductCategoryPage,
+});
+
 const customerDashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/dashboard',
@@ -88,6 +96,7 @@ const checkoutRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   productRoute,
+  categoryRoute,
   customerDashboardRoute,
   contactRoute,
   adminRoute,

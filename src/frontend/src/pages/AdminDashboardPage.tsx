@@ -11,6 +11,7 @@ import SiteContentManagement from '../components/admin/SiteContentManagement';
 import CarouselManagement from '../components/admin/CarouselManagement';
 import CategoryCarouselManagement from '../components/admin/CategoryCarouselManagement';
 import { useAdminUiBodyAttribute } from '../hooks/useAdminUiBodyAttribute';
+import { PRODUCT_CATEGORIES } from '../utils/productCategories';
 
 export default function AdminDashboardPage() {
   useAdminUiBodyAttribute();
@@ -145,7 +146,7 @@ export default function AdminDashboardPage() {
               <div className="mb-6">
                 <h2 className="font-serif text-2xl font-semibold tracking-tight mb-2 text-bottle-green-dark">Carousel Management</h2>
                 <p className="text-sm text-bottle-green-medium">
-                  Manage homepage and category carousels. Each carousel supports up to 5 slides with automatic optimization.
+                  Manage homepage and category carousels. Each carousel supports up to 5 images with automatic optimization.
                 </p>
               </div>
               
@@ -153,14 +154,28 @@ export default function AdminDashboardPage() {
               
               <div className="mt-8 mb-4">
                 <h3 className="font-serif text-xl font-semibold tracking-tight text-bottle-green-dark">Category Carousels</h3>
+                <p className="text-sm text-bottle-green-medium mt-1">
+                  Each category has two independent carousels that display at the top of the category page.
+                </p>
               </div>
               
-              <CategoryCarouselManagement category="bridal" title="Bridal Jewellery Carousel" />
-              <CategoryCarouselManagement category="rings" title="Rings Carousel" />
-              <CategoryCarouselManagement category="essentials" title="Anti Tarnish Jewellery Carousel" />
-              <CategoryCarouselManagement category="everydaywear" title="Necklace Carousel" />
-              <CategoryCarouselManagement category="birthstone" title="Anklets Carousel" />
-              <CategoryCarouselManagement category="engagement" title="Earrings Carousel" />
+              {PRODUCT_CATEGORIES.map((category) => (
+                <div key={category.slug} className="mb-8">
+                  <h4 className="font-serif text-lg font-semibold tracking-tight text-bottle-green-dark mb-4">
+                    {category.title}
+                  </h4>
+                  <CategoryCarouselManagement 
+                    categorySlug={category.slug} 
+                    carouselIndex={1} 
+                    title={`${category.title} - Carousel 1`} 
+                  />
+                  <CategoryCarouselManagement 
+                    categorySlug={category.slug} 
+                    carouselIndex={2} 
+                    title={`${category.title} - Carousel 2`} 
+                  />
+                </div>
+              ))}
             </div>
           </ScrollArea>
         </TabsContent>
