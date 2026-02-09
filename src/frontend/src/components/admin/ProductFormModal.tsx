@@ -213,12 +213,12 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-hidden gold-border bg-card/95 backdrop-blur">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-hidden gold-border admin-surface backdrop-blur">
         <DialogHeader>
-          <DialogTitle className="gold-text font-serif text-2xl">
+          <DialogTitle className="text-bottle-green-dark font-serif text-2xl">
             {product ? 'Edit Product' : 'Add New Product'}
           </DialogTitle>
-          <DialogDescription className="gold-text opacity-70">
+          <DialogDescription className="text-bottle-green-medium">
             {product ? 'Update product details and media' : 'Create a new jewellery product with up to 5 images and 1 video'}
           </DialogDescription>
         </DialogHeader>
@@ -226,30 +226,30 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
         <ScrollArea className="max-h-[calc(90vh-120px)] pr-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="gold-text">Product Name</Label>
+              <Label htmlFor="name" className="admin-label-text">Product Name</Label>
               <Input
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g., Diamond Ring"
-                className="border-gold-medium/30 gold-text"
+                className="border-gold-medium/30 text-bottle-green-dark"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description" className="gold-text">Description</Label>
+              <Label htmlFor="description" className="admin-label-text">Description</Label>
               <Textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe the product..."
                 rows={4}
-                className="border-gold-medium/30 gold-text"
+                className="border-gold-medium/30 text-bottle-green-dark"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="price" className="gold-text">Price (₹ INR)</Label>
+              <Label htmlFor="price" className="admin-label-text">Price (₹ INR)</Label>
               <Input
                 id="price"
                 type="number"
@@ -258,10 +258,10 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="0"
-                className="border-gold-medium/30 gold-text"
+                className="border-gold-medium/30 text-bottle-green-dark"
               />
               {price && (
-                <p className="text-xs gold-text opacity-70">
+                <p className="text-xs text-bottle-green-medium">
                   Display price: {new Intl.NumberFormat('en-IN', {
                     style: 'currency',
                     currency: 'INR',
@@ -273,13 +273,13 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
 
             {/* Video Upload Section */}
             <div className="space-y-2">
-              <Label className="gold-text">Product Video (Optional)</Label>
+              <Label className="admin-label-text">Product Video (Optional)</Label>
               <div className="flex items-center gap-4">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => document.getElementById('video')?.click()}
-                  className="gap-2 border-gold-medium gold-text hover:bg-gold-medium/20"
+                  className="gap-2 border-gold-medium text-bottle-green-dark hover:bg-gold-medium/20"
                   disabled={!!videoFile || !!existingVideo || isOptimizing}
                 >
                   <Video className="h-4 w-4" />
@@ -315,13 +315,13 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
 
             {/* Images Upload Section */}
             <div className="space-y-2">
-              <Label className="gold-text">Product Images ({totalImages}/5)</Label>
+              <Label className="admin-label-text">Product Images ({totalImages}/5)</Label>
               <div className="flex items-center gap-4">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => document.getElementById('images')?.click()}
-                  className="gap-2 border-gold-medium gold-text hover:bg-gold-medium/20"
+                  className="gap-2 border-gold-medium text-bottle-green-dark hover:bg-gold-medium/20"
                   disabled={!canAddMoreImages || isOptimizing}
                 >
                   <Upload className="h-4 w-4" />
@@ -335,7 +335,7 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
                   onChange={handleImagesChange}
                   className="hidden"
                 />
-                <span className="text-xs gold-text opacity-70">
+                <span className="text-xs text-bottle-green-medium">
                   {canAddMoreImages ? `${5 - totalImages} more allowed` : 'Maximum reached'}
                 </span>
               </div>
@@ -373,8 +373,8 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
 
             <div className="flex items-center justify-between p-4 border border-gold-medium/30 rounded-lg">
               <div>
-                <Label htmlFor="inStock" className="gold-text font-medium">In Stock</Label>
-                <p className="text-xs gold-text opacity-70 mt-1">
+                <Label htmlFor="inStock" className="admin-label-text font-medium">In Stock</Label>
+                <p className="text-xs text-bottle-green-medium mt-1">
                   Toggle product availability status
                 </p>
               </div>
@@ -382,7 +382,7 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
             </div>
 
             <div className="flex gap-2 pt-4">
-              <Button type="button" variant="outline" onClick={onClose} className="flex-1 border-gold-medium gold-text">
+              <Button type="button" variant="outline" onClick={onClose} className="flex-1 border-gold-medium text-bottle-green-dark">
                 Cancel
               </Button>
               <Button

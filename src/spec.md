@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Extract a transparent Aurelie logo lockup from the provided brand image and use it as the sole branding element in both the header and footer.
+**Goal:** Remove the orange/gold button-style background behind the header logo/brand lockup without affecting the header background, layout, or other header button styles.
 
 **Planned changes:**
-- Create a new transparent PNG by tightly cropping `1770306231356.png` to include only the flower mark, “Aurelie”, and “Fine Jewellery”, removing the beige/cream background, and save it under `frontend/public/assets/generated/`.
-- Update `frontend/src/components/Layout.tsx` to use the new transparent logo lockup asset for the header branding image, keeping the existing header layout/behavior unchanged.
-- Update `frontend/src/components/footer/FooterSystem.tsx` to replace the footer’s current branding block (separate logo + text) with the new single-image transparent logo lockup, leaving all other footer content unchanged.
+- Override global button background styles for the header logo button only (the element with class `header-brand-btn` in `frontend/src/components/Layout.tsx`) so its background is transparent.
+- Ensure the logo button’s hover/focus/active states remain transparent while preserving the existing logo/brand sizing, positioning, and scroll-compress behavior.
+- Keep all other header buttons (Cart/Dashboard/Admin/Login/Logout) using their current styling.
 
-**User-visible outcome:** The site header and footer both display the same Aurelie logo lockup with a truly transparent background (no visible background box/edges), while the rest of the layout and behavior remains the same.
+**User-visible outcome:** The header logo/brand area remains clickable but no longer shows any orange/gold background behind it on any page or interaction state, while the rest of the header appearance stays the same.

@@ -10,6 +10,7 @@ import { Skeleton } from '../components/ui/skeleton';
 import { ArrowLeft, ShoppingCart, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import ProductMediaCarousel from '../components/ProductMediaCarousel';
+import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
 
 export default function ProductDetailPage() {
   const { productId } = useParams({ from: '/product/$productId' });
@@ -68,136 +69,142 @@ export default function ProductDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="container px-4 py-8">
-        <Button variant="ghost" onClick={() => navigate({ to: '/' })} className="mb-6 gap-2 text-foreground">
-          <ArrowLeft className="h-4 w-4" />
-          Back to Collection
-        </Button>
-        <div className="grid gap-8 lg:grid-cols-2">
-          <Skeleton className="h-96 w-full rounded-lg" />
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-3/4" />
-            <Skeleton className="h-6 w-1/4" />
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-12 w-full" />
+      <CustomerPageStyleScope>
+        <div className="container px-4 py-8">
+          <Button variant="ghost" onClick={() => navigate({ to: '/' })} className="mb-6 gap-2 text-foreground">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Collection
+          </Button>
+          <div className="grid gap-8 lg:grid-cols-2">
+            <Skeleton className="h-96 w-full rounded-lg" />
+            <div className="space-y-4">
+              <Skeleton className="h-10 w-3/4" />
+              <Skeleton className="h-6 w-1/4" />
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-12 w-full" />
+            </div>
           </div>
         </div>
-      </div>
+      </CustomerPageStyleScope>
     );
   }
 
   if (!product) {
     return (
-      <div className="container px-4 py-8">
-        <Button variant="ghost" onClick={() => navigate({ to: '/' })} className="mb-6 gap-2 text-foreground">
-          <ArrowLeft className="h-4 w-4" />
-          Back to Collection
-        </Button>
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Product not found.</p>
+      <CustomerPageStyleScope>
+        <div className="container px-4 py-8">
+          <Button variant="ghost" onClick={() => navigate({ to: '/' })} className="mb-6 gap-2 text-foreground">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Collection
+          </Button>
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Product not found.</p>
+          </div>
         </div>
-      </div>
+      </CustomerPageStyleScope>
     );
   }
 
   return (
-    <div className="container px-4 py-8">
-      <Button variant="ghost" onClick={() => navigate({ to: '/' })} className="mb-6 gap-2 text-foreground hover:text-accent">
-        <ArrowLeft className="h-4 w-4" />
-        Back to Collection
-      </Button>
+    <CustomerPageStyleScope>
+      <div className="container px-4 py-8">
+        <Button variant="ghost" onClick={() => navigate({ to: '/' })} className="mb-6 gap-2 text-foreground hover:text-accent">
+          <ArrowLeft className="h-4 w-4" />
+          Back to Collection
+        </Button>
 
-      <div className="grid gap-8 lg:grid-cols-2">
-        {/* Product Media Carousel */}
-        <ProductMediaCarousel media={product.media} productName={product.name} />
+        <div className="grid gap-8 lg:grid-cols-2">
+          {/* Product Media Carousel */}
+          <ProductMediaCarousel media={product.media} productName={product.name} />
 
-        {/* Product Details */}
-        <div className="flex flex-col gap-6">
-          <div>
-            <div className="flex items-start justify-between mb-2">
-              <h1 className="font-serif text-4xl font-bold tracking-tight gold-text">{product.name}</h1>
-              {!product.inStock && (
-                <Badge variant="secondary" className="bg-secondary text-secondary-foreground">Out of Stock</Badge>
-              )}
+          {/* Product Details */}
+          <div className="flex flex-col gap-6">
+            <div>
+              <div className="flex items-start justify-between mb-2">
+                <h1 className="font-serif text-4xl font-bold tracking-tight gold-text">{product.name}</h1>
+                {!product.inStock && (
+                  <Badge variant="secondary" className="bg-secondary text-secondary-foreground">Out of Stock</Badge>
+                )}
+              </div>
+              <p className="text-3xl font-semibold gold-text">
+                {formatINR(product.priceInCents)}
+              </p>
             </div>
-            <p className="text-3xl font-semibold gold-text">
-              {formatINR(product.priceInCents)}
-            </p>
-          </div>
 
-          <div>
-            <h2 className="font-semibold mb-2 gold-text">Description</h2>
-            <p className="text-muted-foreground leading-relaxed">{product.description}</p>
-          </div>
+            <div>
+              <h2 className="font-semibold mb-2 gold-text">Description</h2>
+              <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+            </div>
 
-          <Card className="gold-border chrome-surface backdrop-blur">
-            <CardHeader>
-              <CardTitle className="text-lg gold-text">Purchase Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-4">
-                <label className="text-sm font-medium">Quantity:</label>
-                <div className="flex items-center gap-2">
+            <Card className="gold-border chrome-surface backdrop-blur">
+              <CardHeader>
+                <CardTitle className="text-lg gold-text">Purchase Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <label className="text-sm font-medium">Quantity:</label>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={!product.inStock}
+                      className="border-gold-medium hover:bg-gold-medium/20"
+                    >
+                      -
+                    </Button>
+                    <span className="w-12 text-center font-medium">{quantity}</span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setQuantity(quantity + 1)}
+                      disabled={!product.inStock}
+                      className="border-gold-medium hover:bg-gold-medium/20"
+                    >
+                      +
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-gold-medium/30">
+                  <span className="font-semibold">Total:</span>
+                  <span className="text-2xl font-bold gold-text">
+                    {formatINR(product.priceInCents * BigInt(quantity))}
+                  </span>
+                </div>
+
+                <div className="flex gap-3">
                   <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    onClick={handleAddToCart}
                     disabled={!product.inStock}
-                    className="border-gold-medium hover:bg-gold-medium/20"
+                    variant="outline"
+                    className="flex-1 gap-2 border-gold-medium hover:bg-gold-medium/20"
+                    size="lg"
                   >
-                    -
+                    <ShoppingCart className="h-5 w-5" />
+                    Add to Cart
                   </Button>
-                  <span className="w-12 text-center font-medium">{quantity}</span>
                   <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setQuantity(quantity + 1)}
+                    onClick={handleBuyNow}
                     disabled={!product.inStock}
-                    className="border-gold-medium hover:bg-gold-medium/20"
+                    className="flex-1 gap-2 gold-gradient text-secondary shadow-gold"
+                    size="lg"
                   >
-                    +
+                    <Zap className="h-5 w-5" />
+                    Buy Now
                   </Button>
                 </div>
-              </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-gold-medium/30">
-                <span className="font-semibold">Total:</span>
-                <span className="text-2xl font-bold gold-text">
-                  {formatINR(product.priceInCents * BigInt(quantity))}
-                </span>
-              </div>
-
-              <div className="flex gap-3">
-                <Button
-                  onClick={handleAddToCart}
-                  disabled={!product.inStock}
-                  variant="outline"
-                  className="flex-1 gap-2 border-gold-medium hover:bg-gold-medium/20"
-                  size="lg"
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  Add to Cart
-                </Button>
-                <Button
-                  onClick={handleBuyNow}
-                  disabled={!product.inStock}
-                  className="flex-1 gap-2 gold-gradient text-secondary shadow-gold"
-                  size="lg"
-                >
-                  <Zap className="h-5 w-5" />
-                  Buy Now
-                </Button>
-              </div>
-
-              {!isAuthenticated && (
-                <p className="text-sm text-muted-foreground text-center">
-                  Please login to make a purchase
-                </p>
-              )}
-            </CardContent>
-          </Card>
+                {!isAuthenticated && (
+                  <p className="text-sm text-muted-foreground text-center">
+                    Please login to make a purchase
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </CustomerPageStyleScope>
   );
 }

@@ -1,52 +1,22 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Transparent Aurelie logo lockup asset + header/footer branding swap",
+  "title": "Make header logo button background transparent without affecting other header buttons",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Generate a tightly cropped transparent PNG logo lockup from the uploaded brand image and add it as a static frontend asset.",
+      "summary": "Override the global shimmering gold button background so only the header logo/brand button (.header-brand-btn) renders with a fully transparent background across all interaction states, while preserving header layout/scroll-compress behavior and keeping other header buttons unchanged.",
       "acceptanceCriteria": [
-        "A new PNG file exists at `frontend/public/assets/generated/` created from `1770306231356.png`.",
-        "The new PNG contains only the logo + “Aurelie” + “Fine Jewellery” with a transparent background (alpha channel), with no visible beige/cream background around the mark.",
-        "The crop is tight with modest padding so no parts of the mark are cut off."
+        "On all pages, the clickable logo/brand area in the header has no colored/gradient background behind it (transparent), including on hover/focus/active states.",
+        "The header container background remains unchanged.",
+        "The logo/brand remains in the same position and retains the same sizing/scroll-compress behavior as before.",
+        "Other header navigation/auth buttons retain their existing (gold shimmer) styling."
       ],
       "file_operations": [
         {
-          "path": "frontend/public/assets/generated/aurelie-lockup-transparent.dim_1000x320.png",
-          "operation": "create",
-          "description": "Create the cropped transparent logo lockup PNG from `1770306231356.png` per image edit requirement (remove background to alpha; include flower-like logo + “Aurelie” + “Fine Jewellery” only)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Update the header branding image to use the new transparent logo lockup asset without changing existing header behavior.",
-      "acceptanceCriteria": [
-        "Header logo `<img>` `src` points to the new generated asset path under `/assets/generated/`.",
-        "Header branding renders correctly at both scroll states (`h-16` and `h-20`) with no background box/edge visible behind the mark."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/Layout.tsx",
+          "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Replace the header branding `<img>` source from `/assets/1770304385246~2.png` to `/assets/generated/aurelie-lockup-transparent.dim_1000x320.png`, keeping sticky header, scroll-resize behavior, and navigation button behavior unchanged."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Replace the footer brand block with a single transparent logo lockup image while keeping the rest of the footer unchanged.",
-      "acceptanceCriteria": [
-        "Footer brand section no longer renders `/assets/1770214375269~2-2.png` or separate “Aurelie”/“Fine Jewellery” text nodes.",
-        "Footer brand section renders the new generated transparent asset under `/assets/generated/` as a single `<img>`.",
-        "Footer layout remains aligned and responsive (no overflow or broken spacing on mobile and desktop)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/footer/FooterSystem.tsx",
-          "operation": "modify",
-          "description": "Update the left-column brand block to render a single `<img>` using `/assets/generated/aurelie-lockup-transparent.dim_1000x320.png`, removing the existing small logo image and the separate “Aurelie”/“Fine Jewellery” text nodes; keep all other footer content, links, and structure unchanged."
+          "description": "Add a targeted CSS override for the .header-brand-btn in the base layer to neutralize the global button background (set background to transparent, remove shimmer animation/background-size) for default + hover/focus-visible/active states, without changing any other button styles. Ensure specificity/!important is sufficient to override the global button rule that uses !important."
         }
       ]
     }

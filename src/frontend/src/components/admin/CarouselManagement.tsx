@@ -172,9 +172,9 @@ export default function CarouselManagement() {
 
   if (isLoading) {
     return (
-      <Card className="gold-border chrome-surface backdrop-blur mb-6">
+      <Card className="gold-border admin-surface backdrop-blur mb-6">
         <CardHeader>
-          <CardTitle className="gold-text">Homepage Carousel Management</CardTitle>
+          <CardTitle className="text-bottle-green-dark">Homepage Carousel Management</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -186,10 +186,10 @@ export default function CarouselManagement() {
   }
 
   return (
-    <Card className="gold-border chrome-surface backdrop-blur mb-6">
+    <Card className="gold-border admin-surface backdrop-blur mb-6">
       <CardHeader>
-        <CardTitle className="gold-text">Homepage Carousel Management</CardTitle>
-        <p className="text-sm gold-text opacity-70">
+        <CardTitle className="text-bottle-green-dark">Homepage Carousel Management</CardTitle>
+        <p className="text-sm text-bottle-green-medium">
           Manage up to 5 carousel slides. Images are automatically optimized. Auto-rotates every 2.5 seconds on the homepage.
         </p>
       </CardHeader>
@@ -201,7 +201,7 @@ export default function CarouselManagement() {
           return (
             <div key={index} className="border border-gold-medium/30 rounded-lg p-4 space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold gold-text">Slide {index + 1}</h3>
+                <h3 className="font-semibold text-bottle-green-dark">Slide {index + 1}</h3>
                 <div className="flex items-center gap-2">
                   <Button
                     variant="ghost"
@@ -225,7 +225,7 @@ export default function CarouselManagement() {
               <div className="grid gap-4 md:grid-cols-2">
                 {/* Image Preview/Upload */}
                 <div className="space-y-2">
-                  <Label className="gold-text">Image</Label>
+                  <Label className="admin-label-text">Image</Label>
                   {slide && !editing?.image ? (
                     <div className="relative aspect-video rounded-lg overflow-hidden border border-gold-medium/30">
                       <img
@@ -271,7 +271,7 @@ export default function CarouselManagement() {
                 {/* URL and Controls */}
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor={`url-${index}`} className="gold-text">
+                    <Label htmlFor={`url-${index}`} className="admin-label-text">
                       Click URL (Product Category/Page)
                     </Label>
                     <Input
@@ -285,7 +285,7 @@ export default function CarouselManagement() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <Label htmlFor={`enabled-${index}`} className="gold-text">
+                    <Label htmlFor={`enabled-${index}`} className="admin-label-text">
                       Enabled
                     </Label>
                     <Switch

@@ -31,20 +31,20 @@ export default function InquiryManagement() {
   };
 
   return (
-    <Card className="gold-border chrome-surface backdrop-blur">
+    <Card className="gold-border admin-surface backdrop-blur">
       <CardHeader>
-        <CardTitle className="gold-text flex items-center gap-2">
+        <CardTitle className="text-bottle-green-dark flex items-center gap-2">
           <MessageSquare className="h-5 w-5" />
           Customer Inquiries
         </CardTitle>
-        <CardDescription className="gold-text opacity-70">
+        <CardDescription className="text-bottle-green-medium">
           View and respond to customer inquiries
         </CardDescription>
       </CardHeader>
       <CardContent>
         {isLoading ? (
           <div className="text-center py-8">
-            <p className="gold-text opacity-70">Loading inquiries...</p>
+            <p className="text-bottle-green-medium">Loading inquiries...</p>
           </div>
         ) : inquiries && inquiries.length > 0 ? (
           <div className="space-y-4">
@@ -55,8 +55,8 @@ export default function InquiryManagement() {
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h3 className="font-semibold gold-text">{inquiry.name}</h3>
-                    <p className="text-sm gold-text opacity-70">{inquiry.email}</p>
+                    <h3 className="font-semibold text-bottle-green-dark">{inquiry.name}</h3>
+                    <p className="text-sm text-bottle-green-medium">{inquiry.email}</p>
                   </div>
                   <Badge variant={inquiry.response ? 'outline' : 'default'} className={!inquiry.response ? 'bg-gold-medium text-secondary' : ''}>
                     {inquiry.response ? 'Answered' : 'Pending'}
@@ -64,14 +64,14 @@ export default function InquiryManagement() {
                 </div>
 
                 <div className="mb-3">
-                  <p className="text-sm font-medium gold-text mb-1">Message:</p>
-                  <p className="text-sm gold-text opacity-80">{inquiry.message}</p>
+                  <p className="text-sm font-medium admin-label-text mb-1">Message:</p>
+                  <p className="text-sm text-bottle-green-dark">{inquiry.message}</p>
                 </div>
 
                 {inquiry.response ? (
                   <div className="bg-bottle-green-light/10 p-3 rounded border border-gold-medium/30">
-                    <p className="text-sm font-medium gold-text mb-1">Your Response:</p>
-                    <p className="text-sm gold-text opacity-80">{inquiry.response}</p>
+                    <p className="text-sm font-medium admin-label-text mb-1">Your Response:</p>
+                    <p className="text-sm text-bottle-green-dark">{inquiry.response}</p>
                   </div>
                 ) : respondingTo === inquiry.id ? (
                   <div className="space-y-2">
@@ -80,7 +80,7 @@ export default function InquiryManagement() {
                       onChange={(e) => setResponse(e.target.value)}
                       placeholder="Type your response..."
                       rows={4}
-                      className="border-gold-medium/30 gold-text"
+                      className="border-gold-medium/30 text-bottle-green-dark"
                     />
                     <div className="flex gap-2">
                       <Button
@@ -90,7 +90,7 @@ export default function InquiryManagement() {
                           setRespondingTo(null);
                           setResponse('');
                         }}
-                        className="border-gold-medium gold-text"
+                        className="border-gold-medium text-bottle-green-dark"
                       >
                         Cancel
                       </Button>
@@ -110,7 +110,7 @@ export default function InquiryManagement() {
                     variant="outline"
                     size="sm"
                     onClick={() => setRespondingTo(inquiry.id)}
-                    className="gap-2 border-gold-medium gold-text hover:bg-gold-medium/20"
+                    className="gap-2 border-gold-medium text-bottle-green-dark hover:bg-gold-medium/20"
                   >
                     <MessageSquare className="h-4 w-4" />
                     Respond
@@ -122,7 +122,7 @@ export default function InquiryManagement() {
         ) : (
           <div className="text-center py-12">
             <MessageSquare className="h-16 w-16 mx-auto mb-4 text-gold-medium opacity-50" />
-            <p className="gold-text opacity-70">No inquiries yet.</p>
+            <p className="text-bottle-green-medium">No inquiries yet.</p>
           </div>
         )}
       </CardContent>

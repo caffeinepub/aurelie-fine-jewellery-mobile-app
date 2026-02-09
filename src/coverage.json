@@ -1,46 +1,24 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-05T16:51:58.222Z",
+  "generatedAt": "2026-02-06T16:30:20.897Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 1,
+    "implemented": 1,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Create a new transparent PNG asset by cropping the uploaded image `1770306231356.png` to include only the flower-like logo, the word “Aurelie”, and the smaller text “Fine Jewellery” (remove all surrounding background), and add it to the frontend static assets under `frontend/public/assets/generated/`.",
+        "summary": "Remove the orange/gold button-style background that appears behind the header logo/brand lockup by overriding the global button background styles for the logo button only (the element with class `header-brand-btn` in `frontend/src/components/Layout.tsx`). The header background and the logo/brand position/size behavior (including the scroll-compress behavior) must remain unchanged, and other header buttons (Cart/Dashboard/Admin/Login/Logout) must keep their existing styling.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/public/assets/generated/aurelie-lockup-transparent.dim_1000x320.png"
+          "frontend/src/index.css"
         ],
         "matchedFiles": [
-          "frontend/public/assets/generated/aurelie-lockup-transparent.dim_1000x320.png"
-        ]
-      },
-      {
-        "id": "REQ-2",
-        "summary": "Replace the header branding image in `frontend/src/components/Layout.tsx` so it uses the newly generated transparent logo lockup asset instead of `/assets/1770304385246~2.png`, keeping the existing header layout/behavior (sticky header, scroll resize, navigation button).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/Layout.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/Layout.tsx"
-        ]
-      },
-      {
-        "id": "REQ-3",
-        "summary": "Replace the footer branding in `frontend/src/components/footer/FooterSystem.tsx` so the left-column brand block uses the newly generated transparent logo lockup as a single image (remove the existing separate logo image and separate “Aurelie”/“Fine Jewellery” text), while keeping the rest of the footer content unchanged.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/footer/FooterSystem.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/footer/FooterSystem.tsx"
+          "frontend/src/index.css"
         ]
       }
     ]
@@ -50,9 +28,7 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/public/assets/generated/aurelie-lockup-transparent.dim_1000x320.png",
-    "frontend/src/components/Layout.tsx",
-    "frontend/src/components/footer/FooterSystem.tsx",
+    "frontend/src/index.css",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

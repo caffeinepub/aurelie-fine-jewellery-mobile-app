@@ -1,35 +1,16 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Update site branding by cropping the existing image to only the logo + “Aurelie” + “Fine Jewellery”, ensuring a transparent background, and replacing the header and footer images with this new transparent version.",
-  "architectural_notes": [
-    "Header background uses bg-transparent (no background color applied)."
-  ],
+  "summary": "New project",
+  "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
-  "imageRequirements": "## Edit Images\n- Crop to the logo + “Aurelie” + “Fine Jewellery” only and remove all background to transparent (1770306231356.png > aurelie-lockup-transparent.dim_1000x320.png)",
   "existing_features": [
     {
-      "id": "feature-create-a-new-transparent-png-asset-by-cropping-the-uploaded-image-1770306231356-png-to-include-only-the-flower-like-logo-the-word-aurelie-and-the-smaller-text-fine-jewellery-remove-all-surrounding-background-and-add-it-to-the-frontend-static-assets-under-frontend-public-assets-generated",
-      "title": "Create a new transparent PNG asset by cropping the uploaded image `1770306231356.png` to include only the flower-like logo, the word “Aurelie”, and the smaller text “Fine Jewellery” (remove all surrounding background), and add it to the frontend static assets under `frontend/public/assets/generated/`.",
+      "id": "feature-remove-the-orange-gold-button-style-background-that-appears-behind-the-header-logo-brand-lockup-by-overriding-the-global-button-background-styles-for-the-logo-button-only-the-element-with-class-header-brand-btn-in-frontend-src-components-layout-tsx-the-header-background-and-the-logo-brand-position-size-behavior-including-the-scroll-compress-behavior-must-remain-unchanged-and-other-header-buttons-cart-dashboard-admin-login-logout-must-keep-their-existing-styling",
+      "title": "Remove the orange/gold button-style background that appears behind the header logo/brand lockup by overriding the global button background styles for the logo button only (the element with class `header-brand-btn` in `frontend/src/components/Layout.tsx`). The header background and the logo/brand position/size behavior (including the scroll-compress behavior) must remain unchanged, and other header buttons (Cart/Dashboard/Admin/Login/Logout) must keep their existing styling.",
       "reqIds": [
         "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-replace-the-header-branding-image-in-frontend-src-components-layout-tsx-so-it-uses-the-newly-generated-transparent-logo-lockup-asset-instead-of-assets-1770304385246-2-png-keeping-the-existing-header-layout-behavior-sticky-header-scroll-resize-navigation-button",
-      "title": "Replace the header branding image in `frontend/src/components/Layout.tsx` so it uses the newly generated transparent logo lockup asset instead of `/assets/1770304385246~2.png`, keeping the existing header layout/behavior (sticky header, scroll resize, navigation button).",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-replace-the-footer-branding-in-frontend-src-components-footer-footersystem-tsx-so-the-left-column-brand-block-uses-the-newly-generated-transparent-logo-lockup-as-a-single-image-remove-the-existing-separate-logo-image-and-separate-aurelie-fine-jewellery-text-while-keeping-the-rest-of-the-footer-content-unchanged",
-      "title": "Replace the footer branding in `frontend/src/components/footer/FooterSystem.tsx` so the left-column brand block uses the newly generated transparent logo lockup as a single image (remove the existing separate logo image and separate “Aurelie”/“Fine Jewellery” text), while keeping the rest of the footer content unchanged.",
-      "reqIds": [
-        "REQ-3"
       ],
       "version": 1
     }
@@ -37,12 +18,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Crop existing brand image to only logo + “Aurelie” + “Fine Jewellery” with transparent background, then replace header and footer images with the new asset",
+      "summary": "Update header to remove the orange container/background behind the logo and brand name while keeping the header background and layout unchanged",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Crop uploaded brand image to transparent logo lockup and replace header/footer branding",
+  "projectName": "Remove orange background behind header logo/brand lockup",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

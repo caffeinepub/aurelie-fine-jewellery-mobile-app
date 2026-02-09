@@ -1,88 +1,43 @@
 {
   "kind": "build_request",
-  "title": "Crop uploaded brand image to transparent logo lockup and replace header/footer branding",
+  "title": "Remove orange background behind header logo/brand lockup",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Create a new transparent PNG asset by cropping the uploaded image `1770306231356.png` to include only the flower-like logo, the word “Aurelie”, and the smaller text “Fine Jewellery” (remove all surrounding background), and add it to the frontend static assets under `frontend/public/assets/generated/`.",
+      "text": "Remove the orange/gold button-style background that appears behind the header logo/brand lockup by overriding the global button background styles for the logo button only (the element with class `header-brand-btn` in `frontend/src/components/Layout.tsx`). The header background and the logo/brand position/size behavior (including the scroll-compress behavior) must remain unchanged, and other header buttons (Cart/Dashboard/Admin/Login/Logout) must keep their existing styling.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6",
+          "msg-8",
+          "msg-12"
         ],
         "quotes": [
-          "Crop the image and extract only logo and brandname and update in header and footer as it is. So that background looks transparent",
-          "1 only the logo, word Aurelie and smaller text Fine jewellery \n2 yes both header and footer \n3 yes change completely in header and footer",
-          "Build it"
+          "Remove the orange colour background button which is behind logo and brandname image",
+          "It is orange colour container behind logo/brandname",
+          "no, just remove orange colour behind logo not the header background"
         ]
       },
       "acceptanceCriteria": [
-        "A new PNG file exists at `frontend/public/assets/generated/` created from `1770306231356.png`.",
-        "The new PNG contains only the logo + “Aurelie” + “Fine Jewellery” with a transparent background (alpha channel), with no visible beige/cream background around the mark.",
-        "The crop is tight with modest padding so no parts of the mark are cut off."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Replace the header branding image in `frontend/src/components/Layout.tsx` so it uses the newly generated transparent logo lockup asset instead of `/assets/1770304385246~2.png`, keeping the existing header layout/behavior (sticky header, scroll resize, navigation button).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "update in header and footer",
-          "yes change completely in header and footer"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Header logo `<img>` `src` points to the new generated asset path under `/assets/generated/`.",
-        "Header branding renders correctly at both scroll states (`h-16` and `h-20`) with no background box/edge visible behind the mark."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Replace the footer branding in `frontend/src/components/footer/FooterSystem.tsx` so the left-column brand block uses the newly generated transparent logo lockup as a single image (remove the existing separate logo image and separate “Aurelie”/“Fine Jewellery” text), while keeping the rest of the footer content unchanged.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "2 yes both header and footer",
-          "3 yes change completely in header and footer"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Footer brand section no longer renders `/assets/1770214375269~2-2.png` or separate “Aurelie”/“Fine Jewellery” text nodes.",
-        "Footer brand section renders the new generated transparent asset under `/assets/generated/` as a single `<img>`.",
-        "Footer layout remains aligned and responsive (no overflow or broken spacing on mobile and desktop)."
+        "On all pages, the clickable logo/brand area in the header has no colored/gradient background behind it (transparent), including on hover/focus/active states.",
+        "The header container background remains unchanged.",
+        "The logo/brand remains in the same position and retains the same sizing/scroll-compress behavior as before.",
+        "Other header navigation/auth buttons retain their existing (gold shimmer) styling."
       ]
     }
   ],
   "constraints": [
-    "Do not modify files under `frontend/src/components/ui` (compose them only).",
-    "Do not modify any paths listed in `frontend.immutablePaths` from SYSTEM_CONTEXT."
+    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui/*.",
+    "Keep backend unchanged (no schema/state changes)."
   ],
   "nonGoals": [
-    "Changing the header background color or adding a header background fill.",
-    "Reworking footer links, contact info, or policy content beyond swapping the branding element."
+    "Do not redesign the header layout, spacing, or navigation.",
+    "Do not change the logo image asset or replace it.",
+    "Do not change the styling of non-logo header buttons."
   ],
   "imageRequirements": {
     "required": [],
-    "edits": [
-      "Crop to the logo + “Aurelie” + “Fine Jewellery” only and remove all background to transparent (1770306231356.png > aurelie-lockup-transparent.dim_1000x320.png)"
-    ]
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
+    "edits": []
   }
 }

@@ -60,15 +60,15 @@ export default function ProductManagement() {
 
   return (
     <>
-      <Card className="gold-border chrome-surface backdrop-blur">
+      <Card className="gold-border admin-surface backdrop-blur">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="gold-text flex items-center gap-2">
+              <CardTitle className="text-bottle-green-dark flex items-center gap-2">
                 <Package className="h-5 w-5" />
                 Product Inventory Management
               </CardTitle>
-              <CardDescription className="gold-text opacity-70 mt-1">
+              <CardDescription className="text-bottle-green-medium mt-1">
                 Add, edit, and manage your jewellery products
               </CardDescription>
             </div>
@@ -81,7 +81,7 @@ export default function ProductManagement() {
         <CardContent>
           {isLoading ? (
             <div className="text-center py-8">
-              <p className="gold-text opacity-70">Loading products...</p>
+              <p className="text-bottle-green-medium">Loading products...</p>
             </div>
           ) : products && products.length > 0 ? (
             <div className="space-y-4">
@@ -105,15 +105,15 @@ export default function ProductManagement() {
                     )}
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold gold-text">{product.name}</h3>
+                        <h3 className="font-semibold text-bottle-green-dark">{product.name}</h3>
                         <Badge variant={product.inStock ? 'default' : 'secondary'} className={product.inStock ? 'bg-gold-medium text-secondary' : ''}>
                           {product.inStock ? 'In Stock' : 'Out of Stock'}
                         </Badge>
                       </div>
-                      <p className="text-sm gold-text opacity-70 line-clamp-1">
+                      <p className="text-sm text-bottle-green-medium line-clamp-1">
                         {product.description}
                       </p>
-                      <p className="text-lg font-semibold gold-text mt-1">
+                      <p className="text-lg font-semibold text-bottle-green-dark mt-1">
                         {formatINR(product.priceInCents)}
                       </p>
                     </div>
@@ -122,7 +122,7 @@ export default function ProductManagement() {
                         variant="outline"
                         size="sm"
                         onClick={() => handleEdit(product)}
-                        className="gap-2 border-gold-medium hover:bg-gold-medium/20 gold-text"
+                        className="gap-2 border-gold-medium hover:bg-gold-medium/20 text-bottle-green-dark"
                       >
                         <Edit className="h-4 w-4" />
                         Edit
@@ -144,7 +144,7 @@ export default function ProductManagement() {
           ) : (
             <div className="text-center py-12">
               <Package className="h-16 w-16 mx-auto mb-4 text-gold-medium opacity-50" />
-              <p className="gold-text opacity-70 mb-4">No products yet. Add your first product to get started.</p>
+              <p className="text-bottle-green-medium mb-4">No products yet. Add your first product to get started.</p>
               <Button onClick={() => setShowForm(true)} className="gap-2 gold-gradient text-secondary shadow-gold">
                 <Plus className="h-4 w-4" />
                 Add Your First Product
@@ -161,15 +161,15 @@ export default function ProductManagement() {
       />
 
       <AlertDialog open={!!deletingProduct} onOpenChange={() => setDeletingProduct(null)}>
-        <AlertDialogContent className="gold-border chrome-surface backdrop-blur">
+        <AlertDialogContent className="gold-border admin-surface backdrop-blur">
           <AlertDialogHeader>
-            <AlertDialogTitle className="gold-text">Delete Product</AlertDialogTitle>
-            <AlertDialogDescription className="gold-text opacity-70">
+            <AlertDialogTitle className="text-bottle-green-dark">Delete Product</AlertDialogTitle>
+            <AlertDialogDescription className="text-bottle-green-medium">
               Are you sure you want to delete "{deletingProduct?.name}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-gold-medium gold-text">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="border-gold-medium text-bottle-green-dark">Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} disabled={deleteProduct.isPending} className="bg-destructive text-destructive-foreground">
               {deleteProduct.isPending ? 'Deleting...' : 'Delete'}
             </AlertDialogAction>

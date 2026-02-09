@@ -397,20 +397,20 @@ export default function OrderManagement() {
   };
 
   return (
-    <Card className="gold-border chrome-surface backdrop-blur">
+    <Card className="gold-border admin-surface backdrop-blur">
       <CardHeader>
-        <CardTitle className="gold-text flex items-center gap-2">
+        <CardTitle className="text-bottle-green-dark flex items-center gap-2">
           <ShoppingBag className="h-5 w-5" />
           Realtime Order Tracking
         </CardTitle>
-        <CardDescription className="gold-text opacity-70">
+        <CardDescription className="text-bottle-green-medium">
           Monitor all customer orders with live status updates
         </CardDescription>
       </CardHeader>
       <CardContent>
         {isLoading ? (
           <div className="text-center py-8">
-            <p className="gold-text opacity-70">Loading orders...</p>
+            <p className="text-bottle-green-medium">Loading orders...</p>
           </div>
         ) : orders && orders.length > 0 ? (
           <div className="space-y-4">
@@ -427,11 +427,11 @@ export default function OrderManagement() {
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <h3 className="font-semibold gold-text">Order #{order.id.slice(-8)}</h3>
-                      <p className="text-sm gold-text opacity-70">
+                      <h3 className="font-semibold text-bottle-green-dark">Order #{order.id.slice(-8)}</h3>
+                      <p className="text-sm text-bottle-green-medium">
                         Customer: {order.customer.toString().slice(0, 10)}...
                       </p>
-                      <p className="text-xs gold-text opacity-60 mt-1">
+                      <p className="text-xs text-bottle-green-medium mt-1">
                         {formatDate(order.timestamp)}
                       </p>
                     </div>
@@ -455,22 +455,22 @@ export default function OrderManagement() {
 
                   <div className="grid gap-2 sm:grid-cols-2 mb-3">
                     <div>
-                      <p className="text-sm gold-text opacity-70">Product ID</p>
-                      <p className="font-medium text-sm gold-text">{order.productId}</p>
+                      <p className="text-sm admin-table-text">Product ID</p>
+                      <p className="font-medium text-sm text-bottle-green-dark">{order.productId}</p>
                     </div>
                     <div>
-                      <p className="text-sm gold-text opacity-70">Quantity</p>
-                      <p className="font-medium text-sm gold-text">{order.quantity.toString()}</p>
+                      <p className="text-sm admin-table-text">Quantity</p>
+                      <p className="font-medium text-sm text-bottle-green-dark">{order.quantity.toString()}</p>
                     </div>
                     <div>
-                      <p className="text-sm gold-text opacity-70">Total Amount</p>
-                      <p className="font-semibold gold-text">
+                      <p className="text-sm admin-table-text">Total Amount</p>
+                      <p className="font-semibold text-bottle-green-dark">
                         {formatINR(order.totalPriceInCents)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm gold-text opacity-70">UPI ID</p>
-                      <p className="font-medium text-sm gold-text">{order.upiId}</p>
+                      <p className="text-sm admin-table-text">UPI ID</p>
+                      <p className="font-medium text-sm text-bottle-green-dark">{order.upiId}</p>
                     </div>
                   </div>
 
@@ -478,23 +478,23 @@ export default function OrderManagement() {
                   <div className="mb-3 p-3 bg-emerald-light/10 rounded-lg border border-gold-medium/20">
                     <div className="flex items-center gap-2 mb-2">
                       <MapPin className="h-4 w-4 text-gold-medium" />
-                      <p className="text-sm font-semibold gold-text">Shipping Address</p>
+                      <p className="text-sm font-semibold admin-table-text">Shipping Address</p>
                     </div>
                     <div className="grid gap-1 text-sm">
-                      <p className="gold-text">
-                        <span className="opacity-70">Name:</span>{' '}
+                      <p className="text-bottle-green-dark">
+                        <span className="admin-table-text">Name:</span>{' '}
                         <span className="font-medium">{order.shippingAddress.name || 'Not provided'}</span>
                       </p>
-                      <p className="gold-text">
-                        <span className="opacity-70">Email:</span>{' '}
+                      <p className="text-bottle-green-dark">
+                        <span className="admin-table-text">Email:</span>{' '}
                         <span className="font-medium">{order.shippingAddress.email || 'Not provided'}</span>
                       </p>
-                      <p className="gold-text">
-                        <span className="opacity-70">Phone:</span>{' '}
+                      <p className="text-bottle-green-dark">
+                        <span className="admin-table-text">Phone:</span>{' '}
                         <span className="font-medium">{order.shippingAddress.phone || 'Not provided'}</span>
                       </p>
-                      <p className="gold-text">
-                        <span className="opacity-70">Address:</span>{' '}
+                      <p className="text-bottle-green-dark">
+                        <span className="admin-table-text">Address:</span>{' '}
                         <span className="font-medium">{order.shippingAddress.address || 'Not provided'}</span>
                       </p>
                     </div>
@@ -509,16 +509,16 @@ export default function OrderManagement() {
 
                   {!isCancelled && (
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium gold-text">Update Status:</span>
+                      <span className="text-sm font-medium admin-label-text">Update Status:</span>
                       <Select
                         value={order.status.__kind__}
                         onValueChange={(value) => handleStatusChange(order.id, value)}
                         disabled={updateStatus.isPending}
                       >
-                        <SelectTrigger className="w-40 border-gold-medium/30 gold-text">
+                        <SelectTrigger className="w-40 border-gold-medium/30 text-bottle-green-dark">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="gold-border chrome-surface backdrop-blur">
+                        <SelectContent className="gold-border admin-surface backdrop-blur">
                           <SelectItem value="pending">Pending</SelectItem>
                           <SelectItem value="confirmed">Confirmed</SelectItem>
                           <SelectItem value="shipped">Shipped</SelectItem>
@@ -534,7 +534,7 @@ export default function OrderManagement() {
         ) : (
           <div className="text-center py-12">
             <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-gold-medium opacity-50" />
-            <p className="gold-text opacity-70">No orders yet.</p>
+            <p className="text-bottle-green-medium">No orders yet.</p>
           </div>
         )}
       </CardContent>

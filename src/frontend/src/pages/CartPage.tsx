@@ -50,7 +50,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container px-4 py-8">
+    <div className="container px-4 py-8" data-customer-control="true">
       <div className="mb-8">
         <h1 className="font-serif text-3xl font-semibold tracking-tight mb-2">Shopping Cart</h1>
         <p className="text-muted-foreground">Review your items before checkout</p>
