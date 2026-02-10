@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Update the header dropdown labeling/styling and show only the relevant category carousel at the top of each product detail page based on a per-product category identifier.
+**Goal:** Ensure category product listing pages show only products belonging to the selected category.
 
 **Planned changes:**
-- Rename the header navigation dropdown label from “Categories” to “Our Products”.
-- Make the header dropdown menu container background transparent while keeping menu items readable and clickable.
-- Add a persistent category slug/identifier field to Product data, ensure it’s editable in the admin product create/edit flow, and returned by product APIs (without breaking legacy products).
-- Update the product detail page to render only the carousel(s) for the product’s configured category (as defined by existing admin category carousel configuration) at the top of the page; omit the section if no category is set.
+- Update the category product listing page to filter products by the current `categorySlug` route parameter, rendering only items where `product.category` matches the selected slug.
+- Keep the existing empty-state behavior, showing it only when the selected category has zero matching products.
+- Leave the HomePage product listing behavior unchanged.
 
-**User-visible outcome:** The header shows “Our Products” with a transparent dropdown menu, and each product page displays only its relevant category carousel at the top (or no carousel if the product has no category set).
+**User-visible outcome:** When a user navigates to a category-specific products route, they see only products from that category (or an empty-state message if none exist).

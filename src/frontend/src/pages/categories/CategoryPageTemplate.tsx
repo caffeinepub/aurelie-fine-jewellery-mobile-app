@@ -25,6 +25,11 @@ export default function CategoryPageTemplate({ categorySlug, title, description 
 
   const isAuthenticated = !!identity;
 
+  // Filter products by category
+  const filteredProducts = products?.filter(
+    (product) => product.category === categorySlug
+  ) || [];
+
   const handleAddToCart = (e: React.MouseEvent, product: any) => {
     e.stopPropagation();
     if (!isAuthenticated) {
@@ -103,9 +108,9 @@ export default function CategoryPageTemplate({ categorySlug, title, description 
               </Card>
             ))}
           </div>
-        ) : products && products.length > 0 ? (
+        ) : filteredProducts.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((product) => {
+            {filteredProducts.map((product) => {
               const firstImage = product.media.images[0];
 
               return (

@@ -1,104 +1,42 @@
 {
   "kind": "build_request",
-  "title": "Rename header dropdown to “Our Products”, make dropdown transparent, and show relevant category carousel on product pages",
+  "title": "Filter category product listing to show only products from selected category",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the header navigation dropdown label from “Categories” to “Our Products”.",
+      "text": "Update the category product listing page to display only products whose stored product.category matches the currently selected categorySlug route param, instead of rendering all products returned by getProducts().",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-User-1",
+          "msg-User-2"
         ],
         "quotes": [
-          "Instead of the name Category. Replace the name as Our Products in header."
+          "On the product page, only the relevant product as per category to be displayed not all.",
+          "once the user selects the category and then see only product from that category"
         ]
       },
       "acceptanceCriteria": [
-        "In the site header, the dropdown trigger text reads “Our Products” (not “Categories” or “Category”).",
-        "No other header labels are changed."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Make the header dropdown menu background transparent (the dropdown box itself).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Give a transparent background to the drop-down box"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Opening the “Our Products” dropdown shows a transparent dropdown background (menu container), not an opaque panel.",
-        "Dropdown items remain readable and clickable."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Add a persistent category identifier to products so the app can determine a product’s relevant category for category carousel display. Ensure this category value is editable in the admin product management flow and is returned by product APIs.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-2",
-          "msg-4"
-        ],
-        "quotes": [
-          "Proceed and link the carousel of each category available in admin control to be visible when product page is open",
-          "2 only the carousel for relevant category"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend Product data includes a category slug/identifier that can be stored per product.",
-        "Admin UI for creating/editing a product includes a control to set the product’s category slug (using the same slug values as the customer category routes).",
-        "Fetching a product via existing frontend hooks returns the product category value without breaking existing products (products created before this change continue to load)."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "On the product detail page, render only the category carousel(s) for the product’s relevant category (as configured via the existing admin category carousel management) at the top of the page content.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2",
-          "msg-4"
-        ],
-        "quotes": [
-          "Proceed and link the carousel of each category available in admin control to be visible when product page is open",
-          "3 yes on top of each product page"
-        ]
-      },
-      "acceptanceCriteria": [
-        "When a product has a category slug set, the product detail page shows the category-specific carousel content at the top of the page (above the product media/details grid).",
-        "Only the carousel(s) for that single relevant category are shown (no other categories’ carousels).",
-        "If a product has no category slug set (legacy data), the product detail page does not crash and simply omits the category carousel section."
+        "Navigating to a category route (e.g., /products/<categorySlug> or the app’s equivalent) only renders products where product.category equals the selected category slug.",
+        "If there are products in other categories, they are not shown on this category page.",
+        "The existing empty-state message is shown only when there are no products for the selected category (not merely when other categories have products).",
+        "No changes are made to the HomePage product listing behavior (per latest clarification)."
       ]
     }
   ],
   "constraints": [
-    "Frontend files under frontend/src/components/ui must not be edited directly; achieve styling changes by composing/overriding via className on consuming components (e.g., Layout).",
-    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo if required for compatibility with existing stored state."
+    "Frontend files under frontend/src/components/ui must not be edited directly; only compose existing UI components.",
+    "Do not modify immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
+    "Keep backend as a single Motoko actor in backend/main.mo; do not introduce additional canisters/services."
   ],
   "nonGoals": [
-    "Do not add new category pages or change category routing behavior beyond what is needed to display the relevant category carousel on product detail pages.",
-    "Do not change how admin category carousel images are uploaded/reordered/enabled aside from using the existing configured data for display.",
-    "Do not implement showing all categories’ carousels on the product detail page."
+    "Removing products from the home screen UI (user explicitly requested no home page changes for now).",
+    "Adding or changing the product schema/category field (category already exists).",
+    "Adding new admin UI for categories or changing how categories are authored in the admin product form."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

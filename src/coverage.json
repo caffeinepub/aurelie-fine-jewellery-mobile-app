@@ -1,81 +1,38 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-09T11:11:59.944Z",
+  "generatedAt": "2026-02-10T10:08:16.735Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
-    "implemented": 4,
+    "total": 1,
+    "implemented": 1,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Update the header navigation dropdown label from “Categories” to “Our Products”.",
+        "summary": "Update the category product listing page to display only products whose stored product.category matches the currently selected categorySlug route param, instead of rendering all products returned by getProducts().",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/Layout.tsx"
+          "frontend/src/pages/ProductCategoryPage.tsx",
+          "frontend/src/pages/categories/CategoryPageTemplate.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/Layout.tsx"
-        ]
-      },
-      {
-        "id": "REQ-2",
-        "summary": "Make the header dropdown menu background transparent (the dropdown box itself).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/Layout.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/Layout.tsx"
-        ]
-      },
-      {
-        "id": "REQ-3",
-        "summary": "Add a persistent category identifier to products so the app can determine a product’s relevant category for category carousel display. Ensure this category value is editable in the admin product management flow and is returned by product APIs.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/admin/ProductFormModal.tsx",
-          "frontend/src/utils/productCategories.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/admin/ProductFormModal.tsx",
-          "frontend/src/utils/productCategories.ts"
-        ]
-      },
-      {
-        "id": "REQ-4",
-        "summary": "On the product detail page, render only the category carousel(s) for the product’s relevant category (as configured via the existing admin category carousel management) at the top of the page content.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/ProductDetailPage.tsx",
-          "frontend/src/components/CategoryImageCarousel.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/ProductDetailPage.tsx",
-          "frontend/src/components/CategoryImageCarousel.tsx"
+          "frontend/src/pages/ProductCategoryPage.tsx",
+          "frontend/src/pages/categories/CategoryPageTemplate.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
-    "backend/migration.mo",
     "build-request.json",
+    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/components/CategoryImageCarousel.tsx",
-    "frontend/src/components/Layout.tsx",
-    "frontend/src/components/admin/ProductFormModal.tsx",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
-    "frontend/src/pages/ProductDetailPage.tsx",
-    "frontend/src/utils/productCategories.ts",
+    "frontend/src/pages/ProductCategoryPage.tsx",
+    "frontend/src/pages/categories/CategoryPageTemplate.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

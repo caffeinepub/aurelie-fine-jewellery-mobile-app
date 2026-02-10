@@ -1,40 +1,18 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "E-commerce/site UI updates: rename header category label to “Our Products”, make dropdown background transparent, and show the relevant category carousel (configured in admin) at the top of each product page.",
-  "architectural_notes": [],
+  "summary": "New project",
+  "architectural_notes": [
+    "Category field already exists for each product via Admin add-product control; use it for product filtering."
+  ],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-update-the-header-navigation-dropdown-label-from-categories-to-our-products",
-      "title": "Update the header navigation dropdown label from “Categories” to “Our Products”.",
+      "id": "feature-update-the-category-product-listing-page-to-display-only-products-whose-stored-product-category-matches-the-currently-selected-categoryslug-route-param-instead-of-rendering-all-products-returned-by-getproducts",
+      "title": "Update the category product listing page to display only products whose stored product.category matches the currently selected categorySlug route param, instead of rendering all products returned by getProducts().",
       "reqIds": [
         "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-the-header-dropdown-menu-background-transparent-the-dropdown-box-itself",
-      "title": "Make the header dropdown menu background transparent (the dropdown box itself).",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-persistent-category-identifier-to-products-so-the-app-can-determine-a-product-s-relevant-category-for-category-carousel-display-ensure-this-category-value-is-editable-in-the-admin-product-management-flow-and-is-returned-by-product-apis",
-      "title": "Add a persistent category identifier to products so the app can determine a product’s relevant category for category carousel display. Ensure this category value is editable in the admin product management flow and is returned by product APIs.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-on-the-product-detail-page-render-only-the-category-carousel-s-for-the-product-s-relevant-category-as-configured-via-the-existing-admin-category-carousel-management-at-the-top-of-the-page-content",
-      "title": "On the product detail page, render only the category carousel(s) for the product’s relevant category (as configured via the existing admin category carousel management) at the top of the page content.",
-      "reqIds": [
-        "REQ-4"
       ],
       "version": 1
     }
@@ -42,24 +20,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Replace header label “Category” with “Our Products”",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Make the header dropdown box background transparent",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "On each product page, display the carousel for the product’s relevant category (as configured in admin) at the top of the page",
+      "summary": "Product page: after user selects a category, display only products from that category (category field already exists)",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Rename header dropdown to “Our Products”, make dropdown transparent, and show relevant category carousel on product pages",
+  "projectName": "Filter category product listing to show only products from selected category",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }
