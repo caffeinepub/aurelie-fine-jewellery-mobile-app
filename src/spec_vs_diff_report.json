@@ -1,31 +1,47 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-10T10:08:16.732Z",
-  "summary": "REQ-1 appears implemented: both the category template and the category page now filter the fetched products to only those whose product.category equals the current categorySlug, and the product grid/empty-state logic is driven by the filtered list rather than the full getProducts() result.",
-  "missing_requirements": [],
-  "hallucinated_features": [
+  "generatedAt": "2026-02-11T10:20:15.289Z",
+  "summary": "Diff adds coupon application UI/utilities and UPI deep-link + QR rendering components, and wires pricing/UPI URI generation into CheckoutPage. However, based on the truncated CheckoutPage diff, mobile deep-link “Pay using UPI” behavior and discounted totals being sent to backend order creation cannot be fully verified. Diff also introduces a third-party QR generation API call (api.qrserver.com) that was not explicitly requested.",
+  "missing_requirements": [
     {
-      "description": "Adds an explicit \"Category Not Found\" invalid-slug handling UI (with navigation back to home).",
-      "reason": "BuildRequest only asked to filter the category listing by categorySlug; it did not request adding invalid-category handling or a new not-found state for category pages.",
+      "id": "REQ-3",
+      "requirement": "On mobile devices, provide a \"Pay using UPI\" action that opens the installed UPI app using the generated upi://pay deep link, with desktop-safe behavior and a helpful error if blocked.",
+      "reason": "Device detection utility is added, but the diff excerpt for CheckoutPage is truncated before showing any primary payment button behavior that navigates to the upi://pay deep link or handles blocked deep-linking with a helpful toast/message.",
       "evidence": [
-        "frontend/src/pages/ProductCategoryPage.tsx"
+        "frontend/src/utils/device.ts",
+        "frontend/src/pages/CheckoutPage.tsx (truncated)"
       ]
     },
     {
-      "description": "Adds/changes category page UI structure with a \"Back to Home\" button and two stacked CategoryImageCarousel components on the category page.",
-      "reason": "BuildRequest is scoped to filtering behavior on the category listing; it did not request adding or changing header/navigation/carousel layout on the category page.",
+      "id": "REQ-4",
+      "requirement": "Ensure OrderCreate.totalPriceInCents sent to backend reflects the discounted pricing when AFJ10 is applied (10% reduction), without changing backend types.",
+      "reason": "Pricing utilities include a discounted line-total helper, and CheckoutPage indicates it will create orders with discounted totals, but the actual createOrder payload logic is not visible due to truncation, so alignment of OrderCreate.totalPriceInCents cannot be confirmed from the provided diff summary.",
       "evidence": [
-        "frontend/src/pages/categories/CategoryPageTemplate.tsx",
-        "frontend/src/pages/ProductCategoryPage.tsx"
+        "frontend/src/utils/pricing.ts",
+        "frontend/src/pages/CheckoutPage.tsx (truncated)"
       ]
     }
   ],
-  "confidence": 0.72,
+  "hallucinated_features": [
+    {
+      "description": "Uses a third-party QR-code generation HTTP API (api.qrserver.com) to render the UPI QR code image.",
+      "reason": "REQ-2 requires rendering a QR code that encodes the UPI link, but does not specify or request relying on an external QR generation service; the diff implements QR generation via an external network call.",
+      "evidence": [
+        "frontend/src/components/checkout/UpiQrCode.tsx"
+      ]
+    }
+  ],
+  "confidence": 0.62,
   "changed_files": [
+    "backend/main.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/pages/ProductCategoryPage.tsx",
-    "frontend/src/pages/categories/CategoryPageTemplate.tsx",
+    "frontend/src/components/checkout/CouponControl.tsx",
+    "frontend/src/components/checkout/UpiQrCode.tsx",
+    "frontend/src/pages/CheckoutPage.tsx",
+    "frontend/src/utils/device.ts",
+    "frontend/src/utils/pricing.ts",
+    "frontend/src/utils/upi.ts",
     "project_state.json"
   ]
 }

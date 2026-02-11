@@ -15,7 +15,6 @@ import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
 
-
 // For data migration on upgrades
 
 actor {

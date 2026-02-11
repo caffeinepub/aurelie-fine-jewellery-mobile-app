@@ -1,27 +1,101 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Category page product filtering by route slug",
+  "title": "Checkout: AFJ10 coupon + dynamic UPI deep link & QR",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Filter category product listing to only render products whose product.category matches the current categorySlug route param and show empty-state only when that filtered set is empty.",
+      "summary": "Add an Apply Coupon control in checkout and apply AFJ10 for 10% off the subtotal with clear totals breakdown and error handling.",
       "acceptanceCriteria": [
-        "Navigating to a category route (e.g., /products/<categorySlug> or the app’s equivalent) only renders products where product.category equals the selected category slug.",
-        "If there are products in other categories, they are not shown on this category page.",
-        "The existing empty-state message is shown only when there are no products for the selected category (not merely when other categories have products).",
-        "No changes are made to the HomePage product listing behavior (per latest clarification)."
+        "Checkout page includes a coupon code input and an action to apply/remove the coupon.",
+        "Entering coupon code AFJ10 applies exactly 10% discount to the cart subtotal (before shipping) and updates the displayed total accordingly.",
+        "Entering an invalid/empty coupon shows a clear error message and does not change totals.",
+        "Discounted amount and final payable total are shown clearly in the \"Payment Summary\" breakdown (e.g., Subtotal, Discount, Total)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/ProductCategoryPage.tsx",
-          "operation": "modify",
-          "description": "Derive a filteredProducts list by applying a strict equality filter (product.category === categorySlug) to the results of useGetProducts(), and render the grid/empty-state based on filteredProducts (not all products). Keep existing invalid-category handling and ensure the empty-state message only shows when filteredProducts is empty."
+          "path": "frontend/src/utils/pricing.ts",
+          "operation": "create",
+          "description": "Add pricing helpers for checkout: compute subtotal in cents from cart items, validate coupon code (AFJ10), compute discount (10%) and final payable amount with consistent rounding; keep logic centralized for reuse across UI totals, UPI amount, and order creation."
         },
         {
-          "path": "frontend/src/pages/categories/CategoryPageTemplate.tsx",
+          "path": "frontend/src/components/checkout/CouponControl.tsx",
+          "operation": "create",
+          "description": "Create a checkout-only CouponControl component that uses existing shadcn/ui primitives (Input, Button, etc.) to support applying/removing a coupon and displaying inline validation errors. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/CheckoutPage.tsx",
           "operation": "modify",
-          "description": "Apply the same categorySlug-based filtering (product.category === categorySlug) before rendering products so any template-based category pages also only show products for their category, with the empty-state based on the filtered list."
+          "description": "Integrate CouponControl into the checkout payment flow; store applied coupon state, show clear error messaging for invalid/empty coupon attempts, and update the Payment Summary breakdown to show Subtotal, Discount, and Total based on pricing helpers."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Generate a UPI deep link from the final payable amount and render a QR code that encodes that link, with a copy-link control and automatic updates when totals change.",
+      "acceptanceCriteria": [
+        "The generated UPI deep link uses payee VPA pa=arjun.tapse-1@okhdfcbank, payee name pn=Arjun Tapse, currency cu=INR, and includes am equal to the checkout final payable amount.",
+        "The QR code updates automatically whenever cart totals change (quantity changes) and whenever the AFJ10 coupon is applied/removed.",
+        "The QR code is visible on the payment step of checkout and is scannable (sufficient size/contrast).",
+        "A \"Copy UPI link\" (or equivalent) control is provided so users can copy the UPI URI if they cannot scan."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/upi.ts",
+          "operation": "create",
+          "description": "Add UPI utilities to build the required UPI URI (upi://pay...) with exact payee details (pa, pn, cu) and am derived from final payable amount; include safe URL encoding for pn and stable amount formatting."
+        },
+        {
+          "path": "frontend/src/components/checkout/UpiQrCode.tsx",
+          "operation": "create",
+          "description": "Create a UpiQrCode component that renders a QR code for a provided UPI URI and includes a \"Copy UPI link\" action using existing UI components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/CheckoutPage.tsx",
+          "operation": "modify",
+          "description": "On the payment step, compute the final payable amount (after coupon) and generate the UPI deep link using UPI utilities; render UpiQrCode and ensure it re-renders when cart items/quantities change and when coupon is applied/removed."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Provide a mobile Pay using UPI action that deep-links into installed UPI apps, with desktop-safe behavior and helpful fallback messaging if blocked.",
+      "acceptanceCriteria": [
+        "On mobile user agents, tapping the primary payment button triggers navigation to the generated upi://pay deep link (so the OS attempts to open a UPI app).",
+        "On non-mobile/desktop, the payment button does not break navigation and still allows completing payment via QR scan/copy link.",
+        "If the browser blocks deep linking, the UI shows a helpful error/toast instructing the user to use the QR code or copy the link."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/device.ts",
+          "operation": "create",
+          "description": "Add a small device detection helper (mobile vs non-mobile) appropriate for deciding whether to attempt UPI deep-link navigation from the primary payment action."
+        },
+        {
+          "path": "frontend/src/pages/CheckoutPage.tsx",
+          "operation": "modify",
+          "description": "Update the primary payment action on the payment step: on mobile, attempt to open the generated upi:// deep link; on desktop, keep the flow stable (QR/copy link remain usable). Add guarded fallback toast messaging when deep linking appears blocked (e.g., timeout/visibility heuristics) instructing user to use QR or copy link."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Ensure order creation uses the same discounted total logic as checkout so recorded order totals match the final payable amount when AFJ10 is applied.",
+      "acceptanceCriteria": [
+        "When AFJ10 is applied, the totalPriceInCents sent in createOrder mutations reflects a 10% reduction from the non-discounted amount.",
+        "When AFJ10 is not applied, order totals remain unchanged from current behavior.",
+        "No backend state migration is required (existing Order / OrderCreate types remain compatible)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/pricing.ts",
+          "operation": "modify",
+          "description": "Extend pricing helpers to support computing discounted line totals in cents (per cart item) using the same coupon logic and rounding approach used for checkout totals, so order creation can remain consistent with displayed payable amount."
+        },
+        {
+          "path": "frontend/src/pages/CheckoutPage.tsx",
+          "operation": "modify",
+          "description": "Adjust createOrder input construction so totalPriceInCents sent to the backend reflects the discounted amount when AFJ10 is applied (and remains unchanged otherwise), using centralized pricing helpers to ensure totals match the Payment Summary and the UPI amount."
         }
       ]
     }

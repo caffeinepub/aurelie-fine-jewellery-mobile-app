@@ -8,10 +8,21 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Separator } from '../components/ui/separator';
-import { Loader2, CreditCard, ShieldCheck, Lock, CheckCircle2, MapPin, User, Mail, Phone } from 'lucide-react';
+import { Loader2, CreditCard, ShieldCheck, Lock, CheckCircle2, MapPin, User, Mail, Phone, Smartphone } from 'lucide-react';
 import { toast } from 'sonner';
 import type { OrderCreate, ShippingAddress } from '../backend';
 import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
+import CouponControl from '../components/checkout/CouponControl';
+import UpiQrCode from '../components/checkout/UpiQrCode';
+import {
+  computeSubtotalInCents,
+  computeDiscountInCents,
+  computeFinalAmountInCents,
+  formatINR,
+  computeDiscountedLineTotal,
+} from '../utils/pricing';
+import { generateAurelieUpiUri } from '../utils/upi';
+import { isMobileDevice } from '../utils/device';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -23,6 +34,7 @@ export default function CheckoutPage() {
   const [checkoutStep, setCheckoutStep] = useState<'address' | 'payment'>('address');
   const [upiId, setUpiId] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState('');
   
   // Shipping address form state
   const [shippingAddress, setShippingAddress] = useState({
@@ -46,15 +58,13 @@ export default function CheckoutPage() {
     }
   }, [userProfile]);
 
-  const formatINR = (priceInCents: number) => {
-    const amount = priceInCents / 100;
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+  // Compute pricing with coupon
+  const subtotalInCents = computeSubtotalInCents(items);
+  const discountInCents = computeDiscountInCents(subtotalInCents, appliedCoupon);
+  const finalAmountInCents = computeFinalAmountInCents(subtotalInCents, discountInCents);
+
+  // Generate UPI URI based on final amount
+  const upiUri = generateAurelieUpiUri(finalAmountInCents);
 
   if (!isAuthenticated) {
     navigate({ to: '/' });
@@ -90,6 +100,16 @@ export default function CheckoutPage() {
     toast.success('Shipping address confirmed');
   };
 
+  const handleApplyCoupon = (code: string) => {
+    setAppliedCoupon(code.trim().toUpperCase());
+    toast.success('Coupon applied successfully!');
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon('');
+    toast.info('Coupon removed');
+  };
+
   const handlePayment = async () => {
     if (!upiId.trim()) {
       toast.error('Please enter your UPI ID');
@@ -101,7 +121,7 @@ export default function CheckoutPage() {
     setIsProcessing(true);
 
     try {
-      // Create orders for each item in cart
+      // Create orders for each item in cart with discounted totals
       for (const item of items) {
         const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         
@@ -112,12 +132,19 @@ export default function CheckoutPage() {
           address: shippingAddress.address.trim(),
         };
 
+        // Compute discounted line total
+        const discountedTotal = computeDiscountedLineTotal(
+          item.product.priceInCents,
+          item.quantity,
+          appliedCoupon
+        );
+
         const orderInput: OrderCreate = {
           id: orderId,
           customer: identity.getPrincipal(),
           productId: item.product.id,
           quantity: BigInt(item.quantity),
-          totalPriceInCents: item.product.priceInCents * BigInt(item.quantity),
+          totalPriceInCents: discountedTotal,
           upiId: upiId.trim(),
           shippingAddress: shippingAddressData,
         };
@@ -133,6 +160,32 @@ export default function CheckoutPage() {
       toast.error(error.message || 'Failed to place order');
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  const handleMobilePayment = () => {
+    if (!upiId.trim()) {
+      toast.error('Please enter your UPI ID');
+      return;
+    }
+
+    // On mobile, attempt to open UPI app
+    if (isMobileDevice()) {
+      try {
+        window.location.href = upiUri;
+        
+        // Set a timeout to show fallback message if deep link fails
+        setTimeout(() => {
+          toast.info('If UPI app did not open, please scan the QR code or copy the link', {
+            duration: 5000,
+          });
+        }, 1500);
+      } catch (error) {
+        toast.error('Unable to open UPI app. Please scan the QR code or copy the link.');
+      }
+    } else {
+      // On desktop, just proceed with order creation
+      handlePayment();
     }
   };
 
@@ -330,6 +383,22 @@ export default function CheckoutPage() {
                   </CardContent>
                 </Card>
 
+                {/* Coupon Section */}
+                <Card className="gold-border chrome-surface backdrop-blur-sm shadow-elegant">
+                  <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-bottle-green-light/20 to-bottle-green-medium/20">
+                    <CardTitle className="gold-text flex items-center gap-3 text-xl">
+                      Apply Discount Coupon
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <CouponControl
+                      appliedCoupon={appliedCoupon}
+                      onApplyCoupon={handleApplyCoupon}
+                      onRemoveCoupon={handleRemoveCoupon}
+                    />
+                  </CardContent>
+                </Card>
+
                 {/* UPI Payment Card */}
                 <Card className="gold-border chrome-surface backdrop-blur-sm shadow-elegant">
                   <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-bottle-green-light/20 to-bottle-green-medium/20">
@@ -337,13 +406,24 @@ export default function CheckoutPage() {
                       <div className="p-2 rounded-lg bg-gold-gradient">
                         <CreditCard className="h-6 w-6 text-white" />
                       </div>
-                      UPI Payment Details
+                      UPI Payment
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="pt-8 space-y-6">
+                    {/* UPI QR Code */}
+                    <div className="space-y-4">
+                      <h3 className="font-serif text-xl font-semibold gold-text text-center">
+                        Scan to Pay {formatINR(finalAmountInCents)}
+                      </h3>
+                      <UpiQrCode upiUri={upiUri} size={220} />
+                    </div>
+
+                    <Separator className="bg-gold-medium/20" />
+
+                    {/* UPI ID Input */}
                     <div className="space-y-3">
                       <Label htmlFor="upiId" className="text-base font-semibold gold-text">
-                        Enter Your UPI ID
+                        Enter Your UPI ID (for confirmation)
                       </Label>
                       <Input
                         id="upiId"
@@ -356,39 +436,52 @@ export default function CheckoutPage() {
                       <p className="text-sm text-muted-foreground flex items-start gap-2">
                         <CheckCircle2 className="h-4 w-4 text-gold-medium mt-0.5 flex-shrink-0" />
                         <span>
-                          Enter your UPI ID to complete the payment. You will receive a secure payment request on your UPI app.
+                          Enter your UPI ID for order confirmation. Payment will be processed via UPI.
                         </span>
                       </p>
                     </div>
 
-                    <Separator className="bg-gold-medium/20" />
+                    {/* Mobile Payment Button */}
+                    {isMobileDevice() && (
+                      <Button
+                        onClick={handleMobilePayment}
+                        disabled={isProcessing}
+                        className="w-full h-14 text-lg font-semibold gold-gradient text-white shadow-gold hover:shadow-gold/70 transition-all duration-300 hover:scale-[1.02]"
+                        size="lg"
+                      >
+                        {isProcessing ? (
+                          <>
+                            <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <Smartphone className="h-5 w-5 mr-2" />
+                            Pay with UPI App
+                          </>
+                        )}
+                      </Button>
+                    )}
 
-                    {/* Order Items Preview */}
-                    <div className="space-y-4">
-                      <h3 className="font-serif text-xl font-semibold gold-text">
-                        Order Summary
-                      </h3>
-                      <div className="bg-gradient-to-br from-ivory-base/40 to-chrome-base/20 p-6 rounded-xl border-2 border-gold-medium/20 space-y-3">
-                        {items.map((item) => (
-                          <div
-                            key={item.product.id}
-                            className="flex justify-between items-center py-3 border-b border-gold-medium/10 last:border-0"
-                          >
-                            <div className="flex-1">
-                              <p className="font-semibold text-gold-light">
-                                {item.product.name}
-                              </p>
-                              <p className="text-sm text-muted-foreground">
-                                Quantity: {item.quantity}
-                              </p>
-                            </div>
-                            <span className="font-bold text-lg gold-text">
-                              {formatINR(Number(item.product.priceInCents) * item.quantity)}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    {/* Desktop/Fallback Payment Button */}
+                    <Button
+                      onClick={handlePayment}
+                      disabled={isProcessing}
+                      className="w-full h-14 text-lg font-semibold gold-gradient text-white shadow-gold hover:shadow-gold/70 transition-all duration-300 hover:scale-[1.02]"
+                      size="lg"
+                    >
+                      {isProcessing ? (
+                        <>
+                          <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                          Processing Order...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="h-5 w-5 mr-2" />
+                          Confirm Order
+                        </>
+                      )}
+                    </Button>
 
                     {/* Security Notice */}
                     <div className="bg-bottle-green-dark/5 border-l-4 border-gold-medium p-4 rounded-r-lg">
@@ -399,7 +492,7 @@ export default function CheckoutPage() {
                             Secure Transaction
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            Your payment information is encrypted and secure. We never store your UPI credentials.
+                            Your payment information is encrypted and secure. Complete payment via UPI to confirm your order.
                           </p>
                         </div>
                       </div>
@@ -412,65 +505,89 @@ export default function CheckoutPage() {
 
           {/* Order Summary - Right Side */}
           <div className="lg:col-span-2">
-            <Card className="gold-border chrome-surface backdrop-blur-sm shadow-gold sticky top-24">
-              <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-br from-bottle-green-dark to-bottle-green-medium">
-                <CardTitle className="text-gold-lightest text-2xl font-serif">
+            <Card className="gold-border chrome-surface backdrop-blur-sm shadow-elegant sticky top-8">
+              <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-bottle-green-light/20 to-bottle-green-medium/20">
+                <CardTitle className="gold-text text-2xl">
                   Payment Summary
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-6 space-y-6">
-                {/* Price Breakdown */}
+                {/* Order Items */}
                 <div className="space-y-4">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span className="font-medium">{formatINR(getTotalPrice())}</span>
+                  <h3 className="font-serif text-lg font-semibold gold-text">
+                    Order Items ({items.length})
+                  </h3>
+                  <div className="space-y-3">
+                    {items.map((item) => (
+                      <div
+                        key={item.product.id}
+                        className="flex justify-between items-start py-3 border-b border-gold-medium/10 last:border-0"
+                      >
+                        <div className="flex-1 pr-4">
+                          <p className="font-semibold text-sm text-gold-light">
+                            {item.product.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Qty: {item.quantity} × {formatINR(Number(item.product.priceInCents))}
+                          </p>
+                        </div>
+                        <span className="font-bold text-sm gold-text whitespace-nowrap">
+                          {formatINR(Number(item.product.priceInCents) * item.quantity)}
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span className="font-medium text-gold-medium">Free</span>
-                  </div>
-                  <Separator className="bg-gold-medium/20" />
+                </div>
+
+                <Separator className="bg-gold-medium/20" />
+
+                {/* Price Breakdown */}
+                <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold">Total</span>
+                    <span className="text-sm font-medium text-muted-foreground">
+                      Subtotal
+                    </span>
+                    <span className="text-sm font-semibold">
+                      {formatINR(subtotalInCents)}
+                    </span>
+                  </div>
+
+                  {appliedCoupon && discountInCents > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium text-gold-medium">
+                        Discount ({appliedCoupon})
+                      </span>
+                      <span className="text-sm font-semibold text-gold-medium">
+                        -{formatINR(discountInCents)}
+                      </span>
+                    </div>
+                  )}
+
+                  <Separator className="bg-gold-medium/20" />
+
+                  <div className="flex justify-between items-center pt-2">
+                    <span className="text-lg font-bold gold-text">
+                      Total Payable
+                    </span>
                     <span className="text-2xl font-bold gold-text">
-                      {formatINR(getTotalPrice())}
+                      {formatINR(finalAmountInCents)}
                     </span>
                   </div>
                 </div>
 
-                {/* Complete Payment Button */}
-                {checkoutStep === 'payment' && (
-                  <Button
-                    onClick={handlePayment}
-                    disabled={isProcessing || !upiId.trim()}
-                    className="w-full h-14 text-lg font-semibold gold-gradient text-white shadow-gold hover:shadow-gold/70 transition-all duration-300 hover:scale-[1.02]"
-                    size="lg"
-                  >
-                    {isProcessing ? (
-                      <>
-                        <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <CreditCard className="h-5 w-5 mr-2" />
-                        Complete Payment
-                      </>
-                    )}
-                  </Button>
-                )}
-
                 {/* Trust Badges */}
-                <div className="pt-6 border-t border-gold-medium/20">
-                  <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <ShieldCheck className="h-4 w-4 text-gold-medium" />
-                      <span>Secure</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Lock className="h-4 w-4 text-gold-medium" />
-                      <span>Encrypted</span>
-                    </div>
+                <div className="pt-4 space-y-3">
+                  <div className="flex items-center gap-3 text-sm">
+                    <ShieldCheck className="h-5 w-5 text-gold-medium flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      100% Secure Payment
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <Lock className="h-5 w-5 text-gold-medium flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      Encrypted Transaction
+                    </span>
                   </div>
                 </div>
               </CardContent>

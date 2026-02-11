@@ -1,11 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Ensure category product listing pages show only products belonging to the selected category.
+**Goal:** Add an AFJ10 coupon (10% off) and dynamic UPI payment (deep link + QR) to checkout so customers can pay the exact final amount.
 
 **Planned changes:**
-- Update the category product listing page to filter products by the current `categorySlug` route parameter, rendering only items where `product.category` matches the selected slug.
-- Keep the existing empty-state behavior, showing it only when the selected category has zero matching products.
-- Leave the HomePage product listing behavior unchanged.
+- Add a coupon code input on the checkout flow with apply/remove actions; apply a 10% discount when code `AFJ10` is entered and show errors for invalid/empty codes.
+- Update the checkout payment summary to clearly display Subtotal, Discount, and Final Total (with discount applied before shipping).
+- Generate a UPI deep link using the final payable amount (after coupon changes) and render a scannable QR code that updates automatically when totals change.
+- Add controls to copy the generated UPI URI, and on mobile provide a “Pay using UPI” action that opens the UPI app via the `upi://pay...` deep link with fallback guidance if blocked.
+- Ensure order creation totals sent to the backend reflect the discounted final payable amount when `AFJ10` is applied (otherwise keep current totals unchanged).
 
-**User-visible outcome:** When a user navigates to a category-specific products route, they see only products from that category (or an empty-state message if none exist).
+**User-visible outcome:** Customers can apply the `AFJ10` coupon at checkout to get 10% off, see updated totals, and pay via a dynamically generated UPI QR code or deep link (including automatic opening of UPI apps on mobile), with recorded order totals matching the final amount shown.

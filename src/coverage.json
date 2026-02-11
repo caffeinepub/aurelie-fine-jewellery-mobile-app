@@ -1,38 +1,85 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-10T10:08:16.735Z",
+  "generatedAt": "2026-02-11T10:20:15.292Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 4,
+    "implemented": 4,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Update the category product listing page to display only products whose stored product.category matches the currently selected categorySlug route param, instead of rendering all products returned by getProducts().",
+        "summary": "Update the Checkout page to support applying a coupon code at checkout: add an \"Apply Coupon\" input on the customer checkout flow, and when the code \"AFJ10\" is entered, apply a 10% discount to the final bill value shown in the checkout totals.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/ProductCategoryPage.tsx",
-          "frontend/src/pages/categories/CategoryPageTemplate.tsx"
+          "frontend/src/utils/pricing.ts",
+          "frontend/src/components/checkout/CouponControl.tsx",
+          "frontend/src/pages/CheckoutPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/ProductCategoryPage.tsx",
-          "frontend/src/pages/categories/CategoryPageTemplate.tsx"
+          "frontend/src/utils/pricing.ts",
+          "frontend/src/components/checkout/CouponControl.tsx",
+          "frontend/src/pages/CheckoutPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Implement dynamic UPI payment generation on the Checkout page using the final payable amount from checkout (after coupon discount, if applied): generate a UPI deep link and render a QR code that encodes that UPI link.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/utils/upi.ts",
+          "frontend/src/components/checkout/UpiQrCode.tsx",
+          "frontend/src/pages/CheckoutPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/utils/upi.ts",
+          "frontend/src/components/checkout/UpiQrCode.tsx",
+          "frontend/src/pages/CheckoutPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "On mobile devices, provide a \"Pay using UPI\" action that automatically opens the customer’s installed UPI app using the generated UPI deep link (upi://pay...).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/utils/device.ts",
+          "frontend/src/pages/CheckoutPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/utils/device.ts",
+          "frontend/src/pages/CheckoutPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Align order creation totals with the final payable amount logic: when AFJ10 is applied, ensure the OrderCreate.totalPriceInCents values sent to the backend reflect the discounted pricing (so recorded orders match what the user is instructed to pay).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/utils/pricing.ts",
+          "frontend/src/pages/CheckoutPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/utils/pricing.ts",
+          "frontend/src/pages/CheckoutPage.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
-    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/pages/ProductCategoryPage.tsx",
-    "frontend/src/pages/categories/CategoryPageTemplate.tsx",
+    "frontend/src/components/checkout/CouponControl.tsx",
+    "frontend/src/components/checkout/UpiQrCode.tsx",
+    "frontend/src/pages/CheckoutPage.tsx",
+    "frontend/src/utils/device.ts",
+    "frontend/src/utils/pricing.ts",
+    "frontend/src/utils/upi.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

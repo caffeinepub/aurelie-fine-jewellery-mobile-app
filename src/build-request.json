@@ -1,42 +1,109 @@
 {
   "kind": "build_request",
-  "title": "Filter category product listing to show only products from selected category",
+  "title": "Checkout: dynamic UPI QR/deep-link payment + AFJ10 coupon (10% off)",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the category product listing page to display only products whose stored product.category matches the currently selected categorySlug route param, instead of rendering all products returned by getProducts().",
+      "text": "Update the Checkout page to support applying a coupon code at checkout: add an \"Apply Coupon\" input on the customer checkout flow, and when the code \"AFJ10\" is entered, apply a 10% discount to the final bill value shown in the checkout totals.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-User-1",
-          "msg-User-2"
+          "recent-messages"
         ],
         "quotes": [
-          "On the product page, only the relevant product as per category to be displayed not all.",
-          "once the user selects the category and then see only product from that category"
+          "With the upi feature I would require a apply coupon slot in customer side at checkout page and apply 10% discount on final bill value when AFJ10 coupon code is entered."
         ]
       },
       "acceptanceCriteria": [
-        "Navigating to a category route (e.g., /products/<categorySlug> or the app’s equivalent) only renders products where product.category equals the selected category slug.",
-        "If there are products in other categories, they are not shown on this category page.",
-        "The existing empty-state message is shown only when there are no products for the selected category (not merely when other categories have products).",
-        "No changes are made to the HomePage product listing behavior (per latest clarification)."
+        "Checkout page includes a coupon code input and an action to apply/remove the coupon.",
+        "Entering coupon code AFJ10 applies exactly 10% discount to the cart subtotal (before shipping) and updates the displayed total accordingly.",
+        "Entering an invalid/empty coupon shows a clear error message and does not change totals.",
+        "Discounted amount and final payable total are shown clearly in the \"Payment Summary\" breakdown (e.g., Subtotal, Discount, Total)."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Implement dynamic UPI payment generation on the Checkout page using the final payable amount from checkout (after coupon discount, if applied): generate a UPI deep link and render a QR code that encodes that UPI link.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "I would need the final payment amount from checkout to be generated with QR code, is that possible?",
+          "So your UPI link should be:\nupi://pay?pa=arjun.tapse-1@okhdfcbank&pn=Arjun%20Tapse&cu=INR",
+          "your app can create a UPI payment link like:\nupi://pay?pa=arjun.tapse-1@okhdfcbank&pn=Arjun%20Tapse&am=FINAL_AMOUNT&cu=INR"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The generated UPI deep link uses payee VPA pa=arjun.tapse-1@okhdfcbank, payee name pn=Arjun Tapse, currency cu=INR, and includes am equal to the checkout final payable amount.",
+        "The QR code updates automatically whenever cart totals change (quantity changes) and whenever the AFJ10 coupon is applied/removed.",
+        "The QR code is visible on the payment step of checkout and is scannable (sufficient size/contrast).",
+        "A \"Copy UPI link\" (or equivalent) control is provided so users can copy the UPI URI if they cannot scan."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "On mobile devices, provide a \"Pay using UPI\" action that automatically opens the customer’s installed UPI app using the generated UPI deep link (upi://pay...).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "Yes and auto open the payment app of customer if they are using mobile"
+        ]
+      },
+      "acceptanceCriteria": [
+        "On mobile user agents, tapping the primary payment button triggers navigation to the generated upi://pay deep link (so the OS attempts to open a UPI app).",
+        "On non-mobile/desktop, the payment button does not break navigation and still allows completing payment via QR scan/copy link.",
+        "If the browser blocks deep linking, the UI shows a helpful error/toast instructing the user to use the QR code or copy the link."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Align order creation totals with the final payable amount logic: when AFJ10 is applied, ensure the OrderCreate.totalPriceInCents values sent to the backend reflect the discounted pricing (so recorded orders match what the user is instructed to pay).",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "Also need both the UPI feature and apply coupon to be applied. Confirm?"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When AFJ10 is applied, the totalPriceInCents sent in createOrder mutations reflects a 10% reduction from the non-discounted amount.",
+        "When AFJ10 is not applied, order totals remain unchanged from current behavior.",
+        "No backend state migration is required (existing Order / OrderCreate types remain compatible)."
       ]
     }
   ],
   "constraints": [
-    "Frontend files under frontend/src/components/ui must not be edited directly; only compose existing UI components.",
-    "Do not modify immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
-    "Keep backend as a single Motoko actor in backend/main.mo; do not introduce additional canisters/services."
+    "Use English for any user-facing text.",
+    "Backend must remain a single Motoko actor in backend/main.mo; only add migration.mo if an upgrade/state migration is necessary.",
+    "Do not edit files under frontend/src/components/ui or any frontend immutablePaths listed in SYSTEM_CONTEXT; compose existing UI components instead.",
+    "UPI payee details must be exactly: pa=arjun.tapse-1@okhdfcbank, pn=Arjun Tapse, cu=INR."
   ],
   "nonGoals": [
-    "Removing products from the home screen UI (user explicitly requested no home page changes for now).",
-    "Adding or changing the product schema/category field (category already exists).",
-    "Adding new admin UI for categories or changing how categories are authored in the admin product form."
+    "Do not implement third-party payment status verification for UPI (no bank/UPI gateway confirmation flow).",
+    "Do not add third-party authentication providers (only Internet Identity is supported).",
+    "Do not introduce external databases or non-Motoko backend services.",
+    "Do not redesign unrelated pages (home, product listing, admin dashboards) beyond what is necessary for checkout changes."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }
