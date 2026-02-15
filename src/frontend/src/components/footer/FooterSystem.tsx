@@ -1,115 +1,79 @@
-import { Mail, Phone, MapPin, Heart } from 'lucide-react';
+import { useGetSiteContent } from '../../hooks/useQueries';
 
-type ContactInfo = {
-  contactEmail: string;
-  phoneNumber: string;
-  address: string;
-};
+export default function FooterSystem() {
+  const { data: siteContent } = useGetSiteContent();
 
-interface FooterSystemProps {
-  contactInfo?: ContactInfo;
-  footerContent?: string;
-}
+  const currentYear = new Date().getFullYear();
+  const appIdentifier = encodeURIComponent(
+    typeof window !== 'undefined' ? window.location.hostname : 'aurelie-jewellery'
+  );
 
-export default function FooterSystem({
-  contactInfo,
-  footerContent,
-}: FooterSystemProps) {
-  return <SplitLayoutFooter contactInfo={contactInfo} footerContent={footerContent} />;
-}
-
-// Split Layout Footer with Transparent Logo Lockup
-function SplitLayoutFooter({
-  contactInfo,
-  footerContent,
-}: {
-  contactInfo?: ContactInfo;
-  footerContent?: string;
-}) {
   return (
-    <footer className="relative border-t border-gold-medium/20 bg-ivory-prestige backdrop-blur py-12">
-      <div className="hairline-gold-divider" />
-      <div className="container px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          {/* Left Column: Transparent Logo Lockup */}
-          <div className="flex flex-col gap-4">
+    <footer className="w-full bg-beige-champagne border-t border-gold-medium/20" data-footer-scope>
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          {/* Left Column: Logo */}
+          <div className="flex flex-col items-start">
             <img
               src="/assets/generated/aurelie-lockup-transparent.dim_1000x320.png"
               alt="Aurelie Fine Jewellery"
-              className="h-16 w-auto object-contain object-left"
+              className="h-16 object-contain mb-4"
             />
-            <p className="footer-text-didot text-sm font-light max-w-xs">
-              Exquisite handcrafted jewellery inspired by timeless elegance
-            </p>
           </div>
 
-          {/* Right Column: Contact Info + Quick Links */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Right Column: Contact & Policies */}
+          <div className="space-y-6">
             {/* Contact Info */}
-            {contactInfo && (
-              <div className="flex flex-col gap-3">
-                <h3 className="footer-heading-didot text-sm tracking-wider uppercase">
-                  Contact
-                </h3>
-                <div className="flex flex-col gap-2 text-xs">
-                  <a
-                    href={`mailto:${contactInfo.contactEmail}`}
-                    className="footer-link-didot flex items-center gap-2 hover:opacity-70 transition-opacity"
-                  >
-                    <Mail className="h-3 w-3" />
-                    <span className="font-light">{contactInfo.contactEmail}</span>
-                  </a>
-                  <a
-                    href={`tel:${contactInfo.phoneNumber}`}
-                    className="footer-link-didot flex items-center gap-2 hover:opacity-70 transition-opacity"
-                  >
-                    <Phone className="h-3 w-3" />
-                    <span className="font-light">{contactInfo.phoneNumber}</span>
-                  </a>
-                  <div className="footer-text-didot flex items-center gap-2">
-                    <MapPin className="h-3 w-3" />
-                    <span className="font-light">{contactInfo.address}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Quick Links */}
-            <div className="flex flex-col gap-3">
-              <h3 className="footer-heading-didot text-sm tracking-wider uppercase">
-                Policies
-              </h3>
-              <div className="flex flex-col gap-2 text-xs">
-                <span className="footer-text-didot font-light">Terms of Service</span>
-                <span className="footer-text-didot font-light">Privacy Policy</span>
-                <span className="footer-text-didot font-light">Shipping Policy</span>
+            <div className="space-y-2">
+              <h3 className="font-serif text-lg font-semibold text-bottle-green-dark">Contact Us</h3>
+              <div className="space-y-1 text-sm text-bottle-green-dark">
+                <p>{siteContent?.contactEmail || 'contact@aurelie.com'}</p>
+                <p>{siteContent?.phoneNumber || '+65 1234 5678'}</p>
+                <p>{siteContent?.address || 'Orchard Road, Singapore'}</p>
               </div>
             </div>
+
+            {/* Policies */}
+            <div className="space-y-2">
+              <h3 className="font-serif text-lg font-semibold text-bottle-green-dark">Policies</h3>
+              <div className="flex flex-wrap gap-4 text-sm text-bottle-green-dark">
+                <a href="#" className="hover:text-gold-medium transition-colors">
+                  Privacy Policy
+                </a>
+                <a href="#" className="hover:text-gold-medium transition-colors">
+                  Terms of Service
+                </a>
+                <a href="#" className="hover:text-gold-medium transition-colors">
+                  Shipping Policy
+                </a>
+              </div>
+            </div>
+
+            {/* Footer Content */}
+            {siteContent?.footerContent && (
+              <div className="text-sm text-bottle-green-dark">
+                <p>{siteContent.footerContent}</p>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Footer Content */}
-        {footerContent && (
-          <div className="mt-8 pt-6 border-t border-gold-medium/10">
-            <p className="footer-text-didot text-xs font-light text-center">
-              {footerContent}
+        {/* Bottom Bar */}
+        <div className="mt-12 pt-6 border-t border-gold-medium/20">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-bottle-green-dark">
+            <p>© {currentYear} {siteContent?.officialName || 'Aurelie Fine Jewellery'}. All rights reserved.</p>
+            <p>
+              Built with ❤️ using{' '}
+              <a
+                href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${appIdentifier}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gold-medium transition-colors font-medium"
+              >
+                caffeine.ai
+              </a>
             </p>
           </div>
-        )}
-
-        {/* Copyright */}
-        <div className="mt-8 pt-6 border-t border-gold-medium/10 flex items-center justify-center">
-          <p className="footer-text-didot text-xs font-light">
-            © 2026. Built with <Heart className="inline h-3 w-3 fill-current" /> using{' '}
-            <a
-              href="https://caffeine.ai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:opacity-70 transition-opacity underline"
-            >
-              caffeine.ai
-            </a>
-          </p>
         </div>
       </div>
     </footer>

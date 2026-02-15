@@ -44,6 +44,7 @@ export default function ProfileSetupModal({ open, onComplete }: ProfileSetupModa
         email: email.trim(),
         phone: phone.trim(),
         address: address.trim(),
+        dob: '', // Default empty DOB for initial profile setup
       };
 
       await actor.saveCallerUserProfile(profile);

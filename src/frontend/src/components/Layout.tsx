@@ -1,8 +1,8 @@
 import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useQueryClient } from '@tanstack/react-query';
-import { ShoppingCart, LayoutDashboard, LogIn, LogOut, ChevronDown } from 'lucide-react';
-import { useIsCallerAdmin, useGetContactInfo, useGetSiteContent } from '../hooks/useQueries';
+import { ShoppingCart, LayoutDashboard, LogIn, User, LogOut, ChevronDown } from 'lucide-react';
+import { useIsCallerAdmin } from '../hooks/useQueries';
 import { useCart } from '../hooks/useCart';
 import { Badge } from './ui/badge';
 import { useState, useEffect, Suspense } from 'react';
@@ -13,6 +13,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from './ui/dropdown-menu';
 
 const CATEGORIES = [
@@ -27,8 +28,6 @@ const CATEGORIES = [
 export default function Layout() {
   const { login, clear, loginStatus, identity } = useInternetIdentity();
   const { data: isAdmin } = useIsCallerAdmin();
-  const { data: contactInfo } = useGetContactInfo();
-  const { data: siteContent } = useGetSiteContent();
   const { getTotalItems } = useCart();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -50,22 +49,22 @@ export default function Layout() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleAuth = async () => {
-    if (isAuthenticated) {
-      await clear();
-      queryClient.clear();
-      navigate({ to: '/' });
-    } else {
-      try {
-        await login();
-      } catch (error: any) {
-        console.error('Login error:', error);
-        if (error.message === 'User is already authenticated') {
-          await clear();
-          setTimeout(() => login(), 300);
-        }
+  const handleLogin = async () => {
+    try {
+      await login();
+    } catch (error: any) {
+      console.error('Login error:', error);
+      if (error.message === 'User is already authenticated') {
+        await clear();
+        setTimeout(() => login(), 300);
       }
     }
+  };
+
+  const handleLogout = async () => {
+    await clear();
+    queryClient.clear();
+    navigate({ to: '/' });
   };
 
   const handleCategoryClick = (slug: string) => {
@@ -159,23 +158,50 @@ export default function Layout() {
                 )}
               </>
             )}
-            <button
-              onClick={handleAuth}
-              disabled={disabled}
-              className="header-nav-btn-didot gap-2 px-4 py-2 rounded-md transition-opacity hover:opacity-70"
-            >
-              {isAuthenticated ? (
-                <>
-                  <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline text-sm font-light tracking-wide">Logout</span>
-                </>
-              ) : (
-                <>
-                  <LogIn className="h-4 w-4" />
-                  <span className="hidden sm:inline text-sm font-light tracking-wide">Login</span>
-                </>
-              )}
-            </button>
+
+            {/* Auth Control - Dropdown when logged in, Login button when logged out */}
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="header-nav-btn-didot gap-2 px-3 py-2 rounded-md transition-opacity hover:opacity-70">
+                    <User className="h-4 w-4" />
+                    <span className="hidden sm:inline text-sm font-light tracking-wide">Account</span>
+                    <ChevronDown className="h-3 w-3" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent 
+                  align="end" 
+                  className="w-48 bg-transparent backdrop-blur-md border-gold-medium/30"
+                >
+                  <DropdownMenuItem
+                    onClick={() => navigate({ to: '/profile' })}
+                    className="cursor-pointer text-foreground hover:bg-gold-medium/20"
+                  >
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-gold-medium/20" />
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="cursor-pointer text-foreground hover:bg-gold-medium/20"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <button
+                onClick={handleLogin}
+                disabled={disabled}
+                className="header-nav-btn-didot gap-2 px-4 py-2 rounded-md transition-opacity hover:opacity-70 disabled:opacity-50"
+              >
+                <LogIn className="h-4 w-4" />
+                <span className="hidden sm:inline text-sm font-light tracking-wide">
+                  {disabled ? 'Logging in...' : 'Login'}
+                </span>
+              </button>
+            )}
           </nav>
         </div>
         <div className="hairline-gold-divider" />
@@ -189,10 +215,7 @@ export default function Layout() {
       </main>
 
       {/* Footer System - Always Split Layout */}
-      <FooterSystem
-        contactInfo={contactInfo}
-        footerContent={siteContent?.footerContent}
-      />
+      <FooterSystem />
     </div>
   );
 }

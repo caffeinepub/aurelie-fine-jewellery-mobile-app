@@ -120,6 +120,7 @@ actor {
     email : Text;
     phone : Text;
     address : Text;
+    dob : Text; // Add Date of birth field
   };
 
   public type OrderCreate = {
@@ -149,6 +150,7 @@ actor {
   let ringsSlides = Map.empty<Nat, CarouselSlide>();
   let categoryCarousels = Map.empty<Text, CategoryCarousels>();
   let userProfiles = Map.empty<Principal, UserProfile>();
+  let carouselRedirects = Map.empty<Text, Text>();
 
   var siteContent : SiteContent = {
     contactEmail = "contact@aurelie.com";
@@ -322,6 +324,17 @@ actor {
         };
       };
     };
+  };
+
+  public shared ({ caller }) func updateCarouselRedirect(category : Text, redirectUrl : Text) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can update carousel redirects");
+    };
+    carouselRedirects.add(category, redirectUrl);
+  };
+
+  public query ({ caller }) func getCarouselRedirect(category : Text) : async ?Text {
+    carouselRedirects.get(category);
   };
 
   // --------------- Stripe Integration ---------------
@@ -675,3 +688,4 @@ actor {
     };
   };
 };
+

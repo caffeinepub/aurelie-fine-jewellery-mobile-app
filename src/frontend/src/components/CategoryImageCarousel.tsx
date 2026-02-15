@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useGetCategoryCarouselImages } from '../hooks/useCategoryCarouselQueries';
+import { useGetCategoryCarouselImages, useGetCarouselRedirect } from '../hooks/useCategoryCarouselQueries';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from './ui/button';
 import { Skeleton } from './ui/skeleton';
@@ -14,6 +14,7 @@ interface CategoryImageCarouselProps {
 export default function CategoryImageCarousel({ categorySlug, carouselIndex, title }: CategoryImageCarouselProps) {
   // All hooks must be called before any conditional returns
   const { data: images, isLoading } = useGetCategoryCarouselImages(categorySlug, carouselIndex);
+  const { data: redirectUrl } = useGetCarouselRedirect(categorySlug);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
@@ -55,14 +56,22 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
     setCurrentIndex(index);
   };
 
-  const goToPrevious = () => {
+  const goToPrevious = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setDirection('left');
     setCurrentIndex((prev) => (prev - 1 + enabledImages.length) % enabledImages.length);
   };
 
-  const goToNext = () => {
+  const goToNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setDirection('right');
     setCurrentIndex((prev) => (prev + 1) % enabledImages.length);
+  };
+
+  const handleCarouselClick = () => {
+    if (redirectUrl && redirectUrl.trim()) {
+      window.location.href = redirectUrl;
+    }
   };
 
   if (isLoading) {
@@ -83,6 +92,8 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
     return null;
   }
 
+  const isClickable = redirectUrl && redirectUrl.trim();
+
   return (
     <div>
       {title && <h2 className="font-serif text-xl font-semibold tracking-tight mb-3 gold-text">{title}</h2>}
@@ -93,7 +104,10 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Carousel Container with 1:1 aspect ratio for category carousels */}
-        <div className="relative w-full aspect-square overflow-hidden rounded-2xl shadow-bottle-green">
+        <div 
+          className={`relative w-full aspect-square overflow-hidden rounded-2xl shadow-bottle-green ${isClickable ? 'cursor-pointer' : ''}`}
+          onClick={isClickable ? handleCarouselClick : undefined}
+        >
           {enabledImages.map((image, index) => {
             const isActive = index === currentIndex;
             const isPrev = index === (currentIndex - 1 + enabledImages.length) % enabledImages.length;
@@ -140,7 +154,7 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm h-8 w-8"
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm h-8 w-8 z-10"
                 onClick={goToPrevious}
               >
                 <ChevronLeft className="h-5 w-5" />
@@ -148,7 +162,7 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm h-8 w-8"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm h-8 w-8 z-10"
                 onClick={goToNext}
               >
                 <ChevronRight className="h-5 w-5" />
@@ -163,7 +177,10 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
             {enabledImages.map((_, index) => (
               <button
                 key={index}
-                onClick={() => goToSlide(index)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToSlide(index);
+                }}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   index === currentIndex
                     ? 'w-6 bg-gold-medium shadow-gold'

@@ -2,12 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-checkout-page-to-support-applying-a-coupon-code-at-checkout-add-an-apply-coupon-input-on-the-customer-checkout-flow-and-when-the-code-afj10-is-entered-apply-a-10-discount-to-the-final-bill-value-shown-in-the-checkout-totals",
-      "featureTitle": "Update the Checkout page to support applying a coupon code at checkout: add an \"Apply Coupon\" input on the customer checkout flow, and when the code \"AFJ10\" is entered, apply a 10% discount to the final bill value shown in the checkout totals.",
+      "featureId": "feature-restore-the-homepage-product-carousel-so-it-is-visible-on-the-home-page-and-behaves-as-it-did-previously-16-9-aspect-ratio-auto-play-enabled-horizontal-slide-transitions-and-left-right-navigation-arrows-using-admin-managed-images-and-redirect-urls",
+      "featureTitle": "Restore the homepage product carousel so it is visible on the Home page and behaves as it did previously: 16:9 aspect ratio, auto-play enabled, horizontal slide transitions, and left/right navigation arrows, using admin-managed images and redirect URLs.",
       "files": [
-        "frontend/src/components/checkout/CouponControl.tsx",
-        "frontend/src/pages/CheckoutPage.tsx",
-        "frontend/src/utils/pricing.ts"
+        "frontend/src/pages/HomePage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -26,12 +24,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-dynamic-upi-payment-generation-on-the-checkout-page-using-the-final-payable-amount-from-checkout-after-coupon-discount-if-applied-generate-a-upi-deep-link-and-render-a-qr-code-that-encodes-that-upi-link",
-      "featureTitle": "Implement dynamic UPI payment generation on the Checkout page using the final payable amount from checkout (after coupon discount, if applied): generate a UPI deep link and render a QR code that encodes that UPI link.",
+      "featureId": "feature-update-the-buy-now-button-text-color-for-product-cards-shown-on-the-homepage-to-a-dark-bottle-green-color-for-both-customer-and-admin-users-without-changing-header-footer",
+      "featureTitle": "Update the 'Buy Now' button text color for product cards shown on the homepage to a dark bottle-green color for both customer and admin users, without changing header/footer.",
       "files": [
-        "frontend/src/components/checkout/UpiQrCode.tsx",
-        "frontend/src/pages/CheckoutPage.tsx",
-        "frontend/src/utils/upi.ts"
+        "frontend/src/pages/HomePage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -46,52 +42,6 @@
       ],
       "testIds": [
         "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-on-mobile-devices-provide-a-pay-using-upi-action-that-automatically-opens-the-customer-s-installed-upi-app-using-the-generated-upi-deep-link-upi-pay",
-      "featureTitle": "On mobile devices, provide a \"Pay using UPI\" action that automatically opens the customer’s installed UPI app using the generated UPI deep link (upi://pay...).",
-      "files": [
-        "frontend/src/pages/CheckoutPage.tsx",
-        "frontend/src/utils/device.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-align-order-creation-totals-with-the-final-payable-amount-logic-when-afj10-is-applied-ensure-the-ordercreate-totalpriceincents-values-sent-to-the-backend-reflect-the-discounted-pricing-so-recorded-orders-match-what-the-user-is-instructed-to-pay",
-      "featureTitle": "Align order creation totals with the final payable amount logic: when AFJ10 is applied, ensure the OrderCreate.totalPriceInCents values sent to the backend reflect the discounted pricing (so recorded orders match what the user is instructed to pay).",
-      "files": [
-        "frontend/src/pages/CheckoutPage.tsx",
-        "frontend/src/utils/pricing.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
       ],
       "confidence": "high"
     }

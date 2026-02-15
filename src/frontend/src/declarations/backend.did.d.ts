@@ -119,6 +119,7 @@ export interface TransformationOutput {
   'headers' : Array<http_header>,
 }
 export interface UserProfile {
+  'dob' : string,
   'name' : string,
   'email' : string,
   'address' : string,
@@ -175,6 +176,7 @@ export interface _SERVICE {
   'getAllCategorySlides' : ActorMethod<[string], Array<CarouselSlide>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getCarouselRedirect' : ActorMethod<[string], [] | [string]>,
   'getCategoryCarousel' : ActorMethod<[string, bigint], Array<ExternalBlob>>,
   'getContactInfo' : ActorMethod<
     [],
@@ -210,6 +212,7 @@ export interface _SERVICE {
   'submitInquiry' : ActorMethod<[CustomerInquiry], undefined>,
   'toggleCategorySlide' : ActorMethod<[string, bigint, boolean], undefined>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
+  'updateCarouselRedirect' : ActorMethod<[string, string], undefined>,
   'updateCategoryCarousel' : ActorMethod<
     [string, bigint, Array<ExternalBlob>],
     undefined

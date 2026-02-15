@@ -3,600 +3,234 @@
 @tailwind utilities;
 
 @layer base {
-    :root {
-        --radius: 0.625rem;
-        
-        /* Aurelie Fine Jewellery - Beige Body with Dark Bottle Green Header & Gold */
-        /* Light Mode: Beige body with dark bottle green header and gold accents */
-        --background: 0.85 0.03 60;
-        --foreground: 0.70 0.12 75;
-        
-        --card: 0.88 0.02 58;
-        --card-foreground: 0.70 0.12 75;
-        
-        --popover: 0.88 0.02 58;
-        --popover-foreground: 0.70 0.12 75;
-        
-        /* Primary: Rich Gold */
-        --primary: 0.70 0.12 75;
-        --primary-foreground: 0.25 0.08 250;
-        
-        /* Secondary: Dark Bottle Green */
-        --secondary: 0.32 0.08 155;
-        --secondary-foreground: 0.94 0.020 55;
-        
-        /* Muted: Lighter Beige */
-        --muted: 0.90 0.02 60;
-        --muted-foreground: 0.70 0.12 75;
-        
-        /* Accent: Bright Gold */
-        --accent: 0.75 0.15 70;
-        --accent-foreground: 0.25 0.08 250;
-        
-        --destructive: 0.577 0.245 27.325;
-        --destructive-foreground: 0.985 0 0;
-        
-        --border: 0.70 0.04 65;
-        --input: 0.88 0.02 58;
-        --ring: 0.70 0.12 75;
-        
-        /* Dark Bottle Green variations for header */
-        --bottle-green-dark: 0.25 0.10 155;
-        --bottle-green-medium: 0.32 0.08 155;
-        --bottle-green-light: 0.40 0.06 155;
-        
-        /* Blood Maroon for footer */
-        --blood-maroon: 0.28 0.15 15;
-        --blood-maroon-light: 0.35 0.14 15;
-        
-        /* Navy Blue variations (kept for potential accent use) */
-        --navy-darkest: 0.20 0.10 250;
-        --navy-dark: 0.25 0.08 250;
-        --navy-medium: 0.30 0.08 250;
-        --navy-light: 0.35 0.07 250;
-        --navy-lightest: 0.40 0.06 250;
-        
-        /* High-end jewellery gold palette */
-        --gold-dark: 0.60 0.14 65;
-        --gold-medium: 0.70 0.16 60;
-        --gold-light: 0.80 0.18 55;
-        --gold-bright: 0.88 0.20 50;
-        --gold-champagne: 0.75 0.12 58;
-        
-        /* Refined silver palette */
-        --silver-dark: 0.60 0.02 240;
-        --silver-medium: 0.70 0.02 240;
-        --silver-light: 0.80 0.02 240;
-        --silver-bright: 0.88 0.02 240;
-        --silver-platinum: 0.75 0.01 240;
-        
-        /* Luxury satin ivory variations */
-        --ivory-base: 0.92 0.03 65;
-        --ivory-highlight: 0.96 0.02 60;
-        --ivory-shadow: 0.88 0.04 68;
-        --ivory-bright: 0.98 0.01 58;
-        --ivory-pearl: 0.94 0.025 62;
-        
-        /* Sand Champagne Beige variations for main content */
-        --beige-sand: 0.82 0.04 65;
-        --beige-champagne: 0.85 0.03 60;
-        --beige-light: 0.88 0.02 58;
-        
-        /* Oxidized Silver variations for body */
-        --silver-oxidized: 0.65 0.01 240;
-        
-        /* Chrome finish colors */
-        --chrome-base: 0.75 0.01 240;
-        --chrome-highlight: 0.85 0.01 240;
-        --chrome-shadow: 0.65 0.01 240;
-        --chrome-mid: 0.70 0.01 240;
-        
-        /* Near-black for body text */
-        --text-near-black: 0.20 0.01 240;
-        
-        /* Option 1 Header Colors: Matte Ivory/Champagne */
-        --ivory-prestige: 0.94 0.02 58;
-        --gold-prestige: 0.68 0.14 62;
-        
-        /* Option 3 Header Colors: Champagne Gold on Dark */
-        --gold-champagne-contrast: 0.78 0.14 58;
-        
-        /* Off-white for customer pages */
-        --off-white: 0.96 0.01 60;
-        
-        --chart-1: 0.70 0.12 75;
-        --chart-2: 0.32 0.08 155;
-        --chart-3: 0.75 0.15 70;
-        --chart-4: 0.40 0.06 155;
-        --chart-5: 0.65 0.11 75;
-    }
+  :root {
+    /* Base OKLCH color system */
+    --background: 98% 0.01 120;
+    --foreground: 20% 0.02 280;
+    --card: 98% 0.01 120;
+    --card-foreground: 20% 0.02 280;
+    --popover: 98% 0.01 120;
+    --popover-foreground: 20% 0.02 280;
+    --primary: 35% 0.08 160;
+    --primary-foreground: 98% 0.01 120;
+    --secondary: 92% 0.02 280;
+    --secondary-foreground: 20% 0.02 280;
+    --muted: 92% 0.02 280;
+    --muted-foreground: 50% 0.02 280;
+    --accent: 92% 0.02 280;
+    --accent-foreground: 20% 0.02 280;
+    --destructive: 55% 0.20 25;
+    --destructive-foreground: 98% 0.01 120;
+    --border: 85% 0.02 280;
+    --input: 85% 0.02 280;
+    --ring: 35% 0.08 160;
+    --chart-1: 60% 0.15 220;
+    --chart-2: 65% 0.12 160;
+    --chart-3: 70% 0.10 40;
+    --chart-4: 55% 0.18 280;
+    --chart-5: 50% 0.20 340;
+    --radius: 0.5rem;
 
-    .dark {
-        /* Dark Mode: Deep Beige with Gold Accents */
-        --background: 0.70 0.04 65;
-        --foreground: 0.75 0.15 70;
-        
-        --card: 0.75 0.03 60;
-        --card-foreground: 0.75 0.15 70;
-        
-        --popover: 0.75 0.03 60;
-        --popover-foreground: 0.75 0.15 70;
-        
-        /* Primary: Bright Gold */
-        --primary: 0.75 0.15 70;
-        --primary-foreground: 0.18 0.10 250;
-        
-        /* Secondary: Medium Bottle Green */
-        --secondary: 0.35 0.07 155;
-        --secondary-foreground: 0.94 0.020 55;
-        
-        /* Muted: Dark Beige */
-        --muted: 0.65 0.04 65;
-        --muted-foreground: 0.75 0.15 70;
-        
-        /* Accent: Bright Gold */
-        --accent: 0.80 0.16 68;
-        --accent-foreground: 0.18 0.10 250;
-        
-        --destructive: 0.60 0.20 25;
-        --destructive-foreground: 0.18 0.10 250;
-        
-        --border: 0.60 0.04 65;
-        --input: 0.70 0.04 65;
-        --ring: 0.75 0.15 70;
-        
-        /* Dark Bottle Green variations for dark mode */
-        --bottle-green-dark: 0.18 0.08 155;
-        --bottle-green-medium: 0.25 0.06 155;
-        --bottle-green-light: 0.35 0.05 155;
-        
-        /* Blood Maroon for footer (dark mode) */
-        --blood-maroon: 0.25 0.16 15;
-        --blood-maroon-light: 0.32 0.15 15;
-        
-        /* Navy variations for dark mode */
-        --navy-darkest: 0.15 0.12 250;
-        --navy-dark: 0.18 0.10 250;
-        --navy-medium: 0.22 0.09 250;
-        --navy-light: 0.28 0.08 250;
-        --navy-lightest: 0.35 0.07 250;
-        
-        /* High-end jewellery gold palette (dark mode) */
-        --gold-dark: 0.58 0.14 65;
-        --gold-medium: 0.68 0.16 60;
-        --gold-light: 0.78 0.18 55;
-        --gold-bright: 0.86 0.20 50;
-        --gold-champagne: 0.73 0.12 58;
-        
-        /* Refined silver palette (dark mode) */
-        --silver-dark: 0.50 0.02 240;
-        --silver-medium: 0.60 0.02 240;
-        --silver-light: 0.70 0.02 240;
-        --silver-bright: 0.78 0.02 240;
-        --silver-platinum: 0.65 0.01 240;
-        
-        /* Luxury satin ivory variations (dark mode) */
-        --ivory-base: 0.80 0.03 65;
-        --ivory-highlight: 0.85 0.02 60;
-        --ivory-shadow: 0.75 0.04 68;
-        --ivory-bright: 0.88 0.01 58;
-        --ivory-pearl: 0.82 0.025 62;
-        
-        /* Sand Champagne Beige variations for dark mode */
-        --beige-sand: 0.70 0.04 65;
-        --beige-champagne: 0.72 0.03 60;
-        --beige-light: 0.75 0.02 58;
-        
-        /* Oxidized Silver variations for dark mode */
-        --silver-oxidized: 0.50 0.01 240;
-        
-        /* Chrome finish colors (dark mode) */
-        --chrome-base: 0.60 0.01 240;
-        --chrome-highlight: 0.70 0.01 240;
-        --chrome-shadow: 0.50 0.01 240;
-        --chrome-mid: 0.55 0.01 240;
-        
-        /* Near-black for body text (dark mode) */
-        --text-near-black: 0.18 0.01 240;
-        
-        /* Option 1 Header Colors: Matte Ivory/Champagne (dark mode) */
-        --ivory-prestige: 0.82 0.02 58;
-        --gold-prestige: 0.65 0.14 62;
-        
-        /* Option 3 Header Colors: Champagne Gold on Dark (dark mode) */
-        --gold-champagne-contrast: 0.75 0.14 58;
-        
-        /* Off-white for customer pages (dark mode) */
-        --off-white: 0.85 0.01 60;
-        
-        --chart-1: 0.75 0.15 70;
-        --chart-2: 0.35 0.07 155;
-        --chart-3: 0.80 0.16 68;
-        --chart-4: 0.40 0.06 155;
-        --chart-5: 0.70 0.13 73;
-    }
+    /* Aurelie Brand Colors */
+    --bottle-green-dark: 25% 0.08 160;
+    --bottle-green-medium: 35% 0.08 160;
+    --bottle-green-light: 45% 0.06 160;
+    --blood-maroon: 30% 0.12 20;
+    --blood-maroon-light: 40% 0.10 20;
+    --navy-darkest: 20% 0.06 260;
+    --navy-dark: 25% 0.06 260;
+    --navy-medium: 30% 0.06 260;
+    --navy-light: 40% 0.05 260;
+    --navy-lightest: 50% 0.04 260;
+    --gold-dark: 55% 0.15 80;
+    --gold-medium: 65% 0.15 80;
+    --gold-light: 75% 0.12 80;
+    --gold-shimmer: 80% 0.10 80;
+    --beige-sand: 85% 0.04 60;
+    --beige-champagne: 90% 0.03 60;
+    --beige-light: 95% 0.02 60;
+    --silver-oxidized: 60% 0.02 240;
+    --silver-light: 75% 0.01 240;
+    --silver-dark: 45% 0.03 240;
+  }
 
-    * {
-        @apply border-border;
-    }
-    
-    body {
-        @apply bg-background text-foreground;
-        font-feature-settings: "rlig" 1, "calt" 1;
-    }
+  .dark {
+    --background: 15% 0.02 280;
+    --foreground: 98% 0.01 120;
+    --card: 15% 0.02 280;
+    --card-foreground: 98% 0.01 120;
+    --popover: 15% 0.02 280;
+    --popover-foreground: 98% 0.01 120;
+    --primary: 35% 0.08 160;
+    --primary-foreground: 98% 0.01 120;
+    --secondary: 25% 0.03 280;
+    --secondary-foreground: 98% 0.01 120;
+    --muted: 25% 0.03 280;
+    --muted-foreground: 70% 0.02 280;
+    --accent: 25% 0.03 280;
+    --accent-foreground: 98% 0.01 120;
+    --destructive: 55% 0.20 25;
+    --destructive-foreground: 98% 0.01 120;
+    --border: 30% 0.03 280;
+    --input: 30% 0.03 280;
+    --ring: 35% 0.08 160;
+  }
 }
 
-/* Keyframes for shimmering animations */
-@keyframes shimmer-gold {
-    0% {
-        background-position: -200% center;
-    }
-    100% {
-        background-position: 200% center;
-    }
-}
-
-@keyframes shimmer-ivory {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-@keyframes shimmer-beige-satin {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-/* Global luxury text and button styling */
 @layer base {
-    /* Shimmering gold buttons with metallic silver text */
-    button,
-    input[type="submit"],
-    input[type="button"],
-    [role="button"] {
-        background: linear-gradient(
-            110deg,
-            oklch(var(--gold-dark)) 0%,
-            oklch(var(--gold-medium)) 25%,
-            oklch(var(--gold-champagne)) 35%,
-            oklch(var(--gold-light)) 50%,
-            oklch(var(--gold-bright)) 55%,
-            oklch(var(--gold-light)) 65%,
-            oklch(var(--gold-champagne)) 75%,
-            oklch(var(--gold-medium)) 85%,
-            oklch(var(--gold-dark)) 100%
-        ) !important;
-        background-size: 200% 100% !important;
-        animation: shimmer-gold 3s linear infinite !important;
-        color: oklch(var(--silver-bright)) !important;
-        font-weight: 600;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    }
-    
-    /* Ensure button text and icons inherit metallic silver */
-    button *,
-    input[type="submit"] *,
-    input[type="button"] *,
-    [role="button"] * {
-        color: oklch(var(--silver-bright)) !important;
-        background: none !important;
-        -webkit-background-clip: unset !important;
-        -webkit-text-fill-color: oklch(var(--silver-bright)) !important;
-        background-clip: unset !important;
-        animation: none !important;
-        fill: currentColor !important;
-        stroke: currentColor !important;
-    }
-    
-    /* SVG icons inside buttons: force metallic silver */
-    button svg,
-    input[type="submit"] svg,
-    input[type="button"] svg,
-    [role="button"] svg {
-        color: oklch(var(--silver-bright)) !important;
-        fill: currentColor !important;
-        stroke: currentColor !important;
-    }
-    
-    /* Respect reduced motion preferences */
-    @media (prefers-reduced-motion: reduce) {
-        button,
-        input[type="submit"],
-        input[type="button"],
-        [role="button"] {
-            animation: none !important;
-            background: linear-gradient(
-                135deg,
-                oklch(var(--gold-dark)) 0%,
-                oklch(var(--gold-medium)) 33%,
-                oklch(var(--gold-light)) 66%,
-                oklch(var(--gold-bright)) 100%
-            ) !important;
-            background-size: 100% 100% !important;
-        }
-    }
-    
-    /* Header Brand Button Override: Transparent Background */
-    .header-brand-btn {
-        background: transparent !important;
-        background-size: 100% 100% !important;
-        animation: none !important;
-        color: inherit !important;
-        font-weight: inherit !important;
-        text-shadow: none !important;
-    }
-    
-    .header-brand-btn:hover,
-    .header-brand-btn:focus-visible,
-    .header-brand-btn:active {
-        background: transparent !important;
-        background-size: 100% 100% !important;
-        animation: none !important;
-    }
-    
-    .header-brand-btn *,
-    .header-brand-btn img {
-        background: none !important;
-        animation: none !important;
-    }
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
 }
 
-/* Admin UI Scope: Bottle Green Buttons with White Text */
-@layer base {
-    [data-admin-ui="true"] button,
-    [data-admin-ui="true"] input[type="submit"],
-    [data-admin-ui="true"] input[type="button"],
-    [data-admin-ui="true"] [role="button"] {
-        background: oklch(var(--bottle-green-dark)) !important;
-        background-size: 100% 100% !important;
-        animation: none !important;
-        color: white !important;
-        font-weight: 600;
-        text-shadow: none !important;
-    }
-    
-    [data-admin-ui="true"] button *,
-    [data-admin-ui="true"] input[type="submit"] *,
-    [data-admin-ui="true"] input[type="button"] *,
-    [data-admin-ui="true"] [role="button"] * {
-        color: white !important;
-        background: none !important;
-        -webkit-background-clip: unset !important;
-        -webkit-text-fill-color: white !important;
-        background-clip: unset !important;
-        animation: none !important;
-        fill: currentColor !important;
-        stroke: currentColor !important;
-    }
-    
-    [data-admin-ui="true"] button svg,
-    [data-admin-ui="true"] input[type="submit"] svg,
-    [data-admin-ui="true"] input[type="button"] svg,
-    [data-admin-ui="true"] [role="button"] svg {
-        color: white !important;
-        fill: currentColor !important;
-        stroke: currentColor !important;
-    }
-    
-    /* Hover state for admin buttons */
-    [data-admin-ui="true"] button:hover,
-    [data-admin-ui="true"] input[type="submit"]:hover,
-    [data-admin-ui="true"] input[type="button"]:hover,
-    [data-admin-ui="true"] [role="button"]:hover {
-        background: oklch(var(--bottle-green-medium)) !important;
-    }
-    
-    /* Disabled state for admin buttons */
-    [data-admin-ui="true"] button:disabled,
-    [data-admin-ui="true"] input[type="submit"]:disabled,
-    [data-admin-ui="true"] input[type="button"]:disabled,
-    [data-admin-ui="true"] [role="button"]:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-}
-
-/* Customer Control Scope: Dark Purple Buttons with White Text */
-@layer base {
-    [data-customer-control="true"] button,
-    [data-customer-control="true"] input[type="submit"],
-    [data-customer-control="true"] input[type="button"],
-    [data-customer-control="true"] [role="button"] {
-        background: #392A48 !important;
-        background-size: 100% 100% !important;
-        animation: none !important;
-        color: white !important;
-        font-weight: 600;
-        text-shadow: none !important;
-    }
-    
-    [data-customer-control="true"] button *,
-    [data-customer-control="true"] input[type="submit"] *,
-    [data-customer-control="true"] input[type="button"] *,
-    [data-customer-control="true"] [role="button"] * {
-        color: white !important;
-        background: none !important;
-        -webkit-background-clip: unset !important;
-        -webkit-text-fill-color: white !important;
-        background-clip: unset !important;
-        animation: none !important;
-        fill: currentColor !important;
-        stroke: currentColor !important;
-    }
-    
-    [data-customer-control="true"] button svg,
-    [data-customer-control="true"] input[type="submit"] svg,
-    [data-customer-control="true"] input[type="button"] svg,
-    [data-customer-control="true"] [role="button"] svg {
-        color: white !important;
-        fill: currentColor !important;
-        stroke: currentColor !important;
-    }
-    
-    /* Hover state for customer control buttons */
-    [data-customer-control="true"] button:hover,
-    [data-customer-control="true"] input[type="submit"]:hover,
-    [data-customer-control="true"] input[type="button"]:hover,
-    [data-customer-control="true"] [role="button"]:hover {
-        background: #4a3759 !important;
-    }
-    
-    /* Disabled state for customer control buttons */
-    [data-customer-control="true"] button:disabled,
-    [data-customer-control="true"] input[type="submit"]:disabled,
-    [data-customer-control="true"] input[type="button"]:disabled,
-    [data-customer-control="true"] [role="button"]:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-}
-
-/* Customer Page Scope: Off-white surfaces and #392A48 text (excluding buttons) */
-@layer base {
-    [data-customer-page="true"] {
-        background: oklch(var(--off-white)) !important;
-    }
-    
-    [data-customer-page="true"] h1,
-    [data-customer-page="true"] h2,
-    [data-customer-page="true"] h3,
-    [data-customer-page="true"] h4,
-    [data-customer-page="true"] h5,
-    [data-customer-page="true"] h6,
-    [data-customer-page="true"] p,
-    [data-customer-page="true"] span,
-    [data-customer-page="true"] div,
-    [data-customer-page="true"] label,
-    [data-customer-page="true"] li {
-        color: #392A48 !important;
-    }
-    
-    /* Exclude buttons from text color override */
-    [data-customer-page="true"] button,
-    [data-customer-page="true"] button *,
-    [data-customer-page="true"] input[type="submit"],
-    [data-customer-page="true"] input[type="submit"] *,
-    [data-customer-page="true"] input[type="button"],
-    [data-customer-page="true"] input[type="button"] *,
-    [data-customer-page="true"] [role="button"],
-    [data-customer-page="true"] [role="button"] * {
-        color: inherit !important;
-    }
-}
-
-/* Opt-in gold text gradient effect */
 @layer utilities {
-    .gold-text {
-        background: linear-gradient(
-            135deg,
-            oklch(var(--gold-dark)) 0%,
-            oklch(var(--gold-medium)) 25%,
-            oklch(var(--gold-light)) 50%,
-            oklch(var(--gold-bright)) 75%,
-            oklch(var(--gold-light)) 100%
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
+  /* Shimmering beige background for main content */
+  .shimmering-beige {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--beige-light)) 0%,
+      oklch(var(--beige-champagne)) 50%,
+      oklch(var(--beige-sand)) 100%
+    );
+    background-size: 200% 200%;
+    animation: shimmer 8s ease-in-out infinite;
+  }
+
+  /* Off-white surface utility */
+  .off-white {
+    background-color: oklch(var(--beige-light));
+  }
+
+  /* Gold text utility (opt-in) */
+  .gold-text {
+    color: oklch(var(--gold-medium));
+  }
+
+  /* Hairline gold divider */
+  .hairline-gold-divider {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      oklch(var(--gold-medium)) 50%,
+      transparent 100%
+    );
+  }
+
+  /* Header brand button - transparent background override */
+  .header-brand-btn {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  /* Header navigation buttons with Didot font */
+  .header-nav-btn-didot {
+    @apply flex items-center font-serif text-bottle-green-dark;
+  }
 }
 
-/* Luxury header utilities */
-@layer utilities {
-    .header-nav-btn-didot {
-        font-family: 'Didot', 'Bodoni MT', 'Playfair Display', serif;
-        font-weight: 300;
-        letter-spacing: 0.05em;
-        display: flex;
-        align-items: center;
-    }
-    
-    .hairline-gold-divider {
-        height: 1px;
-        background: linear-gradient(
-            90deg,
-            transparent 0%,
-            oklch(var(--gold-medium)) 50%,
-            transparent 100%
-        );
-        opacity: 0.3;
-    }
-}
+@layer components {
+  /* Shimmering gold buttons with metallic silver text */
+  button:not([data-admin-scope]):not([data-customer-control]):not([data-checkout-scope]):not(.header-nav-btn-didot):not(.header-brand-btn):not([class*="ghost"]):not([class*="outline"]):not([class*="link"]):not([class*="secondary"]) {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--gold-light)),
+      oklch(var(--gold-medium)),
+      oklch(var(--gold-dark))
+    );
+    background-size: 200% 200%;
+    animation: shimmer 3s linear infinite;
+    color: oklch(var(--silver-oxidized));
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
+    transition: all 0.3s ease;
+  }
 
-/* Shimmering beige background for main content */
-@layer utilities {
-    .shimmering-beige {
-        background: linear-gradient(
-            135deg,
-            oklch(var(--beige-sand)) 0%,
-            oklch(var(--beige-champagne)) 25%,
-            oklch(var(--beige-light)) 50%,
-            oklch(var(--beige-champagne)) 75%,
-            oklch(var(--beige-sand)) 100%
-        );
-        background-size: 400% 400%;
-        animation: shimmer-beige-satin 8s ease-in-out infinite;
-    }
-}
+  button:not([data-admin-scope]):not([data-customer-control]):not([data-checkout-scope]):not(.header-nav-btn-didot):not(.header-brand-btn):not([class*="ghost"]):not([class*="outline"]):not([class*="link"]):not([class*="secondary"]):hover:not(:disabled) {
+    box-shadow: 0 6px 16px rgba(184, 134, 11, 0.4);
+    transform: translateY(-1px);
+  }
 
-/* Chrome surface utility */
-@layer utilities {
-    .chrome-surface {
-        background: linear-gradient(
-            135deg,
-            oklch(var(--chrome-shadow)) 0%,
-            oklch(var(--chrome-mid)) 25%,
-            oklch(var(--chrome-highlight)) 50%,
-            oklch(var(--chrome-base)) 75%,
-            oklch(var(--chrome-shadow)) 100%
-        );
-    }
-}
+  /* Admin-scoped bottle-green buttons */
+  [data-admin-scope] button:not([class*="ghost"]):not([class*="outline"]):not([class*="link"]):not([class*="secondary"]) {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--bottle-green-light)),
+      oklch(var(--bottle-green-medium)),
+      oklch(var(--bottle-green-dark))
+    );
+    background-size: 200% 200%;
+    animation: shimmer 3s linear infinite;
+    color: oklch(var(--gold-light));
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 4px 12px rgba(30, 70, 50, 0.3);
+  }
 
-/* Luxury footer utilities */
-@layer utilities {
-    .footer-blood-maroon {
-        background: oklch(var(--blood-maroon));
-    }
-    
-    .footer-text-gold {
-        color: oklch(var(--gold-medium));
-    }
-    
-    .footer-link-gold {
-        color: oklch(var(--gold-light));
-        transition: color 0.2s ease;
-    }
-    
-    .footer-link-gold:hover {
-        color: oklch(var(--gold-bright));
-    }
-}
+  /* Customer control scoped dark-purple buttons */
+  [data-customer-control] button:not([class*="ghost"]):not([class*="outline"]):not([class*="link"]):not([class*="secondary"]) {
+    background: oklch(var(--navy-dark));
+    color: oklch(var(--gold-light));
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 4px 12px rgba(20, 30, 80, 0.3);
+  }
 
-/* Silver gradient utility */
-@layer utilities {
-    .silver-gradient {
-        background: linear-gradient(
-            135deg,
-            oklch(var(--silver-dark)) 0%,
-            oklch(var(--silver-medium)) 25%,
-            oklch(var(--silver-light)) 50%,
-            oklch(var(--silver-bright)) 75%,
-            oklch(var(--silver-platinum)) 100%
-        );
-    }
-}
+  /* Checkout-scoped light-green buttons with dark-purple text */
+  [data-checkout-scope] button:not([class*="ghost"]):not([class*="outline"]):not([class*="link"]):not([class*="secondary"]) {
+    background: oklch(65% 0.12 160);
+    color: oklch(var(--navy-dark));
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 4px 12px rgba(100, 200, 150, 0.3);
+  }
 
+  /* Customer page scoped styling for off-white surfaces and #392A48 text */
+  [data-customer-page] {
+    background-color: oklch(var(--beige-light));
+  }
+
+  [data-customer-page] .off-white,
+  [data-customer-page] [class*="bg-off-white"] {
+    background-color: oklch(var(--beige-light));
+  }
+
+  [data-customer-page] h1,
+  [data-customer-page] h2,
+  [data-customer-page] h3,
+  [data-customer-page] p,
+  [data-customer-page] span {
+    color: #392A48;
+  }
+
+  /* Footer scoped styling - dark-purple text for all text elements except logo */
+  [data-footer-scope] h1,
+  [data-footer-scope] h2,
+  [data-footer-scope] h3,
+  [data-footer-scope] h4,
+  [data-footer-scope] h5,
+  [data-footer-scope] h6,
+  [data-footer-scope] p,
+  [data-footer-scope] span,
+  [data-footer-scope] a,
+  [data-footer-scope] div {
+    color: oklch(var(--bottle-green-dark));
+  }
+
+  /* Ensure logo image is not affected by footer text color */
+  [data-footer-scope] img {
+    color: initial;
+  }
+
+  /* Customer CTA button text override - white text for Add to Cart and Buy Now */
+  .customer-cta-btn,
+  .customer-cta-btn * {
+    color: white !important;
+  }
+}

@@ -1,47 +1,31 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-11T10:20:15.289Z",
-  "summary": "Diff adds coupon application UI/utilities and UPI deep-link + QR rendering components, and wires pricing/UPI URI generation into CheckoutPage. However, based on the truncated CheckoutPage diff, mobile deep-link “Pay using UPI” behavior and discounted totals being sent to backend order creation cannot be fully verified. Diff also introduces a third-party QR generation API call (api.qrserver.com) that was not explicitly requested.",
+  "generatedAt": "2026-02-14T10:20:44.690Z",
+  "summary": "Diff shows HomePage now renders a <HomeCarousel /> above the product catalog, but the diff does not include the HomeCarousel implementation or any evidence of the required carousel behaviors (autoplay, arrows, admin-managed slides/URLs). The diff also truncates before the product-card action buttons, so the requested 'Buy Now' text color change cannot be confirmed from the provided evidence. No header/footer files appear modified.",
   "missing_requirements": [
     {
-      "id": "REQ-3",
-      "requirement": "On mobile devices, provide a \"Pay using UPI\" action that opens the installed UPI app using the generated upi://pay deep link, with desktop-safe behavior and a helpful error if blocked.",
-      "reason": "Device detection utility is added, but the diff excerpt for CheckoutPage is truncated before showing any primary payment button behavior that navigates to the upi://pay deep link or handles blocked deep-linking with a helpful toast/message.",
+      "id": "REQ-1",
+      "requirement": "Restore the homepage product carousel so it is visible on the Home page and behaves as it did previously: 16:9 aspect ratio, auto-play enabled, horizontal slide transitions, and left/right navigation arrows, using admin-managed images and redirect URLs.",
+      "reason": "HomePage now includes <HomeCarousel />, but the diff provides no implementation details for HomeCarousel (aspect-video/16:9 enforcement, autoplay, horizontal transitions, arrow controls, enabled-slide filtering, click-through to admin-configured redirect URLs). With only HomePage.tsx shown (and truncated), the acceptance criteria cannot be verified.",
       "evidence": [
-        "frontend/src/utils/device.ts",
-        "frontend/src/pages/CheckoutPage.tsx (truncated)"
+        "frontend/src/pages/HomePage.tsx (truncated)"
       ]
     },
     {
-      "id": "REQ-4",
-      "requirement": "Ensure OrderCreate.totalPriceInCents sent to backend reflects the discounted pricing when AFJ10 is applied (10% reduction), without changing backend types.",
-      "reason": "Pricing utilities include a discounted line-total helper, and CheckoutPage indicates it will create orders with discounted totals, but the actual createOrder payload logic is not visible due to truncation, so alignment of OrderCreate.totalPriceInCents cannot be confirmed from the provided diff summary.",
+      "id": "REQ-2",
+      "requirement": "Update the 'Buy Now' button text color for product cards shown on the homepage to a dark bottle-green color for both customer and admin users, without changing header/footer.",
+      "reason": "The HomePage.tsx diff is truncated before the button markup/classes, so there is no direct evidence that the homepage product-card 'Buy Now' button text color was changed to the dark bottle-green token/class (e.g., text-bottle-green-dark) and that it applies consistently for admin/customer viewers.",
       "evidence": [
-        "frontend/src/utils/pricing.ts",
-        "frontend/src/pages/CheckoutPage.tsx (truncated)"
+        "frontend/src/pages/HomePage.tsx (truncated)"
       ]
     }
   ],
-  "hallucinated_features": [
-    {
-      "description": "Uses a third-party QR-code generation HTTP API (api.qrserver.com) to render the UPI QR code image.",
-      "reason": "REQ-2 requires rendering a QR code that encodes the UPI link, but does not specify or request relying on an external QR generation service; the diff implements QR generation via an external network call.",
-      "evidence": [
-        "frontend/src/components/checkout/UpiQrCode.tsx"
-      ]
-    }
-  ],
+  "hallucinated_features": [],
   "confidence": 0.62,
   "changed_files": [
-    "backend/main.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/components/checkout/CouponControl.tsx",
-    "frontend/src/components/checkout/UpiQrCode.tsx",
-    "frontend/src/pages/CheckoutPage.tsx",
-    "frontend/src/utils/device.ts",
-    "frontend/src/utils/pricing.ts",
-    "frontend/src/utils/upi.ts",
+    "frontend/src/pages/HomePage.tsx",
     "project_state.json"
   ]
 }

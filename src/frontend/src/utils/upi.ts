@@ -45,3 +45,25 @@ export function generateAurelieUpiUri(amountInCents: number): string {
     currency: 'INR',
   });
 }
+
+/**
+ * Generate Google Pay specific deep link
+ * @param amountInCents Final payable amount in cents
+ * @returns Google Pay deep link string
+ */
+export function generateGooglePayUri(amountInCents: number): string {
+  const upiUri = generateAurelieUpiUri(amountInCents);
+  // Google Pay uses the standard UPI URI with gpay:// scheme or tez:// scheme
+  return `gpay://upi/pay?${upiUri.split('?')[1]}`;
+}
+
+/**
+ * Generate PhonePe specific deep link
+ * @param amountInCents Final payable amount in cents
+ * @returns PhonePe deep link string
+ */
+export function generatePhonePeUri(amountInCents: number): string {
+  const upiUri = generateAurelieUpiUri(amountInCents);
+  // PhonePe uses the standard UPI URI with phonepe:// scheme
+  return `phonepe://pay?${upiUri.split('?')[1]}`;
+}

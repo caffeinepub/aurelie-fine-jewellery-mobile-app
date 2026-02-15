@@ -1,94 +1,58 @@
-import { useState } from 'react';
-import { useNavigate, useParams } from '@tanstack/react-router';
+import { useParams, useNavigate } from '@tanstack/react-router';
 import { useGetProduct } from '../hooks/useQueries';
-import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { useCart } from '../hooks/useCart';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { Skeleton } from '../components/ui/skeleton';
-import { ArrowLeft, ShoppingCart, Zap } from 'lucide-react';
+import { Card, CardContent } from '../components/ui/card';
+import { ShoppingCart, ArrowLeft, Plus, Minus } from 'lucide-react';
+import { useState } from 'react';
+import { useCart } from '../hooks/useCart';
 import { toast } from 'sonner';
 import ProductMediaCarousel from '../components/ProductMediaCarousel';
-import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
 import CategoryImageCarousel from '../components/CategoryImageCarousel';
-import { isValidCategorySlug } from '../utils/productCategories';
+import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
+
+function formatINR(priceInCents: bigint): string {
+  const amount = Number(priceInCents) / 100;
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
 
 export default function ProductDetailPage() {
   const { productId } = useParams({ from: '/product/$productId' });
   const navigate = useNavigate();
-  const { identity } = useInternetIdentity();
   const { data: product, isLoading } = useGetProduct(productId);
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
 
-  const isAuthenticated = !!identity;
-
-  const formatINR = (priceInCents: bigint) => {
-    const amount = Number(priceInCents) / 100;
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
   const handleAddToCart = () => {
-    if (!isAuthenticated) {
-      toast.error('Please login to add items to cart');
-      return;
-    }
-
     if (!product) return;
-
-    if (!product.inStock) {
-      toast.error('This product is currently out of stock');
-      return;
-    }
-
     addItem(product, quantity);
-    toast.success(`Added ${quantity} item(s) to cart`);
-    navigate({ to: '/cart' });
+    toast.success(`${quantity} × ${product.name} added to cart`);
   };
 
   const handleBuyNow = () => {
-    if (!isAuthenticated) {
-      toast.error('Please login to make a purchase');
-      return;
-    }
-
-    if (!product) return;
-
-    if (!product.inStock) {
-      toast.error('This product is currently out of stock');
-      return;
-    }
-
-    addItem(product, quantity);
-    navigate({ to: '/checkout' });
+    handleAddToCart();
+    navigate({ to: '/cart' });
   };
 
-  // Check if product has a valid category for carousel display
-  const hasValidCategory = product?.category && isValidCategorySlug(product.category);
+  const incrementQuantity = () => setQuantity((prev) => prev + 1);
+  const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
 
   if (isLoading) {
     return (
       <CustomerPageStyleScope>
-        <div className="container px-4 py-8">
-          <Button variant="ghost" onClick={() => navigate({ to: '/' })} className="mb-6 gap-2 text-foreground">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Collection
-          </Button>
-          <div className="space-y-8">
-            <Skeleton className="h-64 w-full rounded-lg" />
-            <div className="grid gap-8 lg:grid-cols-2">
-              <Skeleton className="h-96 w-full rounded-lg" />
+        <div className="container mx-auto px-4 py-12">
+          <div className="animate-pulse space-y-8">
+            <div className="h-8 bg-muted rounded w-1/4" />
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="aspect-square bg-muted rounded" />
               <div className="space-y-4">
-                <Skeleton className="h-10 w-3/4" />
-                <Skeleton className="h-6 w-1/4" />
-                <Skeleton className="h-24 w-full" />
-                <Skeleton className="h-12 w-full" />
+                <div className="h-8 bg-muted rounded" />
+                <div className="h-4 bg-muted rounded w-3/4" />
+                <div className="h-24 bg-muted rounded" />
               </div>
             </div>
           </div>
@@ -100,130 +64,128 @@ export default function ProductDetailPage() {
   if (!product) {
     return (
       <CustomerPageStyleScope>
-        <div className="container px-4 py-8">
-          <Button variant="ghost" onClick={() => navigate({ to: '/' })} className="mb-6 gap-2 text-foreground">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Collection
-          </Button>
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Product not found.</p>
-          </div>
+        <div className="container mx-auto px-4 py-12 text-center">
+          <h1 className="text-2xl font-serif font-bold mb-4">Product not found</h1>
+          <Button onClick={() => navigate({ to: '/' })}>Return to Home</Button>
         </div>
       </CustomerPageStyleScope>
     );
   }
 
+  const hasValidCategory = product.category && product.category.trim() !== '';
+
   return (
     <CustomerPageStyleScope>
-      <div className="container px-4 py-8">
-        <Button variant="ghost" onClick={() => navigate({ to: '/' })} className="mb-6 gap-2 text-foreground hover:text-accent">
-          <ArrowLeft className="h-4 w-4" />
-          Back to Collection
-        </Button>
-
-        {/* Category Carousel Section - Only show if product has valid category */}
+      <div className="min-h-screen">
+        {/* Category Carousels at Top */}
         {hasValidCategory && (
-          <div className="mb-8 space-y-6">
-            <CategoryImageCarousel 
-              categorySlug={product.category} 
-              carouselIndex={1}
-            />
-            <CategoryImageCarousel 
-              categorySlug={product.category} 
-              carouselIndex={2}
-            />
-          </div>
+          <section className="w-full py-8 bg-beige-light/50">
+            <div className="container mx-auto px-4 space-y-6">
+              <CategoryImageCarousel categorySlug={product.category} carouselIndex={1} />
+              <CategoryImageCarousel categorySlug={product.category} carouselIndex={2} />
+            </div>
+          </section>
         )}
 
-        <div className="grid gap-8 lg:grid-cols-2">
-          {/* Product Media Carousel */}
-          <ProductMediaCarousel media={product.media} productName={product.name} />
+        {/* Product Details */}
+        <div className="container mx-auto px-4 py-12">
+          <Button
+            variant="ghost"
+            onClick={() => navigate({ to: '/' })}
+            className="mb-6 text-bottle-green-dark hover:text-bottle-green-medium"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Products
+          </Button>
 
-          {/* Product Details */}
-          <div className="flex flex-col gap-6">
+          <div className="grid md:grid-cols-2 gap-12">
+            {/* Product Media Carousel */}
             <div>
-              <div className="flex items-start justify-between mb-2">
-                <h1 className="font-serif text-4xl font-bold tracking-tight gold-text">{product.name}</h1>
-                {!product.inStock && (
-                  <Badge variant="secondary" className="bg-secondary text-secondary-foreground">Out of Stock</Badge>
-                )}
+              <ProductMediaCarousel media={product.media} productName={product.name} />
+            </div>
+
+            {/* Product Info */}
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-4xl font-serif font-bold text-bottle-green-dark mb-2">
+                  {product.name}
+                </h1>
+                <p className="text-3xl font-bold text-gold-dark">
+                  {formatINR(product.priceInCents)}
+                </p>
               </div>
-              <p className="text-3xl font-semibold gold-text">
-                {formatINR(product.priceInCents)}
-              </p>
-            </div>
 
-            <div>
-              <h2 className="font-semibold mb-2 gold-text">Description</h2>
-              <p className="text-muted-foreground leading-relaxed">{product.description}</p>
-            </div>
+              <div
+                className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${
+                  product.inStock
+                    ? 'bg-emerald-100 text-emerald-700'
+                    : 'bg-red-100 text-red-700'
+                }`}
+              >
+                {product.inStock ? 'In Stock' : 'Out of Stock'}
+              </div>
 
-            <Card className="gold-border chrome-surface backdrop-blur">
-              <CardHeader>
-                <CardTitle className="text-lg gold-text">Purchase Details</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <label className="text-sm font-medium">Quantity:</label>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      disabled={!product.inStock}
-                      className="border-gold-medium hover:bg-gold-medium/20"
-                    >
-                      -
-                    </Button>
-                    <span className="w-12 text-center font-medium">{quantity}</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setQuantity(quantity + 1)}
-                      disabled={!product.inStock}
-                      className="border-gold-medium hover:bg-gold-medium/20"
-                    >
-                      +
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between pt-4 border-t border-gold-medium/30">
-                  <span className="font-semibold">Total:</span>
-                  <span className="text-2xl font-bold gold-text">
-                    {formatINR(product.priceInCents * BigInt(quantity))}
-                  </span>
-                </div>
-
-                <div className="flex gap-3">
-                  <Button
-                    onClick={handleAddToCart}
-                    disabled={!product.inStock}
-                    variant="outline"
-                    className="flex-1 gap-2 border-gold-medium hover:bg-gold-medium/20"
-                    size="lg"
-                  >
-                    <ShoppingCart className="h-5 w-5" />
-                    Add to Cart
-                  </Button>
-                  <Button
-                    onClick={handleBuyNow}
-                    disabled={!product.inStock}
-                    className="flex-1 gap-2 gold-gradient text-secondary shadow-gold"
-                    size="lg"
-                  >
-                    <Zap className="h-5 w-5" />
-                    Buy Now
-                  </Button>
-                </div>
-
-                {!isAuthenticated && (
-                  <p className="text-sm text-muted-foreground text-center">
-                    Please login to make a purchase
+              <Card className="border-gold-medium/30 bg-off-white">
+                <CardContent className="p-6">
+                  <h2 className="text-lg font-serif font-semibold mb-3 text-bottle-green-dark">
+                    Description
+                  </h2>
+                  <p className="text-bottle-green-medium leading-relaxed">
+                    {product.description}
                   </p>
-                )}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+
+              {/* Quantity Selector */}
+              <div className="flex items-center gap-4">
+                <span className="font-medium text-bottle-green-dark">Quantity:</span>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={decrementQuantity}
+                    disabled={!product.inStock}
+                    className="border-gold-medium/30"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <span className="w-12 text-center font-semibold text-bottle-green-dark">
+                    {quantity}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={incrementQuantity}
+                    disabled={!product.inStock}
+                    className="border-gold-medium/30"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={!product.inStock}
+                  className="w-full bg-gold-medium hover:bg-gold-dark text-white customer-cta-btn"
+                  size="lg"
+                >
+                  <ShoppingCart className="h-5 w-5 mr-2" />
+                  Add to Cart
+                </Button>
+                <Button
+                  onClick={handleBuyNow}
+                  disabled={!product.inStock}
+                  variant="outline"
+                  className="w-full border-gold-medium text-white hover:bg-gold-medium/10 customer-cta-btn"
+                  size="lg"
+                >
+                  Buy Now
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

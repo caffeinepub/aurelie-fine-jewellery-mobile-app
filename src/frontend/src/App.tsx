@@ -17,6 +17,7 @@ const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage'));
 const CartPage = lazy(() => import('./pages/CartPage'));
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
 const ProductCategoryPage = lazy(() => import('./pages/ProductCategoryPage'));
+const ProfileDetailsPage = lazy(() => import('./pages/ProfileDetailsPage'));
 
 function AppContent() {
   const { identity } = useInternetIdentity();
@@ -93,6 +94,12 @@ const checkoutRoute = createRoute({
   component: CheckoutPage,
 });
 
+const profileRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/profile',
+  component: ProfileDetailsPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   productRoute,
@@ -102,6 +109,7 @@ const routeTree = rootRoute.addChildren([
   adminRoute,
   cartRoute,
   checkoutRoute,
+  profileRoute,
 ]);
 
 const router = createRouter({ routeTree });

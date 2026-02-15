@@ -68,6 +68,7 @@ export const OrderCreate = IDL.Record({
   'shippingAddress' : ShippingAddress,
 });
 export const UserProfile = IDL.Record({
+  'dob' : IDL.Text,
   'name' : IDL.Text,
   'email' : IDL.Text,
   'address' : IDL.Text,
@@ -200,6 +201,7 @@ export const idlService = IDL.Service({
     ),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getCarouselRedirect' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], ['query']),
   'getCategoryCarousel' : IDL.Func(
       [IDL.Text, IDL.Nat],
       [IDL.Vec(ExternalBlob)],
@@ -257,6 +259,7 @@ export const idlService = IDL.Service({
       [TransformationOutput],
       ['query'],
     ),
+  'updateCarouselRedirect' : IDL.Func([IDL.Text, IDL.Text], [], []),
   'updateCategoryCarousel' : IDL.Func(
       [IDL.Text, IDL.Nat, IDL.Vec(ExternalBlob)],
       [],
@@ -331,6 +334,7 @@ export const idlFactory = ({ IDL }) => {
     'shippingAddress' : ShippingAddress,
   });
   const UserProfile = IDL.Record({
+    'dob' : IDL.Text,
     'name' : IDL.Text,
     'email' : IDL.Text,
     'address' : IDL.Text,
@@ -460,6 +464,11 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getCarouselRedirect' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(IDL.Text)],
+        ['query'],
+      ),
     'getCategoryCarousel' : IDL.Func(
         [IDL.Text, IDL.Nat],
         [IDL.Vec(ExternalBlob)],
@@ -521,6 +530,7 @@ export const idlFactory = ({ IDL }) => {
         [TransformationOutput],
         ['query'],
       ),
+    'updateCarouselRedirect' : IDL.Func([IDL.Text, IDL.Text], [], []),
     'updateCategoryCarousel' : IDL.Func(
         [IDL.Text, IDL.Nat, IDL.Vec(ExternalBlob)],
         [],

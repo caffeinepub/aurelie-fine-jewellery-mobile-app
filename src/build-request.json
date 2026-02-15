@@ -1,109 +1,59 @@
 {
   "kind": "build_request",
-  "title": "Checkout: dynamic UPI QR/deep-link payment + AFJ10 coupon (10% off)",
+  "title": "Restore 16:9 homepage carousel and set Buy Now text color to dark bottle green (no header/footer changes)",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the Checkout page to support applying a coupon code at checkout: add an \"Apply Coupon\" input on the customer checkout flow, and when the code \"AFJ10\" is entered, apply a 10% discount to the final bill value shown in the checkout totals.",
+      "text": "Restore the homepage product carousel so it is visible on the Home page and behaves as it did previously: 16:9 aspect ratio, auto-play enabled, horizontal slide transitions, and left/right navigation arrows, using admin-managed images and redirect URLs.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-user-last"
         ],
         "quotes": [
-          "With the upi feature I would require a apply coupon slot in customer side at checkout page and apply 10% discount on final bill value when AFJ10 coupon code is entered."
+          "proceed with both the restored 16:9 product carousel on the home page"
         ]
       },
       "acceptanceCriteria": [
-        "Checkout page includes a coupon code input and an action to apply/remove the coupon.",
-        "Entering coupon code AFJ10 applies exactly 10% discount to the cart subtotal (before shipping) and updates the displayed total accordingly.",
-        "Entering an invalid/empty coupon shows a clear error message and does not change totals.",
-        "Discounted amount and final payable total are shown clearly in the \"Payment Summary\" breakdown (e.g., Subtotal, Discount, Total)."
+        "On the Home page, a carousel renders above the product catalog when there is at least one enabled carousel slide configured in Admin.",
+        "Carousel maintains a 16:9 aspect ratio (e.g., Tailwind `aspect-video`) across responsive breakpoints.",
+        "Carousel auto-advances through enabled slides without user interaction.",
+        "Carousel provides left/right arrow controls to navigate slides manually.",
+        "Clicking a slide navigates to that slide's configured redirect URL from the admin carousel settings.",
+        "No changes are made to the site header or footer components/styling."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Implement dynamic UPI payment generation on the Checkout page using the final payable amount from checkout (after coupon discount, if applied): generate a UPI deep link and render a QR code that encodes that UPI link.",
+      "text": "Update the 'Buy Now' button text color for product cards shown on the homepage to a dark bottle-green color for both customer and admin users, without changing header/footer.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-user-last"
         ],
         "quotes": [
-          "I would need the final payment amount from checkout to be generated with QR code, is that possible?",
-          "So your UPI link should be:\nupi://pay?pa=arjun.tapse-1@okhdfcbank&pn=Arjun%20Tapse&cu=INR",
-          "your app can create a UPI payment link like:\nupi://pay?pa=arjun.tapse-1@okhdfcbank&pn=Arjun%20Tapse&am=FINAL_AMOUNT&cu=INR"
+          "the dark bottle‑green Buy Now button text colour in homepage. Do not make changes to header and footer"
         ]
       },
       "acceptanceCriteria": [
-        "The generated UPI deep link uses payee VPA pa=arjun.tapse-1@okhdfcbank, payee name pn=Arjun Tapse, currency cu=INR, and includes am equal to the checkout final payable amount.",
-        "The QR code updates automatically whenever cart totals change (quantity changes) and whenever the AFJ10 coupon is applied/removed.",
-        "The QR code is visible on the payment step of checkout and is scannable (sufficient size/contrast).",
-        "A \"Copy UPI link\" (or equivalent) control is provided so users can copy the UPI URI if they cannot scan."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "On mobile devices, provide a \"Pay using UPI\" action that automatically opens the customer’s installed UPI app using the generated UPI deep link (upi://pay...).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "recent-messages"
-        ],
-        "quotes": [
-          "Yes and auto open the payment app of customer if they are using mobile"
-        ]
-      },
-      "acceptanceCriteria": [
-        "On mobile user agents, tapping the primary payment button triggers navigation to the generated upi://pay deep link (so the OS attempts to open a UPI app).",
-        "On non-mobile/desktop, the payment button does not break navigation and still allows completing payment via QR scan/copy link.",
-        "If the browser blocks deep linking, the UI shows a helpful error/toast instructing the user to use the QR code or copy the link."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Align order creation totals with the final payable amount logic: when AFJ10 is applied, ensure the OrderCreate.totalPriceInCents values sent to the backend reflect the discounted pricing (so recorded orders match what the user is instructed to pay).",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "recent-messages"
-        ],
-        "quotes": [
-          "Also need both the UPI feature and apply coupon to be applied. Confirm?"
-        ]
-      },
-      "acceptanceCriteria": [
-        "When AFJ10 is applied, the totalPriceInCents sent in createOrder mutations reflects a 10% reduction from the non-discounted amount.",
-        "When AFJ10 is not applied, order totals remain unchanged from current behavior.",
-        "No backend state migration is required (existing Order / OrderCreate types remain compatible)."
+        "On the Home page product grid, the 'Buy Now' button text is dark bottle green (use the existing bottle-green dark token/class used elsewhere, e.g., `text-bottle-green-dark`, rather than white).",
+        "The updated 'Buy Now' text color is visible consistently regardless of whether the viewer is an admin or a customer (same Home page route).",
+        "Only the homepage 'Buy Now' button text color is changed; header and footer remain unchanged."
       ]
     }
   ],
   "constraints": [
-    "Use English for any user-facing text.",
-    "Backend must remain a single Motoko actor in backend/main.mo; only add migration.mo if an upgrade/state migration is necessary.",
-    "Do not edit files under frontend/src/components/ui or any frontend immutablePaths listed in SYSTEM_CONTEXT; compose existing UI components instead.",
-    "UPI payee details must be exactly: pa=arjun.tapse-1@okhdfcbank, pn=Arjun Tapse, cu=INR."
+    "Do not make any changes to header and footer (e.g., do not modify `frontend/src/components/Layout.tsx` or `frontend/src/components/footer/*`).",
+    "Do not edit any files under frontend immutable paths (per SYSTEM_CONTEXT), compose existing UI components instead."
   ],
   "nonGoals": [
-    "Do not implement third-party payment status verification for UPI (no bank/UPI gateway confirmation flow).",
-    "Do not add third-party authentication providers (only Internet Identity is supported).",
-    "Do not introduce external databases or non-Motoko backend services.",
-    "Do not redesign unrelated pages (home, product listing, admin dashboards) beyond what is necessary for checkout changes."
+    "Changing carousel slide administration UX beyond what is required for the homepage carousel to display and link correctly.",
+    "Changing button background colors, sizing, or behavior beyond the requested 'Buy Now' text color change on the homepage.",
+    "Adding new authentication methods or third-party integrations."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

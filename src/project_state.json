@@ -1,42 +1,29 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "E-commerce web/PWA app (Aurelie Fine Jewellery) with checkout enhancements: dynamic UPI payment (QR + deep link) and coupon-based discounting.",
+  "summary": "Restore homepage product carousel (as in v66) with admin-controlled images/URLs and update homepage Buy Now button text color; avoid changes to header/footer.",
   "architectural_notes": [
-    "Checkout should compute final payable amount (after discounts) and use it to generate the UPI payment URI and corresponding QR code; on mobile, launch the UPI app via the UPI deep link."
+    "Do not make changes to header and footer while implementing homepage carousel and button text color updates.",
+    "Homepage carousel content is driven by admin-configured images and destination URLs."
   ],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Deployment encountered an error during rebuild/redeploy of draft app."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-update-the-checkout-page-to-support-applying-a-coupon-code-at-checkout-add-an-apply-coupon-input-on-the-customer-checkout-flow-and-when-the-code-afj10-is-entered-apply-a-10-discount-to-the-final-bill-value-shown-in-the-checkout-totals",
-      "title": "Update the Checkout page to support applying a coupon code at checkout: add an \"Apply Coupon\" input on the customer checkout flow, and when the code \"AFJ10\" is entered, apply a 10% discount to the final bill value shown in the checkout totals.",
+      "id": "feature-restore-the-homepage-product-carousel-so-it-is-visible-on-the-home-page-and-behaves-as-it-did-previously-16-9-aspect-ratio-auto-play-enabled-horizontal-slide-transitions-and-left-right-navigation-arrows-using-admin-managed-images-and-redirect-urls",
+      "title": "Restore the homepage product carousel so it is visible on the Home page and behaves as it did previously: 16:9 aspect ratio, auto-play enabled, horizontal slide transitions, and left/right navigation arrows, using admin-managed images and redirect URLs.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-dynamic-upi-payment-generation-on-the-checkout-page-using-the-final-payable-amount-from-checkout-after-coupon-discount-if-applied-generate-a-upi-deep-link-and-render-a-qr-code-that-encodes-that-upi-link",
-      "title": "Implement dynamic UPI payment generation on the Checkout page using the final payable amount from checkout (after coupon discount, if applied): generate a UPI deep link and render a QR code that encodes that UPI link.",
+      "id": "feature-update-the-buy-now-button-text-color-for-product-cards-shown-on-the-homepage-to-a-dark-bottle-green-color-for-both-customer-and-admin-users-without-changing-header-footer",
+      "title": "Update the 'Buy Now' button text color for product cards shown on the homepage to a dark bottle-green color for both customer and admin users, without changing header/footer.",
       "reqIds": [
         "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-on-mobile-devices-provide-a-pay-using-upi-action-that-automatically-opens-the-customer-s-installed-upi-app-using-the-generated-upi-deep-link-upi-pay",
-      "title": "On mobile devices, provide a \"Pay using UPI\" action that automatically opens the customer’s installed UPI app using the generated UPI deep link (upi://pay...).",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-align-order-creation-totals-with-the-final-payable-amount-logic-when-afj10-is-applied-ensure-the-ordercreate-totalpriceincents-values-sent-to-the-backend-reflect-the-discounted-pricing-so-recorded-orders-match-what-the-user-is-instructed-to-pay",
-      "title": "Align order creation totals with the final payable amount logic: when AFJ10 is applied, ensure the OrderCreate.totalPriceInCents values sent to the backend reflect the discounted pricing (so recorded orders match what the user is instructed to pay).",
-      "reqIds": [
-        "REQ-4"
       ],
       "version": 1
     }
@@ -44,18 +31,18 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add dynamic UPI payment at checkout: generate UPI deep link + QR code using final cart total (arjun.tapse-1@okhdfcbank) and auto-open UPI app on mobile.",
+      "summary": "Re-add homepage product carousel (as in v66) using admin-controlled images + URLs; 16:9 aspect ratio; autoplay; horizontal scrolling with arrows; same placement as before.",
       "reqIds": [],
-      "status": "pending"
+      "status": "in_progress"
     },
     {
       "id": "AR-2",
-      "summary": "Add Apply Coupon field at checkout: when code AFJ10 is entered, apply 10% discount to final bill value (affects UPI amount/total).",
+      "summary": "Update 'Buy Now' button text color for products listed on homepage (both customer and admin) to dark bottle green; do not change header/footer.",
       "reqIds": [],
-      "status": "pending"
+      "status": "in_progress"
     }
   ],
-  "projectName": "Checkout: dynamic UPI QR/deep-link payment + AFJ10 coupon (10% off)",
+  "projectName": "Restore 16:9 homepage carousel and set Buy Now text color to dark bottle green (no header/footer changes)",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

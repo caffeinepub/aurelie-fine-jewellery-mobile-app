@@ -33,3 +33,33 @@ export function useUpdateCategoryCarouselImages(categorySlug: string, carouselIn
     },
   });
 }
+
+// Query hook for getting carousel redirect URL
+export function useGetCarouselRedirect(categorySlug: string) {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<string | null>({
+    queryKey: ['carouselRedirect', categorySlug],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getCarouselRedirect(categorySlug);
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+// Mutation hook for updating carousel redirect URL
+export function useUpdateCarouselRedirect(categorySlug: string) {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (redirectUrl: string) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.updateCarouselRedirect(categorySlug, redirectUrl);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['carouselRedirect', categorySlug] });
+    },
+  });
+}

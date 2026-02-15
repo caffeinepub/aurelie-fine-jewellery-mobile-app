@@ -1,101 +1,45 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Checkout: AFJ10 coupon + dynamic UPI deep link & QR",
+  "title": "Restore 16:9 homepage carousel behavior and update Home page Buy Now text color",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add an Apply Coupon control in checkout and apply AFJ10 for 10% off the subtotal with clear totals breakdown and error handling.",
+      "summary": "Ensure the Home page product carousel is visible (when enabled slides exist), stays 16:9, auto-plays with horizontal transitions, supports left/right arrows, and redirects using admin-configured URLs—without header/footer changes.",
       "acceptanceCriteria": [
-        "Checkout page includes a coupon code input and an action to apply/remove the coupon.",
-        "Entering coupon code AFJ10 applies exactly 10% discount to the cart subtotal (before shipping) and updates the displayed total accordingly.",
-        "Entering an invalid/empty coupon shows a clear error message and does not change totals.",
-        "Discounted amount and final payable total are shown clearly in the \"Payment Summary\" breakdown (e.g., Subtotal, Discount, Total)."
+        "On the Home page, a carousel renders above the product catalog when there is at least one enabled carousel slide configured in Admin.",
+        "Carousel maintains a 16:9 aspect ratio (e.g., Tailwind `aspect-video`) across responsive breakpoints.",
+        "Carousel auto-advances through enabled slides without user interaction.",
+        "Carousel provides left/right arrow controls to navigate slides manually.",
+        "Clicking a slide navigates to that slide's configured redirect URL from the admin carousel settings.",
+        "No changes are made to the site header or footer components/styling."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/utils/pricing.ts",
-          "operation": "create",
-          "description": "Add pricing helpers for checkout: compute subtotal in cents from cart items, validate coupon code (AFJ10), compute discount (10%) and final payable amount with consistent rounding; keep logic centralized for reuse across UI totals, UPI amount, and order creation."
-        },
-        {
-          "path": "frontend/src/components/checkout/CouponControl.tsx",
-          "operation": "create",
-          "description": "Create a checkout-only CouponControl component that uses existing shadcn/ui primitives (Input, Button, etc.) to support applying/removing a coupon and displaying inline validation errors. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/CheckoutPage.tsx",
+          "path": "frontend/src/components/HomeCarousel.tsx",
           "operation": "modify",
-          "description": "Integrate CouponControl into the checkout payment flow; store applied coupon state, show clear error messaging for invalid/empty coupon attempts, and update the Payment Summary breakdown to show Subtotal, Discount, and Total based on pricing helpers."
+          "description": "Confirm the homepage carousel uses enabled admin-managed slides (sorted by order), keeps a 16:9 container (aspect-video), auto-plays, uses horizontal slide transitions, and provides left/right arrow navigation controls; ensure slide clicks navigate to the admin-configured redirect URL. Use the blob-storage ExternalBlob.getDirectURL() rendering pattern for slide images. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "modify",
+          "description": "Ensure the HomeCarousel is wired above the product catalog on the Home page and that it renders only when enabled slides exist (via HomeCarousel returning null), without touching header/footer-related files. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Generate a UPI deep link from the final payable amount and render a QR code that encodes that link, with a copy-link control and automatic updates when totals change.",
+      "summary": "Change only the Home page product-card 'Buy Now' button text color to dark bottle green for all viewers (admin/customer), without header/footer changes.",
       "acceptanceCriteria": [
-        "The generated UPI deep link uses payee VPA pa=arjun.tapse-1@okhdfcbank, payee name pn=Arjun Tapse, currency cu=INR, and includes am equal to the checkout final payable amount.",
-        "The QR code updates automatically whenever cart totals change (quantity changes) and whenever the AFJ10 coupon is applied/removed.",
-        "The QR code is visible on the payment step of checkout and is scannable (sufficient size/contrast).",
-        "A \"Copy UPI link\" (or equivalent) control is provided so users can copy the UPI URI if they cannot scan."
+        "On the Home page product grid, the 'Buy Now' button text is dark bottle green (use the existing bottle-green dark token/class used elsewhere, e.g., `text-bottle-green-dark`, rather than white).",
+        "The updated 'Buy Now' text color is visible consistently regardless of whether the viewer is an admin or a customer (same Home page route).",
+        "Only the homepage 'Buy Now' button text color is changed; header and footer remain unchanged."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/utils/upi.ts",
-          "operation": "create",
-          "description": "Add UPI utilities to build the required UPI URI (upi://pay...) with exact payee details (pa, pn, cu) and am derived from final payable amount; include safe URL encoding for pn and stable amount formatting."
-        },
-        {
-          "path": "frontend/src/components/checkout/UpiQrCode.tsx",
-          "operation": "create",
-          "description": "Create a UpiQrCode component that renders a QR code for a provided UPI URI and includes a \"Copy UPI link\" action using existing UI components. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/CheckoutPage.tsx",
+          "path": "frontend/src/pages/HomePage.tsx",
           "operation": "modify",
-          "description": "On the payment step, compute the final payable amount (after coupon) and generate the UPI deep link using UPI utilities; render UpiQrCode and ensure it re-renders when cart items/quantities change and when coupon is applied/removed."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Provide a mobile Pay using UPI action that deep-links into installed UPI apps, with desktop-safe behavior and helpful fallback messaging if blocked.",
-      "acceptanceCriteria": [
-        "On mobile user agents, tapping the primary payment button triggers navigation to the generated upi://pay deep link (so the OS attempts to open a UPI app).",
-        "On non-mobile/desktop, the payment button does not break navigation and still allows completing payment via QR scan/copy link.",
-        "If the browser blocks deep linking, the UI shows a helpful error/toast instructing the user to use the QR code or copy the link."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/utils/device.ts",
-          "operation": "create",
-          "description": "Add a small device detection helper (mobile vs non-mobile) appropriate for deciding whether to attempt UPI deep-link navigation from the primary payment action."
-        },
-        {
-          "path": "frontend/src/pages/CheckoutPage.tsx",
-          "operation": "modify",
-          "description": "Update the primary payment action on the payment step: on mobile, attempt to open the generated upi:// deep link; on desktop, keep the flow stable (QR/copy link remain usable). Add guarded fallback toast messaging when deep linking appears blocked (e.g., timeout/visibility heuristics) instructing user to use QR or copy link."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Ensure order creation uses the same discounted total logic as checkout so recorded order totals match the final payable amount when AFJ10 is applied.",
-      "acceptanceCriteria": [
-        "When AFJ10 is applied, the totalPriceInCents sent in createOrder mutations reflects a 10% reduction from the non-discounted amount.",
-        "When AFJ10 is not applied, order totals remain unchanged from current behavior.",
-        "No backend state migration is required (existing Order / OrderCreate types remain compatible)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/utils/pricing.ts",
-          "operation": "modify",
-          "description": "Extend pricing helpers to support computing discounted line totals in cents (per cart item) using the same coupon logic and rounding approach used for checkout totals, so order creation can remain consistent with displayed payable amount."
-        },
-        {
-          "path": "frontend/src/pages/CheckoutPage.tsx",
-          "operation": "modify",
-          "description": "Adjust createOrder input construction so totalPriceInCents sent to the backend reflects the discounted amount when AFJ10 is applied (and remains unchanged otherwise), using centralized pricing helpers to ensure totals match the Payment Summary and the UPI amount."
+          "description": "Update the Home page product grid 'Buy Now' button styling so its text uses the existing dark bottle-green token/class (e.g., text-bottle-green-dark) and is not forced to white by any homepage CTA overrides (e.g., remove customer-cta-btn from Buy Now only). Keep all other button behavior and header/footer untouched. Verify the component's usage instructions before implementing."
         }
       ]
     }

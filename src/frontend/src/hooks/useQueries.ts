@@ -24,6 +24,22 @@ export function useGetCallerUserProfile() {
   };
 }
 
+export function useSaveCallerUserProfile() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (profile: UserProfile) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.saveCallerUserProfile(profile);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['isAdmin'] });
+    },
+  });
+}
+
 // Admin Check
 export function useIsCallerAdmin() {
   const { actor, isFetching: actorFetching } = useActor();
@@ -414,19 +430,6 @@ export function useGetSiteContent() {
   });
 }
 
-export function useGetContactInfo() {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<{ contactEmail: string; phoneNumber: string; address: string }>({
-    queryKey: ['contactInfo'],
-    queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.getContactInfo();
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
-
 export function useUpdateSiteContent() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
@@ -438,7 +441,6 @@ export function useUpdateSiteContent() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['siteContent'] });
-      queryClient.invalidateQueries({ queryKey: ['contactInfo'] });
     },
   });
 }

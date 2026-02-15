@@ -8,7 +8,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Separator } from '../components/ui/separator';
-import { Loader2, CreditCard, ShieldCheck, Lock, CheckCircle2, MapPin, User, Mail, Phone, Smartphone } from 'lucide-react';
+import { Loader2, CreditCard, ShieldCheck, Lock, CheckCircle2, MapPin, User, Mail, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import type { OrderCreate, ShippingAddress } from '../backend';
 import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
@@ -21,7 +21,7 @@ import {
   formatINR,
   computeDiscountedLineTotal,
 } from '../utils/pricing';
-import { generateAurelieUpiUri } from '../utils/upi';
+import { generateAurelieUpiUri, generateGooglePayUri, generatePhonePeUri } from '../utils/upi';
 import { isMobileDevice } from '../utils/device';
 
 export default function CheckoutPage() {
@@ -63,8 +63,10 @@ export default function CheckoutPage() {
   const discountInCents = computeDiscountInCents(subtotalInCents, appliedCoupon);
   const finalAmountInCents = computeFinalAmountInCents(subtotalInCents, discountInCents);
 
-  // Generate UPI URI based on final amount
+  // Generate UPI URIs based on final amount
   const upiUri = generateAurelieUpiUri(finalAmountInCents);
+  const googlePayUri = generateGooglePayUri(finalAmountInCents);
+  const phonePeUri = generatePhonePeUri(finalAmountInCents);
 
   if (!isAuthenticated) {
     navigate({ to: '/' });
@@ -163,35 +165,30 @@ export default function CheckoutPage() {
     }
   };
 
-  const handleMobilePayment = () => {
+  const handleAppPayment = (appUri: string, appName: string) => {
     if (!upiId.trim()) {
       toast.error('Please enter your UPI ID');
       return;
     }
 
-    // On mobile, attempt to open UPI app
-    if (isMobileDevice()) {
-      try {
-        window.location.href = upiUri;
-        
-        // Set a timeout to show fallback message if deep link fails
-        setTimeout(() => {
-          toast.info('If UPI app did not open, please scan the QR code or copy the link', {
-            duration: 5000,
-          });
-        }, 1500);
-      } catch (error) {
-        toast.error('Unable to open UPI app. Please scan the QR code or copy the link.');
-      }
-    } else {
-      // On desktop, just proceed with order creation
-      handlePayment();
+    // Attempt to open the app
+    try {
+      window.location.href = appUri;
+      
+      // Set a timeout to show fallback message if deep link fails
+      setTimeout(() => {
+        toast.info(`If ${appName} did not open, please scan the QR code or copy the link`, {
+          duration: 5000,
+        });
+      }, 1500);
+    } catch (error) {
+      toast.error(`Unable to open ${appName}. Please scan the QR code or copy the link.`);
     }
   };
 
   return (
     <CustomerPageStyleScope>
-      <div className="container px-4 py-12 max-w-7xl mx-auto" data-customer-control="true">
+      <div className="container px-4 py-12 max-w-7xl mx-auto" data-checkout-scope="true">
         {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="font-serif text-5xl font-bold tracking-tight mb-4">
@@ -248,7 +245,7 @@ export default function CheckoutPage() {
           <div className="lg:col-span-3 space-y-6">
             {/* Shipping Address Step */}
             {checkoutStep === 'address' && (
-              <Card className="gold-border chrome-surface backdrop-blur-sm shadow-elegant">
+              <Card className="gold-border offwhite-surface backdrop-blur-sm shadow-elegant">
                 <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-bottle-green-light/20 to-bottle-green-medium/20">
                   <CardTitle className="gold-text flex items-center gap-3 text-2xl">
                     <div className="p-2 rounded-lg bg-gold-gradient">
@@ -340,7 +337,7 @@ export default function CheckoutPage() {
 
                       <Button
                         onClick={handleConfirmAddress}
-                        className="w-full h-14 text-lg font-semibold gold-gradient text-white shadow-gold hover:shadow-gold/70 transition-all duration-300 hover:scale-[1.02]"
+                        className="w-full h-14 text-lg font-semibold"
                         size="lg"
                       >
                         <CheckCircle2 className="h-5 w-5 mr-2" />
@@ -356,7 +353,7 @@ export default function CheckoutPage() {
             {checkoutStep === 'payment' && (
               <>
                 {/* Confirmed Address Display */}
-                <Card className="gold-border chrome-surface backdrop-blur-sm shadow-elegant">
+                <Card className="gold-border offwhite-surface backdrop-blur-sm shadow-elegant">
                   <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-bottle-green-light/20 to-bottle-green-medium/20">
                     <div className="flex items-center justify-between">
                       <CardTitle className="gold-text flex items-center gap-3 text-xl">
@@ -384,7 +381,7 @@ export default function CheckoutPage() {
                 </Card>
 
                 {/* Coupon Section */}
-                <Card className="gold-border chrome-surface backdrop-blur-sm shadow-elegant">
+                <Card className="gold-border offwhite-surface backdrop-blur-sm shadow-elegant">
                   <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-bottle-green-light/20 to-bottle-green-medium/20">
                     <CardTitle className="gold-text flex items-center gap-3 text-xl">
                       Apply Discount Coupon
@@ -400,7 +397,7 @@ export default function CheckoutPage() {
                 </Card>
 
                 {/* UPI Payment Card */}
-                <Card className="gold-border chrome-surface backdrop-blur-sm shadow-elegant">
+                <Card className="gold-border offwhite-surface backdrop-blur-sm shadow-elegant">
                   <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-bottle-green-light/20 to-bottle-green-medium/20">
                     <CardTitle className="gold-text flex items-center gap-3 text-2xl">
                       <div className="p-2 rounded-lg bg-gold-gradient">
@@ -420,6 +417,39 @@ export default function CheckoutPage() {
 
                     <Separator className="bg-gold-medium/20" />
 
+                    {/* Payment App Buttons */}
+                    <div className="space-y-4">
+                      <h3 className="font-serif text-lg font-semibold gold-text text-center">
+                        Or Pay with App
+                      </h3>
+                      <div className="flex gap-4 justify-center">
+                        <button
+                          onClick={() => handleAppPayment(googlePayUri, 'Google Pay')}
+                          className="flex flex-col items-center gap-2 p-4 rounded-lg border-2 border-gold-medium/30 hover:border-gold-medium hover:bg-gold-medium/5 transition-all"
+                        >
+                          <img
+                            src="/assets/generated/gpay-icon.dim_128x128.png"
+                            alt="Google Pay"
+                            className="w-16 h-16 object-contain"
+                          />
+                          <span className="text-sm font-medium gold-text">Google Pay</span>
+                        </button>
+                        <button
+                          onClick={() => handleAppPayment(phonePeUri, 'PhonePe')}
+                          className="flex flex-col items-center gap-2 p-4 rounded-lg border-2 border-gold-medium/30 hover:border-gold-medium hover:bg-gold-medium/5 transition-all"
+                        >
+                          <img
+                            src="/assets/generated/phonepe-icon.dim_128x128.png"
+                            alt="PhonePe"
+                            className="w-16 h-16 object-contain"
+                          />
+                          <span className="text-sm font-medium gold-text">PhonePe</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <Separator className="bg-gold-medium/20" />
+
                     {/* UPI ID Input */}
                     <div className="space-y-3">
                       <Label htmlFor="upiId" className="text-base font-semibold gold-text">
@@ -431,43 +461,31 @@ export default function CheckoutPage() {
                         placeholder="yourname@upi"
                         value={upiId}
                         onChange={(e) => setUpiId(e.target.value)}
-                        className="h-14 text-lg border-2 border-gold-medium/30 focus:border-gold-medium focus:ring-gold-medium/20 bg-ivory-base/30"
+                        className="h-12 text-base border-2 border-gold-medium/30 focus:border-gold-medium focus:ring-gold-medium/20 bg-ivory-base/30"
                       />
-                      <p className="text-sm text-muted-foreground flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-gold-medium mt-0.5 flex-shrink-0" />
-                        <span>
-                          Enter your UPI ID for order confirmation. Payment will be processed via UPI.
-                        </span>
+                      <p className="text-xs text-muted-foreground">
+                        Enter the UPI ID you'll use for payment confirmation
                       </p>
                     </div>
 
-                    {/* Mobile Payment Button */}
-                    {isMobileDevice() && (
-                      <Button
-                        onClick={handleMobilePayment}
-                        disabled={isProcessing}
-                        className="w-full h-14 text-lg font-semibold gold-gradient text-white shadow-gold hover:shadow-gold/70 transition-all duration-300 hover:scale-[1.02]"
-                        size="lg"
-                      >
-                        {isProcessing ? (
-                          <>
-                            <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                            Processing...
-                          </>
-                        ) : (
-                          <>
-                            <Smartphone className="h-5 w-5 mr-2" />
-                            Pay with UPI App
-                          </>
-                        )}
-                      </Button>
-                    )}
+                    <div className="bg-bottle-green-dark/5 border-l-4 border-gold-medium p-4 rounded-r-lg">
+                      <div className="flex gap-3">
+                        <ShieldCheck className="h-5 w-5 text-gold-medium flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-semibold text-sm gold-text mb-1">
+                            Secure Payment Process
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            After completing the UPI payment, click "Confirm Payment" below to finalize your order.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
 
-                    {/* Desktop/Fallback Payment Button */}
                     <Button
                       onClick={handlePayment}
-                      disabled={isProcessing}
-                      className="w-full h-14 text-lg font-semibold gold-gradient text-white shadow-gold hover:shadow-gold/70 transition-all duration-300 hover:scale-[1.02]"
+                      disabled={isProcessing || !upiId.trim()}
+                      className="w-full h-14 text-lg font-semibold"
                       size="lg"
                     >
                       {isProcessing ? (
@@ -478,25 +496,10 @@ export default function CheckoutPage() {
                       ) : (
                         <>
                           <CheckCircle2 className="h-5 w-5 mr-2" />
-                          Confirm Order
+                          Confirm Payment & Place Order
                         </>
                       )}
                     </Button>
-
-                    {/* Security Notice */}
-                    <div className="bg-bottle-green-dark/5 border-l-4 border-gold-medium p-4 rounded-r-lg">
-                      <div className="flex gap-3">
-                        <ShieldCheck className="h-5 w-5 text-gold-medium flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-semibold text-sm gold-text mb-1">
-                            Secure Transaction
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Your payment information is encrypted and secure. Complete payment via UPI to confirm your order.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
                   </CardContent>
                 </Card>
               </>
@@ -505,89 +508,84 @@ export default function CheckoutPage() {
 
           {/* Order Summary - Right Side */}
           <div className="lg:col-span-2">
-            <Card className="gold-border chrome-surface backdrop-blur-sm shadow-elegant sticky top-8">
+            <Card className="gold-border offwhite-surface backdrop-blur-sm shadow-elegant sticky top-4">
               <CardHeader className="border-b border-gold-medium/20 bg-gradient-to-r from-bottle-green-light/20 to-bottle-green-medium/20">
-                <CardTitle className="gold-text text-2xl">
-                  Payment Summary
-                </CardTitle>
+                <CardTitle className="gold-text text-2xl">Order Summary</CardTitle>
               </CardHeader>
               <CardContent className="pt-6 space-y-6">
-                {/* Order Items */}
+                {/* Cart Items */}
                 <div className="space-y-4">
-                  <h3 className="font-serif text-lg font-semibold gold-text">
-                    Order Items ({items.length})
-                  </h3>
-                  <div className="space-y-3">
-                    {items.map((item) => (
-                      <div
-                        key={item.product.id}
-                        className="flex justify-between items-start py-3 border-b border-gold-medium/10 last:border-0"
-                      >
-                        <div className="flex-1 pr-4">
-                          <p className="font-semibold text-sm text-gold-light">
+                  {items.map((item) => {
+                    const firstImage = item.product.media.images[0];
+                    const imageUrl = firstImage ? firstImage.getDirectURL() : null;
+
+                    return (
+                      <div key={item.product.id} className="flex gap-4">
+                        <div className="w-20 h-20 rounded-lg overflow-hidden bg-beige-light flex-shrink-0">
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={item.product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <CreditCard className="h-8 w-8 text-muted-foreground" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-sm gold-text line-clamp-1">
                             {item.product.name}
+                          </h4>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Qty: {item.quantity}
                           </p>
-                          <p className="text-xs text-muted-foreground">
-                            Qty: {item.quantity} × {formatINR(Number(item.product.priceInCents))}
+                          <p className="text-sm font-semibold text-gold-medium mt-1">
+                            {formatINR(Number(item.product.priceInCents))}
                           </p>
                         </div>
-                        <span className="font-bold text-sm gold-text whitespace-nowrap">
-                          {formatINR(Number(item.product.priceInCents) * item.quantity)}
-                        </span>
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
 
                 <Separator className="bg-gold-medium/20" />
 
                 {/* Price Breakdown */}
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-muted-foreground">
-                      Subtotal
-                    </span>
-                    <span className="text-sm font-semibold">
-                      {formatINR(subtotalInCents)}
-                    </span>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="font-medium">{formatINR(subtotalInCents)}</span>
                   </div>
-
                   {appliedCoupon && discountInCents > 0 && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-gold-medium">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-emerald-600 font-medium">
                         Discount ({appliedCoupon})
                       </span>
-                      <span className="text-sm font-semibold text-gold-medium">
+                      <span className="text-emerald-600 font-semibold">
                         -{formatINR(discountInCents)}
                       </span>
                     </div>
                   )}
-
                   <Separator className="bg-gold-medium/20" />
-
-                  <div className="flex justify-between items-center pt-2">
-                    <span className="text-lg font-bold gold-text">
-                      Total Payable
-                    </span>
-                    <span className="text-2xl font-bold gold-text">
-                      {formatINR(finalAmountInCents)}
-                    </span>
+                  <div className="flex justify-between text-lg font-bold">
+                    <span className="gold-text">Total</span>
+                    <span className="gold-text">{formatINR(finalAmountInCents)}</span>
                   </div>
                 </div>
 
-                {/* Trust Badges */}
-                <div className="pt-4 space-y-3">
-                  <div className="flex items-center gap-3 text-sm">
-                    <ShieldCheck className="h-5 w-5 text-gold-medium flex-shrink-0" />
-                    <span className="text-muted-foreground">
-                      100% Secure Payment
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <Lock className="h-5 w-5 text-gold-medium flex-shrink-0" />
-                    <span className="text-muted-foreground">
-                      Encrypted Transaction
-                    </span>
+                <div className="bg-bottle-green-dark/5 border border-gold-medium/20 p-4 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <Lock className="h-5 w-5 text-gold-medium flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-semibold gold-text mb-1">
+                        Secure Checkout
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Your payment information is encrypted and secure
+                      </p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
