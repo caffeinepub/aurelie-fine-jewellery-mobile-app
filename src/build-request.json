@@ -1,56 +1,154 @@
 {
   "kind": "build_request",
-  "title": "Restore 16:9 homepage carousel and set Buy Now text color to dark bottle green (no header/footer changes)",
+  "title": "Admin category editing and orders pages (exclude Excel export; keep homepage unchanged)",
+  "projectName": "Aurelie Ops Update",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Restore the homepage product carousel so it is visible on the Home page and behaves as it did previously: 16:9 aspect ratio, auto-play enabled, horizontal slide transitions, and left/right navigation arrows, using admin-managed images and redirect URLs.",
+      "text": "Keep the main home page unchanged (no functional or UI changes to the existing homepage route and HomePage component).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-last"
+          "msg-5"
         ],
         "quotes": [
-          "proceed with both the restored 16:9 product carousel on the home page"
+          "Proceed. And do not make any changes in main home page."
         ]
       },
       "acceptanceCriteria": [
-        "On the Home page, a carousel renders above the product catalog when there is at least one enabled carousel slide configured in Admin.",
-        "Carousel maintains a 16:9 aspect ratio (e.g., Tailwind `aspect-video`) across responsive breakpoints.",
-        "Carousel auto-advances through enabled slides without user interaction.",
-        "Carousel provides left/right arrow controls to navigate slides manually.",
-        "Clicking a slide navigates to that slide's configured redirect URL from the admin carousel settings.",
-        "No changes are made to the site header or footer components/styling."
+        "Navigating to / renders the same HomePage behavior and layout as before this update.",
+        "No new admin/customer features are added to the homepage UI."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Update the 'Buy Now' button text color for product cards shown on the homepage to a dark bottle-green color for both customer and admin users, without changing header/footer.",
-      "target": "frontend",
+      "text": "Implement dedicated admin edit pages for each product category that allow admins to edit category fields (at minimum: name, display order/position, and description) and persist those changes in the backend.",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-user-last"
+          "msg-4",
+          "msg-13"
         ],
         "quotes": [
-          "the dark bottle‑green Buy Now button text colour in homepage. Do not make changes to header and footer"
+          "Dedicated edit pages for each product category"
         ]
       },
       "acceptanceCriteria": [
-        "On the Home page product grid, the 'Buy Now' button text is dark bottle green (use the existing bottle-green dark token/class used elsewhere, e.g., `text-bottle-green-dark`, rather than white).",
-        "The updated 'Buy Now' text color is visible consistently regardless of whether the viewer is an admin or a customer (same Home page route).",
-        "Only the homepage 'Buy Now' button text color is changed; header and footer remain unchanged."
+        "Admin can open a category-specific edit page for each category and update category metadata fields.",
+        "Category metadata updates persist after refresh and are reflected anywhere categories are listed/used.",
+        "Non-admin users cannot access category edit pages or perform category update mutations."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Add multi-image management for product categories in the admin UI, supporting adding, removing, and reordering category images, and persist the ordered image list in the backend.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-4",
+          "msg-13"
+        ],
+        "quotes": [
+          "Full multi-image management for categories (add, remove, reorder)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin can upload multiple images for a category, remove specific images, and reorder images.",
+        "The saved order is preserved and returned in the same order by the backend.",
+        "Enforce any existing per-category image limits consistently across UI and backend (show a clear validation message in English if exceeded)."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Apply the same multi-image management workflow to product-category carousels (category-specific carousels), including add/remove/reorder, while keeping existing redirect URL editing behavior.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-4",
+          "msg-13"
+        ],
+        "quotes": [
+          "Same multi-image editing system applied to product-category carousels"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin can manage images for each category carousel with add/remove/reorder controls.",
+        "Carousel image order is preserved on save and reload.",
+        "Existing redirect URL configuration remains available and functional."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Create a dedicated authenticated Customer Orders page that shows the logged-in user’s order history, current status, and full order details (including cancellation details when applicable), and make it reachable from an \"Orders\" entry in the authenticated user navigation.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4",
+          "msg-13"
+        ],
+        "quotes": [
+          "Customer Orders Page: order history, status, and full order details"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Authenticated users can navigate to a dedicated Orders page and see only their own orders.",
+        "The page shows a list/history view and supports viewing full details for a selected order.",
+        "Order statuses are displayed clearly, including cancelled orders and cancellation reason when present.",
+        "Unauthenticated users are prompted to authenticate (consistent with existing app patterns) before viewing orders."
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Create a dedicated Admin Orders page that allows admins to view all orders, update order status, cancel orders (with reason), and assign tracking information; include date-range filtering and month/year dropdown filters for narrowing the order list.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-4",
+          "msg-13"
+        ],
+        "quotes": [
+          "Admin Orders Page: view orders, update status, cancel orders, assign tracking",
+          "Date-range filter and month/year dropdown filters for orders"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin-only access is enforced for the Admin Orders page and related backend mutations/queries.",
+        "Admin can update order status through the supported status lifecycle and see the result reflected in the list and detail views.",
+        "Admin can cancel an order with a required cancellation reason and see that reason in order details.",
+        "Admin can assign and persist tracking information on an order and see it in order details.",
+        "Orders can be filtered by a selectable date range and by month/year dropdowns; filters can be cleared to return to the full list."
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Remove/exclude the Excel download/export option from this version (do not add any Excel export UI, routes, utilities, or backend endpoints).",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-14"
+        ],
+        "quotes": [
+          "exclude the excel download option and proceed with rest."
+        ]
+      },
+      "acceptanceCriteria": [
+        "No Excel export/download button or menu item exists in admin or customer orders UI.",
+        "No backend method is introduced solely for exporting orders to Excel/CSV in this version."
       ]
     }
   ],
   "constraints": [
-    "Do not make any changes to header and footer (e.g., do not modify `frontend/src/components/Layout.tsx` or `frontend/src/components/footer/*`).",
-    "Do not edit any files under frontend immutable paths (per SYSTEM_CONTEXT), compose existing UI components instead."
+    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
+    "Single-actor backend architecture: keep all Motoko logic in backend/main.mo; only add backend/migration.mo if an upgrade requires state migration.",
+    "Use English for all user-facing text.",
+    "Do not make any changes in the main home page.",
+    "Exclude Excel download/export functionality from this version."
   ],
   "nonGoals": [
-    "Changing carousel slide administration UX beyond what is required for the homepage carousel to display and link correctly.",
-    "Changing button background colors, sizing, or behavior beyond the requested 'Buy Now' text color change on the homepage.",
-    "Adding new authentication methods or third-party integrations."
+    "Adding any Excel/CSV export/download capability for orders.",
+    "Redesigning or changing the homepage content, layout, or behavior.",
+    "Introducing external databases, third-party auth providers, or real-time websocket features."
   ],
   "imageRequirements": {
     "required": [],

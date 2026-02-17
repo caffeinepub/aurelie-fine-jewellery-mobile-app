@@ -1,29 +1,61 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Restore homepage product carousel (as in v66) with admin-controlled images/URLs and update homepage Buy Now button text color; avoid changes to header/footer.",
+  "summary": "Admin enhancements: dedicated edit pages for product categories and category carousels with multi-image management; add dedicated Orders pages for customers and admins with filtering. Explicitly keep main home page unchanged. Excel export is excluded for now.",
   "architectural_notes": [
-    "Do not make changes to header and footer while implementing homepage carousel and button text color updates.",
-    "Homepage carousel content is driven by admin-configured images and destination URLs."
+    "Constraint: Do not make any changes to the main home page in this version.",
+    "Scope change: Exclude Excel download/export option for now."
   ],
   "known_issues": [
-    "Deployment encountered an error during rebuild/redeploy of draft app."
+    "Build/deploy attempts failed multiple times with generic 'AI couldn't implement request' / 'deployment error'."
   ],
-  "isFixRequest": true,
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-restore-the-homepage-product-carousel-so-it-is-visible-on-the-home-page-and-behaves-as-it-did-previously-16-9-aspect-ratio-auto-play-enabled-horizontal-slide-transitions-and-left-right-navigation-arrows-using-admin-managed-images-and-redirect-urls",
-      "title": "Restore the homepage product carousel so it is visible on the Home page and behaves as it did previously: 16:9 aspect ratio, auto-play enabled, horizontal slide transitions, and left/right navigation arrows, using admin-managed images and redirect URLs.",
+      "id": "feature-implement-dedicated-admin-edit-pages-for-each-product-category-that-allow-admins-to-edit-category-fields-at-minimum-name-display-order-position-and-description-and-persist-those-changes-in-the-backend",
+      "title": "Implement dedicated admin edit pages for each product category that allow admins to edit category fields (at minimum: name, display order/position, and description) and persist those changes in the backend.",
       "reqIds": [
-        "REQ-1"
+        "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-update-the-buy-now-button-text-color-for-product-cards-shown-on-the-homepage-to-a-dark-bottle-green-color-for-both-customer-and-admin-users-without-changing-header-footer",
-      "title": "Update the 'Buy Now' button text color for product cards shown on the homepage to a dark bottle-green color for both customer and admin users, without changing header/footer.",
+      "id": "feature-add-multi-image-management-for-product-categories-in-the-admin-ui-supporting-adding-removing-and-reordering-category-images-and-persist-the-ordered-image-list-in-the-backend",
+      "title": "Add multi-image management for product categories in the admin UI, supporting adding, removing, and reordering category images, and persist the ordered image list in the backend.",
       "reqIds": [
-        "REQ-2"
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-the-same-multi-image-management-workflow-to-product-category-carousels-category-specific-carousels-including-add-remove-reorder-while-keeping-existing-redirect-url-editing-behavior",
+      "title": "Apply the same multi-image management workflow to product-category carousels (category-specific carousels), including add/remove/reorder, while keeping existing redirect URL editing behavior.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-dedicated-authenticated-customer-orders-page-that-shows-the-logged-in-user-s-order-history-current-status-and-full-order-details-including-cancellation-details-when-applicable-and-make-it-reachable-from-an-orders-entry-in-the-authenticated-user-navigation",
+      "title": "Create a dedicated authenticated Customer Orders page that shows the logged-in user’s order history, current status, and full order details (including cancellation details when applicable), and make it reachable from an \"Orders\" entry in the authenticated user navigation.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-dedicated-admin-orders-page-that-allows-admins-to-view-all-orders-update-order-status-cancel-orders-with-reason-and-assign-tracking-information-include-date-range-filtering-and-month-year-dropdown-filters-for-narrowing-the-order-list",
+      "title": "Create a dedicated Admin Orders page that allows admins to view all orders, update order status, cancel orders (with reason), and assign tracking information; include date-range filtering and month/year dropdown filters for narrowing the order list.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-exclude-the-excel-download-export-option-from-this-version-do-not-add-any-excel-export-ui-routes-utilities-or-backend-endpoints",
+      "title": "Remove/exclude the Excel download/export option from this version (do not add any Excel export UI, routes, utilities, or backend endpoints).",
+      "reqIds": [
+        "REQ-7"
       ],
       "version": 1
     }
@@ -31,18 +63,44 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Re-add homepage product carousel (as in v66) using admin-controlled images + URLs; 16:9 aspect ratio; autoplay; horizontal scrolling with arrows; same placement as before.",
+      "summary": "Admin: Dedicated Product Category Edit Page (edit name/order/description/etc.)",
       "reqIds": [],
-      "status": "in_progress"
+      "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Update 'Buy Now' button text color for products listed on homepage (both customer and admin) to dark bottle green; do not change header/footer.",
+      "summary": "Admin: Manage multiple images per category (add/remove/reorder)",
       "reqIds": [],
-      "status": "in_progress"
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Admin: Apply same dedicated edit page + multi-image management to product category carousels",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Customer: Orders page (order history, status, details) opened from Orders button",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Admin: Orders page (view, update status, cancel, assign tracking) with date-range + month/year filters",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Keep the main home page unchanged (no functional or UI changes to the existing homepage route and HomePage component).",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
     }
   ],
-  "projectName": "Restore 16:9 homepage carousel and set Buy Now text color to dark bottle green (no header/footer changes)",
+  "projectName": "Aurelie Ops Update",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

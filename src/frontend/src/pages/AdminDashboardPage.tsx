@@ -1,9 +1,11 @@
-import { useIsCallerAdmin, useGetProducts, useGetOrders, useGetInquiries } from '../hooks/useQueries';
+import { useIsCallerAdmin, useGetProducts, useGetOrders, useGetInquiries, useGetAllCategories } from '../hooks/useQueries';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
 import { Skeleton } from '../components/ui/skeleton';
 import { ScrollArea } from '../components/ui/scroll-area';
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Settings, Image } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Settings, Image, Edit } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
 import ProductManagement from '../components/admin/ProductManagement';
 import OrderManagement from '../components/admin/OrderManagement';
 import InquiryManagement from '../components/admin/InquiryManagement';
@@ -15,11 +17,13 @@ import { PRODUCT_CATEGORIES } from '../utils/productCategories';
 
 export default function AdminDashboardPage() {
   useAdminUiBodyAttribute();
+  const navigate = useNavigate();
   
   const { data: isAdmin, isLoading: adminLoading } = useIsCallerAdmin();
   const { data: products } = useGetProducts();
   const { data: orders } = useGetOrders();
   const { data: inquiries } = useGetInquiries();
+  const { data: categories } = useGetAllCategories();
 
   if (adminLoading) {
     return (
@@ -133,6 +137,15 @@ export default function AdminDashboardPage() {
         </TabsContent>
 
         <TabsContent value="orders">
+          <div className="mb-4">
+            <Button
+              onClick={() => navigate({ to: '/admin/orders' })}
+              className="bg-gold-medium hover:bg-gold-dark text-navy-dark"
+            >
+              <ShoppingBag className="h-4 w-4 mr-2" />
+              Open Full Orders Management
+            </Button>
+          </div>
           <OrderManagement />
         </TabsContent>
 
@@ -181,7 +194,38 @@ export default function AdminDashboardPage() {
         </TabsContent>
 
         <TabsContent value="edit">
-          <SiteContentManagement />
+          <div className="space-y-6">
+            {/* Category Management Section */}
+            <Card className="gold-border admin-surface">
+              <CardHeader>
+                <CardTitle className="text-bottle-green-dark flex items-center gap-2">
+                  <Edit className="h-5 w-5" />
+                  Category Management
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-bottle-green-medium mb-4">
+                  Edit category details, descriptions, and manage category images
+                </p>
+                <div className="grid gap-2">
+                  {PRODUCT_CATEGORIES.map((category) => (
+                    <Button
+                      key={category.slug}
+                      variant="outline"
+                      onClick={() => navigate({ to: `/admin/categories/${category.slug}/edit` })}
+                      className="justify-start border-gold-medium/30 hover:bg-gold-medium/10"
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit {category.title}
+                    </Button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Site Content Management */}
+            <SiteContentManagement />
+          </div>
         </TabsContent>
       </Tabs>
     </div>

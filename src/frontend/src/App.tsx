@@ -18,6 +18,9 @@ const CartPage = lazy(() => import('./pages/CartPage'));
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
 const ProductCategoryPage = lazy(() => import('./pages/ProductCategoryPage'));
 const ProfileDetailsPage = lazy(() => import('./pages/ProfileDetailsPage'));
+const OrdersPage = lazy(() => import('./pages/OrdersPage'));
+const AdminOrdersPage = lazy(() => import('./pages/admin/AdminOrdersPage'));
+const CategoryEditPage = lazy(() => import('./pages/admin/CategoryEditPage'));
 
 function AppContent() {
   const { identity } = useInternetIdentity();
@@ -100,6 +103,24 @@ const profileRoute = createRoute({
   component: ProfileDetailsPage,
 });
 
+const ordersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/orders',
+  component: OrdersPage,
+});
+
+const adminOrdersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/orders',
+  component: AdminOrdersPage,
+});
+
+const categoryEditRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/categories/$categorySlug/edit',
+  component: CategoryEditPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   productRoute,
@@ -110,6 +131,9 @@ const routeTree = rootRoute.addChildren([
   cartRoute,
   checkoutRoute,
   profileRoute,
+  ordersRoute,
+  adminOrdersRoute,
+  categoryEditRoute,
 ]);
 
 const router = createRouter({ routeTree });

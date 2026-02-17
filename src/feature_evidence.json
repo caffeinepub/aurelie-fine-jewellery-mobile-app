@@ -2,32 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-restore-the-homepage-product-carousel-so-it-is-visible-on-the-home-page-and-behaves-as-it-did-previously-16-9-aspect-ratio-auto-play-enabled-horizontal-slide-transitions-and-left-right-navigation-arrows-using-admin-managed-images-and-redirect-urls",
-      "featureTitle": "Restore the homepage product carousel so it is visible on the Home page and behaves as it did previously: 16:9 aspect ratio, auto-play enabled, horizontal slide transitions, and left/right navigation arrows, using admin-managed images and redirect URLs.",
+      "featureId": "feature-implement-dedicated-admin-edit-pages-for-each-product-category-that-allow-admins-to-edit-category-fields-at-minimum-name-display-order-position-and-description-and-persist-those-changes-in-the-backend",
+      "featureTitle": "Implement dedicated admin edit pages for each product category that allow admins to edit category fields (at minimum: name, display order/position, and description) and persist those changes in the backend.",
       "files": [
-        "frontend/src/pages/HomePage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-the-buy-now-button-text-color-for-product-cards-shown-on-the-homepage-to-a-dark-bottle-green-color-for-both-customer-and-admin-users-without-changing-header-footer",
-      "featureTitle": "Update the 'Buy Now' button text color for product cards shown on the homepage to a dark bottle-green color for both customer and admin users, without changing header/footer.",
-      "files": [
-        "frontend/src/pages/HomePage.tsx"
+        "frontend/src/App.tsx",
+        "frontend/src/pages/AdminDashboardPage.tsx",
+        "frontend/src/pages/admin/CategoryEditPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -42,6 +22,124 @@
       ],
       "testIds": [
         "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-multi-image-management-for-product-categories-in-the-admin-ui-supporting-adding-removing-and-reordering-category-images-and-persist-the-ordered-image-list-in-the-backend",
+      "featureTitle": "Add multi-image management for product categories in the admin UI, supporting adding, removing, and reordering category images, and persist the ordered image list in the backend.",
+      "files": [
+        "frontend/src/components/admin/CategoryImagesManager.tsx",
+        "frontend/src/pages/admin/CategoryEditPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-apply-the-same-multi-image-management-workflow-to-product-category-carousels-category-specific-carousels-including-add-remove-reorder-while-keeping-existing-redirect-url-editing-behavior",
+      "featureTitle": "Apply the same multi-image management workflow to product-category carousels (category-specific carousels), including add/remove/reorder, while keeping existing redirect URL editing behavior.",
+      "files": [
+        "frontend/src/components/admin/CategoryCarouselManagement.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-dedicated-authenticated-customer-orders-page-that-shows-the-logged-in-user-s-order-history-current-status-and-full-order-details-including-cancellation-details-when-applicable-and-make-it-reachable-from-an-orders-entry-in-the-authenticated-user-navigation",
+      "featureTitle": "Create a dedicated authenticated Customer Orders page that shows the logged-in user’s order history, current status, and full order details (including cancellation details when applicable), and make it reachable from an \"Orders\" entry in the authenticated user navigation.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/Layout.tsx",
+        "frontend/src/components/OrderDetailModal.tsx",
+        "frontend/src/pages/OrdersPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-dedicated-admin-orders-page-that-allows-admins-to-view-all-orders-update-order-status-cancel-orders-with-reason-and-assign-tracking-information-include-date-range-filtering-and-month-year-dropdown-filters-for-narrowing-the-order-list",
+      "featureTitle": "Create a dedicated Admin Orders page that allows admins to view all orders, update order status, cancel orders (with reason), and assign tracking information; include date-range filtering and month/year dropdown filters for narrowing the order list.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/AdminDashboardPage.tsx",
+        "frontend/src/pages/admin/AdminOrdersPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-remove-exclude-the-excel-download-export-option-from-this-version-do-not-add-any-excel-export-ui-routes-utilities-or-backend-endpoints",
+      "featureTitle": "Remove/exclude the Excel download/export option from this version (do not add any Excel export UI, routes, utilities, or backend endpoints).",
+      "files": [
+        "frontend/src/pages/OrdersPage.tsx",
+        "frontend/src/pages/admin/AdminOrdersPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
       ],
       "confidence": "high"
     }

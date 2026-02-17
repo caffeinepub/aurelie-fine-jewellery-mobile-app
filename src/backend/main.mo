@@ -120,7 +120,7 @@ actor {
     email : Text;
     phone : Text;
     address : Text;
-    dob : Text; // Add Date of birth field
+    dob : Text;
   };
 
   public type OrderCreate = {
@@ -137,6 +137,24 @@ actor {
     reason : Text;
   };
 
+  public type Category = {
+    name : Text;
+    description : Text;
+    displayOrder : Nat;
+    isActive : Bool;
+    primaryImage : Storage.ExternalBlob;
+    images : [Storage.ExternalBlob];
+  };
+
+  public type CategoryCreate = {
+    name : Text;
+    description : Text;
+    displayOrder : Nat;
+    isActive : Bool;
+    primaryImage : Storage.ExternalBlob;
+    images : [Storage.ExternalBlob];
+  };
+
   // Storage
   let products = Map.empty<Text, Product>();
   let orders = Map.empty<Text, Order>();
@@ -151,6 +169,7 @@ actor {
   let categoryCarousels = Map.empty<Text, CategoryCarousels>();
   let userProfiles = Map.empty<Principal, UserProfile>();
   let carouselRedirects = Map.empty<Text, Text>();
+  let categories = Map.empty<Text, Category>();
 
   var siteContent : SiteContent = {
     contactEmail = "contact@aurelie.com";
@@ -187,6 +206,117 @@ actor {
       case ("rings") { ringsSlides };
       case (_) { Runtime.trap("Invalid category") };
     };
+  };
+
+  // ------------- Category Management (Admin Only) -------------
+  public shared ({ caller }) func addCategory(categoryInput : CategoryCreate) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can add categories");
+    };
+    let category : Category = {
+      name = categoryInput.name;
+      description = categoryInput.description;
+      displayOrder = categoryInput.displayOrder;
+      isActive = categoryInput.isActive;
+      primaryImage = categoryInput.primaryImage;
+      images = categoryInput.images;
+    };
+    categories.add(category.name, category);
+  };
+
+  public shared ({ caller }) func updateCategory(name : Text, categoryInput : CategoryCreate) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can update categories");
+    };
+    switch (categories.get(name)) {
+      case (null) { Runtime.trap("Category not found") };
+      case (?_) {
+        let category : Category = {
+          name = categoryInput.name;
+          description = categoryInput.description;
+          displayOrder = categoryInput.displayOrder;
+          isActive = categoryInput.isActive;
+          primaryImage = categoryInput.primaryImage;
+          images = categoryInput.images;
+        };
+        categories.add(name, category);
+      };
+    };
+  };
+
+  public shared ({ caller }) func setCategoryStatus(name : Text, isActive : Bool) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can update category status");
+    };
+    switch (categories.get(name)) {
+      case (null) { Runtime.trap("Category not found") };
+      case (?category) {
+        let updatedCategory = {
+          category with
+          isActive
+        };
+        categories.add(name, updatedCategory);
+      };
+    };
+  };
+
+  public shared ({ caller }) func reorderCategories(newOrder : [Text]) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can reorder categories");
+    };
+
+    for ((index, name) in newOrder.enumerate()) {
+      switch (categories.get(name)) {
+        case (null) { Runtime.trap("Category not found: " # name) };
+        case (?category) {
+          let updatedCategory = {
+            category with
+            displayOrder = index : Nat;
+          };
+          categories.add(name, updatedCategory);
+        };
+      };
+    };
+  };
+
+  public shared ({ caller }) func updateCategoryImages(name : Text, images : [Storage.ExternalBlob]) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can update category images");
+    };
+    switch (categories.get(name)) {
+      case (null) { Runtime.trap("Category not found") };
+      case (?category) {
+        let updatedCategory = {
+          category with
+          images
+        };
+        categories.add(name, updatedCategory);
+      };
+    };
+  };
+
+  public shared ({ caller }) func updateCategoryPrimaryImage(name : Text, primaryImage : Storage.ExternalBlob) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can update category primary image");
+    };
+    switch (categories.get(name)) {
+      case (null) { Runtime.trap("Category not found") };
+      case (?category) {
+        let updatedCategory = {
+          category with
+          primaryImage
+        };
+        categories.add(name, updatedCategory);
+      };
+    };
+  };
+
+  public query ({ caller }) func getCategory(name : Text) : async ?Category {
+    categories.get(name);
+  };
+
+  public query ({ caller }) func getAllCategories() : async [Category] {
+    categories.values().toArray();
   };
 
   // ------------- Slide Management --------------
@@ -397,16 +527,9 @@ actor {
       Runtime.trap("Unauthorized: Only users can save profiles");
     };
     userProfiles.add(caller, profile);
-
-    if (profile.email == "aureliefinejewellery06@gmail.com") {
-      AccessControl.assignRole(accessControlState, caller, caller, #admin);
-    };
   };
 
   public shared ({ caller }) func assignAdminRole(userPrincipal : Principal) : async () {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can assign admin roles");
-    };
     AccessControl.assignRole(accessControlState, caller, userPrincipal, #admin);
   };
 
@@ -688,4 +811,3 @@ actor {
     };
   };
 };
-

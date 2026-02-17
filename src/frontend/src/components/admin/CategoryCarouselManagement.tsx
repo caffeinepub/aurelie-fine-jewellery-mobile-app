@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Skeleton } from '../ui/skeleton';
-import { Image as ImageIcon, Save, X, Link as LinkIcon } from 'lucide-react';
+import { Image as ImageIcon, Save, X, Link as LinkIcon, ArrowUp, ArrowDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { ExternalBlob } from '../../backend';
 import { optimizeImage } from '../../utils/mediaOptimization';
@@ -22,87 +22,76 @@ export default function CategoryCarouselManagement({ categorySlug, carouselIndex
   const updateImages = useUpdateCategoryCarouselImages(categorySlug, carouselIndex);
   const updateRedirect = useUpdateCarouselRedirect(categorySlug);
 
-  const [editingImages, setEditingImages] = useState<Record<number, { file: File | null; uploadProgress: number; isOptimizing: boolean }>>({});
+  const [localImages, setLocalImages] = useState<ExternalBlob[]>([]);
+  const [newImages, setNewImages] = useState<{ file: File; index: number }[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<Record<number, number>>({});
   const [redirectUrlInput, setRedirectUrlInput] = useState('');
 
-  // Initialize redirect URL input when data loads
+  useEffect(() => {
+    if (images) {
+      setLocalImages(images);
+    }
+  }, [images]);
+
   useEffect(() => {
     if (redirectUrl !== undefined && redirectUrl !== null) {
       setRedirectUrlInput(redirectUrl);
     }
   }, [redirectUrl]);
 
-  // Initialize 5 slots
-  const imageSlots = Array.from({ length: 5 }, (_, index) => {
-    return images?.[index] || null;
-  });
-
-  const handleImageUpload = async (index: number, file: File) => {
-    setEditingImages(prev => ({
-      ...prev,
-      [index]: {
-        file: null,
-        uploadProgress: 0,
-        isOptimizing: true,
-      },
-    }));
-
-    try {
-      const optimized = await optimizeImage(file, 1200, 0.85);
-      setEditingImages(prev => ({
-        ...prev,
-        [index]: {
-          ...prev[index],
-          file: optimized.file,
-          isOptimizing: false,
-        },
-      }));
-    } catch (error) {
-      console.error('Image optimization failed:', error);
-      toast.error('Failed to optimize image');
-      setEditingImages(prev => {
-        const newState = { ...prev };
-        delete newState[index];
-        return newState;
-      });
+  const handleImageUpload = async (file: File) => {
+    if (localImages.length + newImages.length >= 5) {
+      toast.error('Maximum of 5 images allowed');
+      return;
     }
+
+    const newIndex = localImages.length + newImages.length;
+    setNewImages(prev => [...prev, { file, index: newIndex }]);
   };
 
-  const handleRemoveImage = (index: number) => {
-    setEditingImages(prev => {
-      const newState = { ...prev };
-      delete newState[index];
-      return newState;
+  const handleRemoveExisting = (index: number) => {
+    setLocalImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleRemoveNew = (index: number) => {
+    setNewImages(prev => prev.filter(img => img.index !== index));
+  };
+
+  const handleMoveUp = (index: number) => {
+    if (index === 0) return;
+    setLocalImages(prev => {
+      const newArr = [...prev];
+      [newArr[index - 1], newArr[index]] = [newArr[index], newArr[index - 1]];
+      return newArr;
+    });
+  };
+
+  const handleMoveDown = (index: number) => {
+    if (index === localImages.length - 1) return;
+    setLocalImages(prev => {
+      const newArr = [...prev];
+      [newArr[index], newArr[index + 1]] = [newArr[index + 1], newArr[index]];
+      return newArr;
     });
   };
 
   const handleSaveImages = async () => {
     try {
-      const newImages: ExternalBlob[] = [];
+      const finalImages: ExternalBlob[] = [...localImages];
 
-      for (let i = 0; i < 5; i++) {
-        const editing = editingImages[i];
-        const existingImage = imageSlots[i];
-
-        if (editing?.file) {
-          // Upload new image
-          const arrayBuffer = await editing.file.arrayBuffer();
-          const uint8Array = new Uint8Array(arrayBuffer);
-          const imageBlob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
-            setEditingImages(prev => ({
-              ...prev,
-              [i]: { ...prev[i], uploadProgress: percentage },
-            }));
-          });
-          newImages.push(imageBlob);
-        } else if (existingImage) {
-          // Keep existing image
-          newImages.push(existingImage);
-        }
+      for (const { file, index } of newImages) {
+        const optimized = await optimizeImage(file, 1200, 0.85);
+        const arrayBuffer = await optimized.file.arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+        const imageBlob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
+          setUploadProgress(prev => ({ ...prev, [index]: percentage }));
+        });
+        finalImages.push(imageBlob);
       }
 
-      await updateImages.mutateAsync(newImages);
-      setEditingImages({});
+      await updateImages.mutateAsync(finalImages);
+      setNewImages([]);
+      setUploadProgress({});
       toast.success('Carousel images saved successfully');
     } catch (error: any) {
       console.error('Failed to save carousel images:', error);
@@ -120,163 +109,161 @@ export default function CategoryCarouselManagement({ categorySlug, carouselIndex
     }
   };
 
-  if (isLoading || redirectLoading) {
+  if (isLoading) {
     return (
-      <Card className="gold-border bg-bottle-green-dark/10">
+      <Card className="bg-navy-dark border-gold-medium/30 mb-6">
         <CardHeader>
-          <Skeleton className="h-6 w-48" />
+          <CardTitle className="text-gold-medium">{title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <Skeleton className="h-32 w-full" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="aspect-video rounded-lg" />
+            ))}
+          </div>
         </CardContent>
       </Card>
     );
   }
 
-  const hasChanges = Object.keys(editingImages).length > 0;
-  const isSaving = updateImages.isPending;
+  const hasChanges = newImages.length > 0 || localImages.length !== (images?.length || 0);
+  const hasRedirectChange = redirectUrl !== redirectUrlInput.trim();
 
   return (
-    <Card className="gold-border bg-bottle-green-dark/10">
-      <CardHeader className="border-b border-gold-medium/20">
-        <CardTitle className="gold-text flex items-center gap-2">
-          <ImageIcon className="h-5 w-5" />
-          {title}
-        </CardTitle>
+    <Card className="bg-navy-dark border-gold-medium/30 mb-6">
+      <CardHeader>
+        <CardTitle className="text-gold-medium">{title}</CardTitle>
       </CardHeader>
-      <CardContent className="pt-6 space-y-6">
-        {/* Redirect URL Input */}
-        <div className="space-y-3 p-4 bg-bottle-green-dark/5 rounded-lg border border-gold-medium/20">
-          <Label htmlFor={`redirect-url-${categorySlug}`} className="text-base font-semibold gold-text flex items-center gap-2">
+      <CardContent className="space-y-6">
+        {/* Redirect URL Configuration */}
+        <div className="space-y-2">
+          <Label htmlFor={`redirect-${categorySlug}-${carouselIndex}`} className="text-gold-medium flex items-center gap-2">
             <LinkIcon className="h-4 w-4" />
-            Redirect URL (when carousel is clicked)
+            Redirect URL (optional)
           </Label>
           <div className="flex gap-2">
             <Input
-              id={`redirect-url-${categorySlug}`}
+              id={`redirect-${categorySlug}-${carouselIndex}`}
               type="url"
-              placeholder="https://example.com/category-page"
+              placeholder="https://example.com/category"
               value={redirectUrlInput}
               onChange={(e) => setRedirectUrlInput(e.target.value)}
-              className="flex-1 border-gold-medium/30 focus:border-gold-medium bg-ivory-base/30"
+              className="bg-navy-medium border-gold-medium/30 text-beige-champagne placeholder:text-beige-champagne/50"
+              disabled={redirectLoading || updateRedirect.isPending}
             />
             <Button
               onClick={handleSaveRedirectUrl}
-              disabled={updateRedirect.isPending}
-              className="bg-gold-medium hover:bg-gold-dark text-white"
+              disabled={!hasRedirectChange || redirectLoading || updateRedirect.isPending}
+              className="bg-gold-medium hover:bg-gold-dark text-navy-dark"
             >
-              {updateRedirect.isPending ? (
-                <>Saving...</>
-              ) : (
-                <>
-                  <Save className="h-4 w-4 mr-1" />
-                  Save URL
-                </>
-              )}
+              <Save className="h-4 w-4" />
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Leave empty if you don't want the carousel to be clickable
+          <p className="text-xs text-beige-champagne/70">
+            When set, clicking the carousel will navigate to this URL
           </p>
         </div>
 
-        {/* Image Slots */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {imageSlots.map((image, index) => {
-            const editing = editingImages[index];
-            const hasImage = image || editing?.file;
-
-            return (
-              <div key={index} className="space-y-2">
-                <Label className="text-sm font-medium gold-text">Slot {index + 1}</Label>
-                <div className="relative aspect-square border-2 border-dashed border-gold-medium/30 rounded-lg overflow-hidden bg-bottle-green-dark/5">
-                  {editing?.isOptimizing ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                      <div className="text-center text-white">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2" />
-                        <p className="text-xs">Optimizing...</p>
-                      </div>
-                    </div>
-                  ) : editing?.file ? (
-                    <>
-                      <img
-                        src={URL.createObjectURL(editing.file)}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                      {editing.uploadProgress > 0 && editing.uploadProgress < 100 && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                          <div className="text-center text-white">
-                            <p className="text-sm font-semibold">{editing.uploadProgress}%</p>
-                          </div>
-                        </div>
-                      )}
-                      <Button
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-2 right-2 h-8 w-8"
-                        onClick={() => handleRemoveImage(index)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </>
-                  ) : image ? (
-                    <img
-                      src={image.getDirectURL()}
-                      alt={`Carousel ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <ImageIcon className="h-12 w-12 text-gold-medium/30" />
-                    </div>
-                  )}
-
-                  {!editing?.file && (
-                    <label className="absolute inset-0 cursor-pointer hover:bg-black/10 transition-colors flex items-center justify-center">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleImageUpload(index, file);
-                        }}
-                      />
-                      {!hasImage && (
-                        <span className="text-xs text-gold-medium font-medium">
-                          Click to upload
-                        </span>
-                      )}
-                    </label>
-                  )}
-                </div>
+        {/* Image Management */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {localImages.map((image, index) => (
+            <div key={`existing-${index}`} className="relative group">
+              <div className="aspect-video border-2 border-gold-medium/30 rounded-lg overflow-hidden bg-navy-medium">
+                <img
+                  src={image.getDirectURL()}
+                  alt={`Slot ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            );
-          })}
+              <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  className="h-6 w-6"
+                  onClick={() => handleRemoveExisting(index)}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+              <div className="absolute bottom-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="h-6 w-6"
+                  onClick={() => handleMoveUp(index)}
+                  disabled={index === 0}
+                >
+                  <ArrowUp className="h-3 w-3" />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="h-6 w-6"
+                  onClick={() => handleMoveDown(index)}
+                  disabled={index === localImages.length - 1}
+                >
+                  <ArrowDown className="h-3 w-3" />
+                </Button>
+              </div>
+            </div>
+          ))}
+
+          {newImages.map(({ file, index }) => (
+            <div key={`new-${index}`} className="relative">
+              <div className="aspect-video border-2 border-gold-medium rounded-lg overflow-hidden bg-navy-medium">
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={`New ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+                {uploadProgress[index] > 0 && uploadProgress[index] < 100 && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <div className="text-gold-medium text-sm">{uploadProgress[index]}%</div>
+                  </div>
+                )}
+              </div>
+              <Button
+                size="icon"
+                variant="destructive"
+                className="absolute top-1 right-1 h-6 w-6"
+                onClick={() => handleRemoveNew(index)}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+          ))}
+
+          {localImages.length + newImages.length < 5 && (
+            <div className="aspect-video border-2 border-dashed border-gold-medium/30 rounded-lg overflow-hidden bg-navy-medium hover:border-gold-medium/50 transition-colors">
+              <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
+                <ImageIcon className="h-8 w-8 text-gold-medium/50 mb-2" />
+                <span className="text-xs text-gold-medium/70">Add Image</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleImageUpload(file);
+                  }}
+                />
+              </label>
+            </div>
+          )}
         </div>
 
-        {/* Save Button */}
-        <div className="flex justify-end pt-4 border-t border-gold-medium/20">
-          <Button
-            onClick={handleSaveImages}
-            disabled={!hasChanges || isSaving}
-            className="bg-gold-medium hover:bg-gold-dark text-white"
-            size="lg"
-          >
-            {isSaving ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                Saving Images...
-              </>
-            ) : (
-              <>
-                <Save className="h-4 w-4 mr-2" />
-                Save All Images
-              </>
-            )}
-          </Button>
-        </div>
+        {hasChanges && (
+          <div className="flex justify-end">
+            <Button
+              onClick={handleSaveImages}
+              disabled={updateImages.isPending}
+              className="bg-gold-medium hover:bg-gold-dark text-navy-dark"
+            >
+              <Save className="h-4 w-4 mr-2" />
+              {updateImages.isPending ? 'Saving...' : 'Save All Images'}
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

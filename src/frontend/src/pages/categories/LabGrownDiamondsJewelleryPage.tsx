@@ -4,8 +4,8 @@ export default function LabGrownDiamondsJewelleryPage() {
   return (
     <CategoryPageTemplate
       categorySlug="lab-diamonds-jewellery"
-      title="Lab Diamonds Jewellery"
-      description="Sustainable luxury with ethically sourced lab-grown diamonds, offering the same brilliance and beauty as natural diamonds."
+      categoryTitle="Lab Diamonds Jewellery"
+      categoryDescription="Sustainable luxury with ethically sourced lab-grown diamonds, offering the same brilliance and beauty as natural diamonds."
     />
   );
 }

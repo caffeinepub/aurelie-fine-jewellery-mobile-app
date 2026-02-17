@@ -17,7 +17,6 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
   const { data: redirectUrl } = useGetCarouselRedirect(categorySlug);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const [direction, setDirection] = useState<'left' | 'right'>('right');
 
   // Filter out empty images
   const enabledImages = images?.filter(img => img) || [];
@@ -35,7 +34,6 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
     if (enabledImages.length < 2 || isHovered) return;
 
     const interval = setInterval(() => {
-      setDirection('right');
       setCurrentIndex((prev) => (prev + 1) % enabledImages.length);
     }, 3000);
 
@@ -48,23 +46,16 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
   }
 
   const goToSlide = (index: number) => {
-    if (index > currentIndex) {
-      setDirection('right');
-    } else if (index < currentIndex) {
-      setDirection('left');
-    }
     setCurrentIndex(index);
   };
 
   const goToPrevious = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setDirection('left');
     setCurrentIndex((prev) => (prev - 1 + enabledImages.length) % enabledImages.length);
   };
 
   const goToNext = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setDirection('right');
     setCurrentIndex((prev) => (prev + 1) % enabledImages.length);
   };
 
@@ -79,7 +70,7 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
       <div>
         {title && <Skeleton className="h-6 w-40 mb-3" />}
         <div className="relative w-full">
-          <div className="relative w-full aspect-square">
+          <div className="relative w-full aspect-video">
             <Skeleton className="absolute inset-0 rounded-2xl" />
           </div>
         </div>
@@ -103,41 +94,27 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Carousel Container with 1:1 aspect ratio for category carousels */}
+        {/* Carousel Container with 16:9 aspect ratio for category carousels */}
         <div 
-          className={`relative w-full aspect-square overflow-hidden rounded-2xl shadow-bottle-green ${isClickable ? 'cursor-pointer' : ''}`}
+          className={`relative w-full aspect-video overflow-hidden rounded-2xl shadow-bottle-green ${isClickable ? 'cursor-pointer' : ''}`}
           onClick={isClickable ? handleCarouselClick : undefined}
         >
           {enabledImages.map((image, index) => {
             const isActive = index === currentIndex;
-            const isPrev = index === (currentIndex - 1 + enabledImages.length) % enabledImages.length;
-            const isNext = index === (currentIndex + 1) % enabledImages.length;
-            
-            let slideClass = 'opacity-0';
-            let transformClass = '';
-            
-            if (isActive) {
-              slideClass = 'opacity-100';
-              transformClass = 'translate-x-0 scale-100';
-            } else if (direction === 'right' && isPrev) {
-              transformClass = '-translate-x-full scale-95';
-            } else if (direction === 'left' && isNext) {
-              transformClass = 'translate-x-full scale-95';
-            } else {
-              transformClass = 'translate-x-full scale-95';
-            }
 
             return (
               <div
                 key={index}
-                className={`absolute inset-0 transition-all duration-1000 ease-out ${slideClass} ${transformClass}`}
+                className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${
+                  isActive ? 'opacity-100' : 'opacity-0'
+                }`}
                 style={{ pointerEvents: isActive ? 'auto' : 'none' }}
               >
                 <div className="w-full h-full relative overflow-hidden">
                   <img
                     src={image.getDirectURL()}
                     alt={`${title || 'Carousel'} - Slide ${index + 1}`}
-                    className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
+                    className="w-full h-full object-cover"
                     loading={index === 0 ? 'eager' : 'lazy'}
                     decoding="async"
                   />

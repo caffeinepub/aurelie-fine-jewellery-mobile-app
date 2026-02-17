@@ -20,6 +20,14 @@ export const _CaffeineStorageRefillResult = IDL.Record({
   'topped_up_amount' : IDL.Opt(IDL.Nat),
 });
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
+export const CategoryCreate = IDL.Record({
+  'displayOrder' : IDL.Nat,
+  'name' : IDL.Text,
+  'description' : IDL.Text,
+  'isActive' : IDL.Bool,
+  'primaryImage' : ExternalBlob,
+  'images' : IDL.Vec(ExternalBlob),
+});
 export const CarouselSlide = IDL.Record({
   'order' : IDL.Nat,
   'enabled' : IDL.Bool,
@@ -66,6 +74,14 @@ export const OrderCreate = IDL.Record({
   'upiId' : IDL.Text,
   'quantity' : IDL.Nat,
   'shippingAddress' : ShippingAddress,
+});
+export const Category = IDL.Record({
+  'displayOrder' : IDL.Nat,
+  'name' : IDL.Text,
+  'description' : IDL.Text,
+  'isActive' : IDL.Bool,
+  'primaryImage' : ExternalBlob,
+  'images' : IDL.Vec(ExternalBlob),
 });
 export const UserProfile = IDL.Record({
   'dob' : IDL.Text,
@@ -182,6 +198,7 @@ export const idlService = IDL.Service({
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  'addCategory' : IDL.Func([CategoryCreate], [], []),
   'addCategorySlide' : IDL.Func([IDL.Text, CarouselSlide], [], []),
   'addProduct' : IDL.Func([ProductCreate], [], []),
   'assignAdminRole' : IDL.Func([IDL.Principal], [], []),
@@ -194,6 +211,7 @@ export const idlService = IDL.Service({
     ),
   'createOrder' : IDL.Func([OrderCreate], [], []),
   'deleteProduct' : IDL.Func([IDL.Text], [], []),
+  'getAllCategories' : IDL.Func([], [IDL.Vec(Category)], ['query']),
   'getAllCategorySlides' : IDL.Func(
       [IDL.Text],
       [IDL.Vec(CarouselSlide)],
@@ -202,6 +220,7 @@ export const idlService = IDL.Service({
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getCarouselRedirect' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], ['query']),
+  'getCategory' : IDL.Func([IDL.Text], [IDL.Opt(Category)], ['query']),
   'getCategoryCarousel' : IDL.Func(
       [IDL.Text, IDL.Nat],
       [IDL.Vec(ExternalBlob)],
@@ -248,9 +267,11 @@ export const idlService = IDL.Service({
   'isOrderCancellable' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
   'isStripeConfigured' : IDL.Func([], [IDL.Bool], ['query']),
   'removeCategorySlide' : IDL.Func([IDL.Text, IDL.Nat], [], []),
+  'reorderCategories' : IDL.Func([IDL.Vec(IDL.Text)], [], []),
   'reorderCategorySlides' : IDL.Func([IDL.Text, IDL.Vec(IDL.Nat)], [], []),
   'respondToInquiry' : IDL.Func([IDL.Text, IDL.Text], [], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'setCategoryStatus' : IDL.Func([IDL.Text, IDL.Bool], [], []),
   'setStripeConfiguration' : IDL.Func([StripeConfiguration], [], []),
   'submitInquiry' : IDL.Func([CustomerInquiry], [], []),
   'toggleCategorySlide' : IDL.Func([IDL.Text, IDL.Nat, IDL.Bool], [], []),
@@ -260,11 +281,14 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'updateCarouselRedirect' : IDL.Func([IDL.Text, IDL.Text], [], []),
+  'updateCategory' : IDL.Func([IDL.Text, CategoryCreate], [], []),
   'updateCategoryCarousel' : IDL.Func(
       [IDL.Text, IDL.Nat, IDL.Vec(ExternalBlob)],
       [],
       [],
     ),
+  'updateCategoryImages' : IDL.Func([IDL.Text, IDL.Vec(ExternalBlob)], [], []),
+  'updateCategoryPrimaryImage' : IDL.Func([IDL.Text, ExternalBlob], [], []),
   'updateCategorySlide' : IDL.Func([IDL.Text, IDL.Nat, CarouselSlide], [], []),
   'updateOrderStatus' : IDL.Func([IDL.Text, OrderStatus], [], []),
   'updateProduct' : IDL.Func([ProductCreate], [], []),
@@ -286,6 +310,14 @@ export const idlFactory = ({ IDL }) => {
     'topped_up_amount' : IDL.Opt(IDL.Nat),
   });
   const ExternalBlob = IDL.Vec(IDL.Nat8);
+  const CategoryCreate = IDL.Record({
+    'displayOrder' : IDL.Nat,
+    'name' : IDL.Text,
+    'description' : IDL.Text,
+    'isActive' : IDL.Bool,
+    'primaryImage' : ExternalBlob,
+    'images' : IDL.Vec(ExternalBlob),
+  });
   const CarouselSlide = IDL.Record({
     'order' : IDL.Nat,
     'enabled' : IDL.Bool,
@@ -332,6 +364,14 @@ export const idlFactory = ({ IDL }) => {
     'upiId' : IDL.Text,
     'quantity' : IDL.Nat,
     'shippingAddress' : ShippingAddress,
+  });
+  const Category = IDL.Record({
+    'displayOrder' : IDL.Nat,
+    'name' : IDL.Text,
+    'description' : IDL.Text,
+    'isActive' : IDL.Bool,
+    'primaryImage' : ExternalBlob,
+    'images' : IDL.Vec(ExternalBlob),
   });
   const UserProfile = IDL.Record({
     'dob' : IDL.Text,
@@ -445,6 +485,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    'addCategory' : IDL.Func([CategoryCreate], [], []),
     'addCategorySlide' : IDL.Func([IDL.Text, CarouselSlide], [], []),
     'addProduct' : IDL.Func([ProductCreate], [], []),
     'assignAdminRole' : IDL.Func([IDL.Principal], [], []),
@@ -457,6 +498,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'createOrder' : IDL.Func([OrderCreate], [], []),
     'deleteProduct' : IDL.Func([IDL.Text], [], []),
+    'getAllCategories' : IDL.Func([], [IDL.Vec(Category)], ['query']),
     'getAllCategorySlides' : IDL.Func(
         [IDL.Text],
         [IDL.Vec(CarouselSlide)],
@@ -469,6 +511,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(IDL.Text)],
         ['query'],
       ),
+    'getCategory' : IDL.Func([IDL.Text], [IDL.Opt(Category)], ['query']),
     'getCategoryCarousel' : IDL.Func(
         [IDL.Text, IDL.Nat],
         [IDL.Vec(ExternalBlob)],
@@ -519,9 +562,11 @@ export const idlFactory = ({ IDL }) => {
     'isOrderCancellable' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
     'isStripeConfigured' : IDL.Func([], [IDL.Bool], ['query']),
     'removeCategorySlide' : IDL.Func([IDL.Text, IDL.Nat], [], []),
+    'reorderCategories' : IDL.Func([IDL.Vec(IDL.Text)], [], []),
     'reorderCategorySlides' : IDL.Func([IDL.Text, IDL.Vec(IDL.Nat)], [], []),
     'respondToInquiry' : IDL.Func([IDL.Text, IDL.Text], [], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'setCategoryStatus' : IDL.Func([IDL.Text, IDL.Bool], [], []),
     'setStripeConfiguration' : IDL.Func([StripeConfiguration], [], []),
     'submitInquiry' : IDL.Func([CustomerInquiry], [], []),
     'toggleCategorySlide' : IDL.Func([IDL.Text, IDL.Nat, IDL.Bool], [], []),
@@ -531,11 +576,18 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'updateCarouselRedirect' : IDL.Func([IDL.Text, IDL.Text], [], []),
+    'updateCategory' : IDL.Func([IDL.Text, CategoryCreate], [], []),
     'updateCategoryCarousel' : IDL.Func(
         [IDL.Text, IDL.Nat, IDL.Vec(ExternalBlob)],
         [],
         [],
       ),
+    'updateCategoryImages' : IDL.Func(
+        [IDL.Text, IDL.Vec(ExternalBlob)],
+        [],
+        [],
+      ),
+    'updateCategoryPrimaryImage' : IDL.Func([IDL.Text, ExternalBlob], [], []),
     'updateCategorySlide' : IDL.Func(
         [IDL.Text, IDL.Nat, CarouselSlide],
         [],

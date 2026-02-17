@@ -13,7 +13,6 @@ export default function CategoryCarousel({ category, title }: CategoryCarouselPr
   const { data: slides, isLoading } = useGetCategorySlides(category);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const [direction, setDirection] = useState<'left' | 'right'>('right');
 
   // Filter enabled slides and sort by order
   const enabledSlides = slides
@@ -33,7 +32,6 @@ export default function CategoryCarousel({ category, title }: CategoryCarouselPr
     if (enabledSlides.length < 2 || isHovered) return;
 
     const interval = setInterval(() => {
-      setDirection('right');
       setCurrentIndex((prev) => (prev + 1) % enabledSlides.length);
     }, 3000);
 
@@ -41,21 +39,14 @@ export default function CategoryCarousel({ category, title }: CategoryCarouselPr
   }, [enabledSlides.length, isHovered]);
 
   const goToSlide = (index: number) => {
-    if (index > currentIndex) {
-      setDirection('right');
-    } else if (index < currentIndex) {
-      setDirection('left');
-    }
     setCurrentIndex(index);
   };
 
   const goToPrevious = () => {
-    setDirection('left');
     setCurrentIndex((prev) => (prev - 1 + enabledSlides.length) % enabledSlides.length);
   };
 
   const goToNext = () => {
-    setDirection('right');
     setCurrentIndex((prev) => (prev + 1) % enabledSlides.length);
   };
 
@@ -70,7 +61,7 @@ export default function CategoryCarousel({ category, title }: CategoryCarouselPr
       <div>
         <Skeleton className="h-6 w-40 mb-3" />
         <div className="relative w-full">
-          <div className="relative w-full aspect-square">
+          <div className="relative w-full aspect-video">
             <Skeleton className="absolute inset-0 rounded-2xl" />
           </div>
         </div>
@@ -92,31 +83,17 @@ export default function CategoryCarousel({ category, title }: CategoryCarouselPr
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Carousel Container with 1:1 aspect ratio for category carousels */}
-        <div className="relative w-full aspect-square overflow-hidden rounded-2xl shadow-bottle-green">
+        {/* Carousel Container with 16:9 aspect ratio for category carousels */}
+        <div className="relative w-full aspect-video overflow-hidden rounded-2xl shadow-bottle-green">
           {enabledSlides.map((slide, index) => {
             const isActive = index === currentIndex;
-            const isPrev = index === (currentIndex - 1 + enabledSlides.length) % enabledSlides.length;
-            const isNext = index === (currentIndex + 1) % enabledSlides.length;
-            
-            let slideClass = 'opacity-0';
-            let transformClass = '';
-            
-            if (isActive) {
-              slideClass = 'opacity-100';
-              transformClass = 'translate-x-0 scale-100';
-            } else if (direction === 'right' && isPrev) {
-              transformClass = '-translate-x-full scale-95';
-            } else if (direction === 'left' && isNext) {
-              transformClass = 'translate-x-full scale-95';
-            } else {
-              transformClass = 'translate-x-full scale-95';
-            }
 
             return (
               <div
                 key={index}
-                className={`absolute inset-0 transition-all duration-1000 ease-out ${slideClass} ${transformClass}`}
+                className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${
+                  isActive ? 'opacity-100' : 'opacity-0'
+                }`}
                 style={{ pointerEvents: isActive ? 'auto' : 'none' }}
               >
                 <div
@@ -126,7 +103,7 @@ export default function CategoryCarousel({ category, title }: CategoryCarouselPr
                   <img
                     src={slide.visualContent.getDirectURL()}
                     alt={`${title} - Slide ${index + 1}`}
-                    className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
+                    className="w-full h-full object-cover"
                     loading={index === 0 ? 'eager' : 'lazy'}
                     decoding="async"
                   />

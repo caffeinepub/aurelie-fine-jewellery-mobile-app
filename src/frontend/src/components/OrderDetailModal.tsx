@@ -66,15 +66,15 @@ export default function OrderDetailModal({ order, open, onOpenChange }: OrderDet
   const handleCancelOrder = async () => {
     if (!order) return;
 
-    const reason = selectedReason === 'Other' ? customReason : selectedReason;
+    const reasonText = selectedReason === 'Other' ? customReason : selectedReason;
 
-    if (!reason.trim()) {
+    if (!reasonText.trim()) {
       toast.error('Please provide a cancellation reason');
       return;
     }
 
     try {
-      await cancelOrder.mutateAsync({ orderId: order.id, reason });
+      await cancelOrder.mutateAsync({ orderId: order.id, reason: { reason: reasonText } });
       toast.success('Order cancelled successfully');
       setShowCancelForm(false);
       setSelectedReason('');

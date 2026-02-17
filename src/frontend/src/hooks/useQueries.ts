@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
 import { useInternetIdentity } from './useInternetIdentity';
-import type { Product, Order, CustomerInquiry, OrderStatus, SiteContent, CancelReason, OrderCreate, UserProfile, CarouselSlide, ProductCreate } from '../backend';
+import type { Product, Order, CustomerInquiry, OrderStatus, SiteContent, CancelReason, OrderCreate, UserProfile, CarouselSlide, ProductCreate, Category, CategoryCreate } from '../backend';
 
 // User Profile Queries
 export function useGetCallerUserProfile() {
@@ -52,6 +52,49 @@ export function useIsCallerAdmin() {
       return actor.isCallerAdmin();
     },
     enabled: !!actor && !actorFetching && !!identity,
+  });
+}
+
+// Category Queries
+export function useGetCategory(categorySlug: string) {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Category | null>({
+    queryKey: ['category', categorySlug],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getCategory(categorySlug);
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useGetAllCategories() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Category[]>({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getAllCategories();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useUpdateCategory() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ name, categoryInput }: { name: string; categoryInput: CategoryCreate }) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.updateCategory(name, categoryInput);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ['category'] });
+    },
   });
 }
 
@@ -261,7 +304,7 @@ export function useGetOrders() {
     },
     enabled: !!actor && !isFetching,
     refetchOnWindowFocus: true,
-    refetchInterval: 15000,
+    refetchInterval: 10000,
   });
 }
 
@@ -276,6 +319,8 @@ export function useGetCustomerOrders() {
       return actor.getCustomerOrders();
     },
     enabled: !!actor && !isFetching && !!identity,
+    refetchOnWindowFocus: true,
+    refetchInterval: 10000,
   });
 }
 
@@ -297,9 +342,9 @@ export function useCreateOrder() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (orderInput: OrderCreate) => {
+    mutationFn: async (order: OrderCreate) => {
       if (!actor) throw new Error('Actor not available');
-      await actor.createOrder(orderInput);
+      await actor.createOrder(order);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
@@ -329,15 +374,13 @@ export function useCancelOrder() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ orderId, reason }: { orderId: string; reason: string }) => {
+    mutationFn: async ({ orderId, reason }: { orderId: string; reason: CancelReason }) => {
       if (!actor) throw new Error('Actor not available');
-      const cancelReason: CancelReason = { reason };
-      await actor.cancelOrder(orderId, cancelReason);
+      await actor.cancelOrder(orderId, reason);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       queryClient.invalidateQueries({ queryKey: ['customerOrders'] });
-      queryClient.invalidateQueries({ queryKey: ['order'] });
     },
   });
 }
@@ -352,7 +395,6 @@ export function useIsOrderCancellable(orderId: string) {
       return actor.isOrderCancellable(orderId);
     },
     enabled: !!actor && !isFetching && !!orderId,
-    refetchInterval: 60000,
   });
 }
 

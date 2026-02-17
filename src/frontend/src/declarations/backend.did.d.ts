@@ -17,6 +17,22 @@ export interface CarouselSlide {
   'visualContent' : ExternalBlob,
   'urlRedirect' : string,
 }
+export interface Category {
+  'displayOrder' : bigint,
+  'name' : string,
+  'description' : string,
+  'isActive' : boolean,
+  'primaryImage' : ExternalBlob,
+  'images' : Array<ExternalBlob>,
+}
+export interface CategoryCreate {
+  'displayOrder' : bigint,
+  'name' : string,
+  'description' : string,
+  'isActive' : boolean,
+  'primaryImage' : ExternalBlob,
+  'images' : Array<ExternalBlob>,
+}
 export interface CustomerInquiry {
   'id' : string,
   'customer' : Principal,
@@ -162,6 +178,7 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'addCategory' : ActorMethod<[CategoryCreate], undefined>,
   'addCategorySlide' : ActorMethod<[string, CarouselSlide], undefined>,
   'addProduct' : ActorMethod<[ProductCreate], undefined>,
   'assignAdminRole' : ActorMethod<[Principal], undefined>,
@@ -173,10 +190,12 @@ export interface _SERVICE {
   >,
   'createOrder' : ActorMethod<[OrderCreate], undefined>,
   'deleteProduct' : ActorMethod<[string], undefined>,
+  'getAllCategories' : ActorMethod<[], Array<Category>>,
   'getAllCategorySlides' : ActorMethod<[string], Array<CarouselSlide>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getCarouselRedirect' : ActorMethod<[string], [] | [string]>,
+  'getCategory' : ActorMethod<[string], [] | [Category]>,
   'getCategoryCarousel' : ActorMethod<[string, bigint], Array<ExternalBlob>>,
   'getContactInfo' : ActorMethod<
     [],
@@ -205,18 +224,26 @@ export interface _SERVICE {
   'isOrderCancellable' : ActorMethod<[string], boolean>,
   'isStripeConfigured' : ActorMethod<[], boolean>,
   'removeCategorySlide' : ActorMethod<[string, bigint], undefined>,
+  'reorderCategories' : ActorMethod<[Array<string>], undefined>,
   'reorderCategorySlides' : ActorMethod<[string, Array<bigint>], undefined>,
   'respondToInquiry' : ActorMethod<[string, string], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'setCategoryStatus' : ActorMethod<[string, boolean], undefined>,
   'setStripeConfiguration' : ActorMethod<[StripeConfiguration], undefined>,
   'submitInquiry' : ActorMethod<[CustomerInquiry], undefined>,
   'toggleCategorySlide' : ActorMethod<[string, bigint, boolean], undefined>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
   'updateCarouselRedirect' : ActorMethod<[string, string], undefined>,
+  'updateCategory' : ActorMethod<[string, CategoryCreate], undefined>,
   'updateCategoryCarousel' : ActorMethod<
     [string, bigint, Array<ExternalBlob>],
     undefined
   >,
+  'updateCategoryImages' : ActorMethod<
+    [string, Array<ExternalBlob>],
+    undefined
+  >,
+  'updateCategoryPrimaryImage' : ActorMethod<[string, ExternalBlob], undefined>,
   'updateCategorySlide' : ActorMethod<
     [string, bigint, CarouselSlide],
     undefined

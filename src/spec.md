@@ -1,12 +1,15 @@
 # Specification
 
 ## Summary
-**Goal:** Restore the homepage’s 16:9, auto-playing product carousel (admin-managed slides with redirect URLs) and update the Home page product-card “Buy Now” text color to dark bottle green, without any header/footer changes.
+**Goal:** Add admin category editing (including multi-image management) and dedicated customer/admin orders pages, while keeping the homepage unchanged and excluding any Excel export.
 
 **Planned changes:**
-- Re-enable the Home page carousel to render above the product catalog when at least one enabled slide exists in Admin, using admin-managed slide images and redirect URLs.
-- Ensure the carousel matches prior behavior: 16:9 aspect ratio across breakpoints, auto-play enabled, horizontal slide transitions, and left/right navigation arrows.
-- Update the Home page product grid “Buy Now” button text color to the existing dark bottle-green token/class, consistently for both admin and customer viewers on the same route.
-- Keep header and footer components/styling unchanged.
+- Keep the existing homepage route and HomePage component unchanged.
+- Add admin-only, dedicated edit pages per product category to update category metadata (name, display order/position, description) with backend persistence.
+- Add admin multi-image management for product categories (add/remove/reorder) and persist ordered image lists in the backend, enforcing existing image limits with clear English validation.
+- Apply the same multi-image add/remove/reorder workflow to category-specific carousels while preserving existing redirect URL editing behavior.
+- Add an authenticated Customer Orders page accessible from an "Orders" entry in the signed-in user navigation, showing the user’s order history, statuses, and full order details (including cancellation reason when present).
+- Add an admin-only Admin Orders page to view all orders, update order status, cancel orders (with required reason), assign tracking info, and filter orders by date range and month/year dropdowns.
+- Ensure no Excel export/download UI, routes, utilities, or backend endpoints are added.
 
-**User-visible outcome:** Visitors see a working 16:9 auto-playing carousel with arrow controls above the Home page catalog, can click slides to navigate to their configured URLs, and the Home page “Buy Now” button text displays in dark bottle green.
+**User-visible outcome:** Customers can view their own orders and order details from a dedicated Orders page, and admins can edit categories (including images) and manage all orders (status, cancellations, tracking, filtering) via dedicated admin pages—without any changes to the homepage and without any Excel export option.

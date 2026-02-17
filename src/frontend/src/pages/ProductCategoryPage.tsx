@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 import { useCart } from '../hooks/useCart';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
-import CategoryImageCarousel from '../components/CategoryImageCarousel';
 import { getCategoryBySlug, isValidCategorySlug } from '../utils/productCategories';
 
 export default function ProductCategoryPage() {
@@ -90,14 +89,6 @@ export default function ProductCategoryPage() {
           </div>
         </div>
 
-        {/* Category Carousels */}
-        <div className="offwhite-surface pb-8">
-          <div className="container px-4 space-y-8">
-            <CategoryImageCarousel categorySlug={categorySlug} carouselIndex={1} />
-            <CategoryImageCarousel categorySlug={categorySlug} carouselIndex={2} />
-          </div>
-        </div>
-
         {/* Products Grid */}
         <div className="offwhite-surface py-16">
           <div className="container px-4">
@@ -130,63 +121,57 @@ export default function ProductCategoryPage() {
                           src={product.media.images[0].getDirectURL()}
                           alt={product.name}
                           loading="lazy"
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center offwhite-surface">
-                          <span className="text-muted-foreground">No image</span>
+                        <div className="w-full h-full flex items-center justify-center bg-muted">
+                          <Eye className="h-12 w-12 text-muted-foreground" />
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleViewDetails(product.id);
-                          }}
-                        >
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </Button>
-                      </div>
                     </div>
                     <CardContent className="p-6 space-y-4">
                       <div>
-                        <h3 className="font-serif text-xl font-semibold mb-2 line-clamp-1">
+                        <h3 className="font-serif text-xl font-semibold tracking-tight line-clamp-1">
                           {product.name}
                         </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                        <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
                           {product.description}
                         </p>
-                        <p className="text-2xl font-bold gold-text">
-                          {formatINR(product.priceInCents)}
-                        </p>
                       </div>
-                      <div className="flex gap-2" data-customer-control="true">
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold gold-text">
+                          {formatINR(product.priceInCents)}
+                        </span>
+                        <span
+                          className={`text-xs px-3 py-1 rounded-full font-medium ${
+                            product.inStock
+                              ? 'bg-emerald-100 text-emerald-700'
+                              : 'bg-red-100 text-red-700'
+                          }`}
+                        >
+                          {product.inStock ? 'In Stock' : 'Out of Stock'}
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
                         <Button
                           onClick={() => handleAddToCart(product)}
                           disabled={!product.inStock}
-                          className="flex-1"
+                          className="flex-1 customer-cta-btn"
                           size="sm"
                         >
-                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          <ShoppingCart className="h-4 w-4 mr-1" />
                           Add to Cart
                         </Button>
                         <Button
                           onClick={() => handleBuyNow(product)}
                           disabled={!product.inStock}
                           variant="outline"
-                          className="flex-1"
+                          className="flex-1 border-gold-medium hover:bg-gold-medium/10"
                           size="sm"
                         >
                           Buy Now
                         </Button>
                       </div>
-                      {!product.inStock && (
-                        <p className="text-sm text-destructive text-center">Out of Stock</p>
-                      )}
                     </CardContent>
                   </Card>
                 ))}

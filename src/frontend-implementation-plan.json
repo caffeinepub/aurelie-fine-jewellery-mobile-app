@@ -1,45 +1,198 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Restore 16:9 homepage carousel behavior and update Home page Buy Now text color",
+  "title": "Admin category editing + customer/admin orders pages (no Excel export; homepage unchanged)",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Ensure the Home page product carousel is visible (when enabled slides exist), stays 16:9, auto-plays with horizontal transitions, supports left/right arrows, and redirects using admin-configured URLs—without header/footer changes.",
+      "summary": "Ensure the existing homepage route and HomePage component remain unchanged while adding new features elsewhere.",
       "acceptanceCriteria": [
-        "On the Home page, a carousel renders above the product catalog when there is at least one enabled carousel slide configured in Admin.",
-        "Carousel maintains a 16:9 aspect ratio (e.g., Tailwind `aspect-video`) across responsive breakpoints.",
-        "Carousel auto-advances through enabled slides without user interaction.",
-        "Carousel provides left/right arrow controls to navigate slides manually.",
-        "Clicking a slide navigates to that slide's configured redirect URL from the admin carousel settings.",
-        "No changes are made to the site header or footer components/styling."
+        "Navigating to / renders the same HomePage behavior and layout as before this update.",
+        "No new admin/customer features are added to the homepage UI."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/HomeCarousel.tsx",
-          "operation": "modify",
-          "description": "Confirm the homepage carousel uses enabled admin-managed slides (sorted by order), keeps a 16:9 container (aspect-video), auto-plays, uses horizontal slide transitions, and provides left/right arrow navigation controls; ensure slide clicks navigate to the admin-configured redirect URL. Use the blob-storage ExternalBlob.getDirectURL() rendering pattern for slide images. Verify the component's usage instructions before implementing."
+          "path": "frontend/src/__tests__/homePageRegression.test.tsx",
+          "operation": "create",
+          "description": "Add a regression test that mounts the app at / and asserts key existing HomePage elements remain present (to guard against accidental homepage changes)."
         },
         {
           "path": "frontend/src/pages/HomePage.tsx",
           "operation": "modify",
-          "description": "Ensure the HomeCarousel is wired above the product catalog on the Home page and that it renders only when enabled slides exist (via HomeCarousel returning null), without touching header/footer-related files. Verify the component's usage instructions before implementing."
+          "description": "Do not change any UI/behavior. Only add an explicit file-level comment noting the homepage is immutable per REQ-1 to prevent accidental edits during future work."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Change only the Home page product-card 'Buy Now' button text color to dark bottle green for all viewers (admin/customer), without header/footer changes.",
+      "summary": "Add admin-only, category-specific edit pages for category metadata (name, display order, description) with save to backend capabilities.",
       "acceptanceCriteria": [
-        "On the Home page product grid, the 'Buy Now' button text is dark bottle green (use the existing bottle-green dark token/class used elsewhere, e.g., `text-bottle-green-dark`, rather than white).",
-        "The updated 'Buy Now' text color is visible consistently regardless of whether the viewer is an admin or a customer (same Home page route).",
-        "Only the homepage 'Buy Now' button text color is changed; header and footer remain unchanged."
+        "Admin can open a category-specific edit page for each category and update category metadata fields.",
+        "Category metadata updates persist after refresh and are reflected anywhere categories are listed/used.",
+        "Non-admin users cannot access category edit pages or perform category update mutations."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/HomePage.tsx",
+          "path": "frontend/src/pages/admin/CategoryEditPage.tsx",
+          "operation": "create",
+          "description": "Create an admin-only CategoryEditPage that loads the category by slug/name and provides editable fields for name, display order/position, and description, saving changes via backend actor calls. Use the authorization component’s role checks (e.g., isCallerAdmin) to gate access. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useAdminCategoryQueries.ts",
+          "operation": "create",
+          "description": "Add React Query hooks for fetching a single category and updating category metadata (and invalidating category-related caches) used by the admin category edit pages."
+        },
+        {
+          "path": "frontend/src/pages/AdminDashboardPage.tsx",
           "operation": "modify",
-          "description": "Update the Home page product grid 'Buy Now' button styling so its text uses the existing dark bottle-green token/class (e.g., text-bottle-green-dark) and is not forced to white by any homepage CTA overrides (e.g., remove customer-cta-btn from Buy Now only). Keep all other button behavior and header/footer untouched. Verify the component's usage instructions before implementing."
+          "description": "Wire category edit pages into the existing admin experience by adding a category list (links/buttons) in the existing admin UI (e.g., within the Edit tab) that navigates to each category’s dedicated edit page."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Register a new admin route for category editing (e.g., /admin/categories/$categorySlug/edit) that renders CategoryEditPage. Ensure the existing index route (/) still points to HomePage unchanged."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Implement admin multi-image management for product categories (add/remove/reorder) with ordered persistence to backend, including limit validation messaging in English.",
+      "acceptanceCriteria": [
+        "Admin can upload multiple images for a category, remove specific images, and reorder images.",
+        "The saved order is preserved and returned in the same order by the backend.",
+        "Enforce any existing per-category image limits consistently across UI and backend (show a clear validation message in English if exceeded)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/admin/CategoryImagesManager.tsx",
+          "operation": "create",
+          "description": "Create a reusable CategoryImagesManager component used by CategoryEditPage to add/remove/reorder category images (ordered list). Use the blob-storage component’s ExternalBlob for upload and direct URL rendering. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/admin/CategoryEditPage.tsx",
+          "operation": "modify",
+          "description": "Integrate CategoryImagesManager into the category edit page and persist ordered image lists using backend actor calls; show a clear English validation error if the category image limit is exceeded."
+        },
+        {
+          "path": "frontend/src/hooks/useAdminCategoryQueries.ts",
+          "operation": "modify",
+          "description": "Extend admin category hooks to support updating the ordered category image list and invalidating any queries that list or display categories after a successful save."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Upgrade admin category carousel editing to support multi-image add/remove/reorder while keeping redirect URL editing behavior intact.",
+      "acceptanceCriteria": [
+        "Admin can manage images for each category carousel with add/remove/reorder controls.",
+        "Carousel image order is preserved on save and reload.",
+        "Existing redirect URL configuration remains available and functional."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/admin/CategoryCarouselManagement.tsx",
+          "operation": "modify",
+          "description": "Replace the fixed-slot carousel editor with a true ordered list workflow (add/remove/reorder). Persist ordering using existing updateCategoryCarousel calls; keep redirect URL editing unchanged and visible. Use blob-storage ExternalBlob direct URLs for previews and uploads. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useCategoryCarouselQueries.ts",
+          "operation": "modify",
+          "description": "Adjust category carousel hooks usage patterns if needed to support ordered list updates (still saving the complete ordered array) and ensure queries invalidate correctly after save."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Create an authenticated customer Orders page with order history list + full detail view, and add an \"Orders\" entry to authenticated navigation.",
+      "acceptanceCriteria": [
+        "Authenticated users can navigate to a dedicated Orders page and see only their own orders.",
+        "The page shows a list/history view and supports viewing full details for a selected order.",
+        "Order statuses are displayed clearly, including cancelled orders and cancellation reason when present.",
+        "Unauthenticated users are prompted to authenticate (consistent with existing app patterns) before viewing orders."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/OrdersPage.tsx",
+          "operation": "modify",
+          "description": "Implement the customer OrdersPage UI: require authentication, fetch only customer orders, show a history/list view, and allow opening a full order detail view (reusing existing OrderDetailModal where appropriate). Ensure cancelled orders show the cancellation reason when present."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add a new route (e.g., /orders) wired to OrdersPage, keeping the existing homepage route and HomePage component unchanged."
+        },
+        {
+          "path": "frontend/src/components/Layout.tsx",
+          "operation": "modify",
+          "description": "Add an \"Orders\" navigation entry visible only for authenticated users that navigates to /orders (do not add any Excel export action)."
+        },
+        {
+          "path": "frontend/src/components/OrderDetailModal.tsx",
+          "operation": "modify",
+          "description": "Ensure the order detail UI clearly displays status, and if cancelled, shows the cancellation reason in English; keep behavior consistent across dashboard and Orders page."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Create a dedicated admin Orders page (admin-only) supporting list/detail, status updates, cancellation with reason, tracking info editing, and date/month/year filtering.",
+      "acceptanceCriteria": [
+        "Admin-only access is enforced for the Admin Orders page and related backend mutations/queries.",
+        "Admin can update order status through the supported status lifecycle and see the result reflected in the list and detail views.",
+        "Admin can cancel an order with a required cancellation reason and see that reason in order details.",
+        "Admin can assign and persist tracking information on an order and see it in order details.",
+        "Orders can be filtered by a selectable date range and by month/year dropdowns; filters can be cleared to return to the full list."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/admin/AdminOrdersPage.tsx",
+          "operation": "create",
+          "description": "Create a dedicated AdminOrdersPage gated by admin checks (authorization component role-based access). Provide an orders list + detail panel, status update controls, cancel-with-reason flow, tracking info editor, and local date-range + month/year dropdown filtering with clear/reset. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Register a new admin-only route (e.g., /admin/orders) wired to AdminOrdersPage, without altering the existing homepage route and HomePage component."
+        },
+        {
+          "path": "frontend/src/pages/AdminDashboardPage.tsx",
+          "operation": "modify",
+          "description": "Add a clear navigation path from the existing admin UI to the dedicated Admin Orders page (e.g., a button/link in the Orders tab header) while keeping the current embedded OrderManagement available if desired."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add/adjust React Query mutations and cache invalidations needed by AdminOrdersPage (status updates, cancellation). If tracking info requires a new backend capability, add the corresponding typed call in the frontend integration once available."
+        },
+        {
+          "path": "frontend/src/backend.d.ts",
+          "operation": "modify",
+          "description": "Update frontend backend type declarations to include tracking information fields and the associated backend function signatures required by AdminOrdersPage once the backend adds this capability (keep typings aligned with generated declarations)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Ensure no Excel export/download functionality is present in this version across customer/admin orders experiences.",
+      "acceptanceCriteria": [
+        "No Excel export/download button or menu item exists in admin or customer orders UI.",
+        "No backend method is introduced solely for exporting orders to Excel/CSV in this version."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/OrdersPage.tsx",
+          "operation": "modify",
+          "description": "Confirm OrdersPage contains no export/download UI or logic; ensure only on-screen viewing of list and details is supported."
+        },
+        {
+          "path": "frontend/src/pages/admin/AdminOrdersPage.tsx",
+          "operation": "modify",
+          "description": "Confirm AdminOrdersPage contains no export/download UI or logic (no Excel/CSV actions), focusing only on filtering and order management."
+        },
+        {
+          "path": "frontend/src/components/admin/OrderManagement.tsx",
+          "operation": "modify",
+          "description": "Verify the existing admin OrderManagement UI does not expose any Excel/CSV export actions; remove any export-related UI if present (keep printing if already implemented)."
         }
       ]
     }

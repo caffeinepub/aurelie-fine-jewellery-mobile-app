@@ -1,23 +1,24 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useGetProducts } from '../../hooks/useQueries';
+import { Loader2, ShoppingCart, Eye } from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import { Card, CardContent } from '../../components/ui/card';
+import { toast } from 'sonner';
 import { useCart } from '../../hooks/useCart';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Badge } from '../../components/ui/badge';
-import { Skeleton } from '../../components/ui/skeleton';
-import { ShoppingCart, Zap, ArrowLeft } from 'lucide-react';
-import { toast } from 'sonner';
 import CustomerPageStyleScope from '../../components/CustomerPageStyleScope';
-import CategoryImageCarousel from '../../components/CategoryImageCarousel';
 
 interface CategoryPageTemplateProps {
   categorySlug: string;
-  title: string;
-  description: string;
+  categoryTitle: string;
+  categoryDescription: string;
 }
 
-export default function CategoryPageTemplate({ categorySlug, title, description }: CategoryPageTemplateProps) {
+export default function CategoryPageTemplate({
+  categorySlug,
+  categoryTitle,
+  categoryDescription,
+}: CategoryPageTemplateProps) {
   const navigate = useNavigate();
   const { data: products, isLoading } = useGetProducts();
   const { addItem } = useCart();
@@ -26,160 +27,147 @@ export default function CategoryPageTemplate({ categorySlug, title, description 
   const isAuthenticated = !!identity;
 
   // Filter products by category
-  const filteredProducts = products?.filter(
-    (product) => product.category === categorySlug
+  const categoryProducts = products?.filter(
+    (product) => product.category.toLowerCase() === categorySlug.toLowerCase()
   ) || [];
 
-  const handleAddToCart = (e: React.MouseEvent, product: any) => {
-    e.stopPropagation();
+  const handleAddToCart = (product: any) => {
     if (!isAuthenticated) {
-      toast.error('Please login to add items to cart');
-      return;
-    }
-    if (!product.inStock) {
-      toast.error('This product is currently out of stock');
+      toast.error('Please log in to add items to cart');
       return;
     }
     addItem(product, 1);
-    toast.success('Added to cart');
+    toast.success(`${product.name} added to cart`);
   };
 
-  const handleBuyNow = (e: React.MouseEvent, productId: string) => {
-    e.stopPropagation();
+  const handleBuyNow = (product: any) => {
     if (!isAuthenticated) {
-      toast.error('Please login to make a purchase');
+      toast.error('Please log in to purchase');
       return;
     }
-    navigate({ to: '/product/$productId', params: { productId } });
+    addItem(product, 1);
+    navigate({ to: '/checkout' });
   };
 
-  const formatINR = (priceInCents: bigint) => {
-    const amount = Number(priceInCents) / 100;
+  const handleViewDetails = (productId: string) => {
+    navigate({ to: `/product/${productId}` });
+  };
+
+  const formatINR = (priceInCents: bigint): string => {
+    const priceInRupees = Number(priceInCents) / 100;
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(amount);
+    }).format(priceInRupees);
   };
 
   return (
     <CustomerPageStyleScope>
-      <div className="container px-4 py-8">
-        {/* Back Button */}
-        <Button
-          variant="ghost"
-          onClick={() => navigate({ to: '/' })}
-          className="mb-4 gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Home
-        </Button>
-
+      <div className="min-h-screen">
         {/* Category Header */}
-        <div className="mb-8">
-          <h1 className="font-serif text-4xl font-semibold tracking-tight mb-3">
-            {title}
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-3xl">
-            {description}
-          </p>
-        </div>
-
-        {/* Two Carousels Stacked */}
-        <div className="space-y-8 mb-12">
-          <CategoryImageCarousel categorySlug={categorySlug} carouselIndex={1} />
-          <CategoryImageCarousel categorySlug={categorySlug} carouselIndex={2} />
+        <div className="offwhite-surface py-16">
+          <div className="container px-4 text-center">
+            <h1 className="font-serif text-5xl font-bold tracking-tight mb-4">
+              {categoryTitle}
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {categoryDescription}
+            </p>
+          </div>
         </div>
 
         {/* Products Grid */}
-        {isLoading ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map((i) => (
-              <Card key={i} className="overflow-hidden gold-border">
-                <Skeleton className="h-64 w-full" />
-                <CardHeader>
-                  <Skeleton className="h-6 w-3/4" />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-2/3" />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : filteredProducts.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredProducts.map((product) => {
-              const firstImage = product.media.images[0];
-
-              return (
-                <Card
-                  key={product.id}
-                  className="group overflow-hidden transition-all hover:shadow-gold cursor-pointer gold-border chrome-surface backdrop-blur"
-                  onClick={() => navigate({ to: '/product/$productId', params: { productId: product.id } })}
-                >
-                  <div className="relative overflow-hidden bg-bottle-green-light/20">
-                    {firstImage ? (
-                      <img
-                        src={firstImage.getDirectURL()}
-                        alt={product.name}
-                        className="h-64 w-full object-cover transition-transform group-hover:scale-105"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    ) : (
-                      <div className="h-64 w-full flex items-center justify-center bg-muted">
-                        <span className="text-muted-foreground">No image</span>
+        <div className="offwhite-surface py-16">
+          <div className="container px-4">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="h-12 w-12 animate-spin text-gold-medium" />
+              </div>
+            ) : categoryProducts.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-xl text-muted-foreground mb-8">
+                  No products available in this category yet.
+                </p>
+                <Button onClick={() => navigate({ to: '/' })}>
+                  Browse All Products
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {categoryProducts.map((product) => (
+                  <Card
+                    key={product.id}
+                    className="group overflow-hidden gold-border offwhite-surface hover:shadow-gold transition-all duration-300"
+                  >
+                    <div
+                      className="relative aspect-square overflow-hidden cursor-pointer offwhite-surface"
+                      onClick={() => handleViewDetails(product.id)}
+                    >
+                      {product.media.images.length > 0 ? (
+                        <img
+                          src={product.media.images[0].getDirectURL()}
+                          alt={product.name}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-muted">
+                          <Eye className="h-12 w-12 text-muted-foreground" />
+                        </div>
+                      )}
+                    </div>
+                    <CardContent className="p-6 space-y-4">
+                      <div>
+                        <h3 className="font-serif text-xl font-semibold tracking-tight line-clamp-1">
+                          {product.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
+                          {product.description}
+                        </p>
                       </div>
-                    )}
-                    {!product.inStock && (
-                      <Badge variant="secondary" className="absolute top-3 right-3 bg-secondary text-secondary-foreground">
-                        Out of Stock
-                      </Badge>
-                    )}
-                  </div>
-                  <CardHeader>
-                    <CardTitle className="font-serif text-xl gold-text">{product.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {product.description}
-                    </p>
-                    <p className="text-2xl font-semibold gold-text mt-3">
-                      {formatINR(product.priceInCents)}
-                    </p>
-                  </CardContent>
-                  <CardFooter className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="flex-1 gap-2 border-gold-medium hover:bg-gold-medium/20"
-                      onClick={(e) => handleAddToCart(e, product)}
-                      disabled={!product.inStock}
-                    >
-                      <ShoppingCart className="h-4 w-4" />
-                      Add to Cart
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="flex-1 gap-2 gold-gradient text-secondary shadow-gold"
-                      onClick={(e) => handleBuyNow(e, product.id)}
-                      disabled={!product.inStock}
-                    >
-                      <Zap className="h-4 w-4" />
-                      Buy Now
-                    </Button>
-                  </CardFooter>
-                </Card>
-              );
-            })}
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold gold-text">
+                          {formatINR(product.priceInCents)}
+                        </span>
+                        <span
+                          className={`text-xs px-3 py-1 rounded-full font-medium ${
+                            product.inStock
+                              ? 'bg-emerald-100 text-emerald-700'
+                              : 'bg-red-100 text-red-700'
+                          }`}
+                        >
+                          {product.inStock ? 'In Stock' : 'Out of Stock'}
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => handleAddToCart(product)}
+                          disabled={!product.inStock}
+                          className="flex-1 customer-cta-btn"
+                          size="sm"
+                        >
+                          <ShoppingCart className="h-4 w-4 mr-1" />
+                          Add to Cart
+                        </Button>
+                        <Button
+                          onClick={() => handleBuyNow(product)}
+                          disabled={!product.inStock}
+                          variant="outline"
+                          className="flex-1 border-gold-medium hover:bg-gold-medium/10"
+                          size="sm"
+                        >
+                          Buy Now
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">No products available in this category at the moment.</p>
-          </div>
-        )}
+        </div>
       </div>
     </CustomerPageStyleScope>
   );

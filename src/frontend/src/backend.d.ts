@@ -23,6 +23,14 @@ export interface Product {
     category: string;
     priceInCents: bigint;
 }
+export interface Category {
+    displayOrder: bigint;
+    name: string;
+    description: string;
+    isActive: boolean;
+    primaryImage: ExternalBlob;
+    images: Array<ExternalBlob>;
+}
 export interface CarouselSlide {
     order: bigint;
     enabled: boolean;
@@ -120,6 +128,14 @@ export interface ProductMedia {
     video?: ExternalBlob;
     images: Array<ExternalBlob>;
 }
+export interface CategoryCreate {
+    displayOrder: bigint;
+    name: string;
+    description: string;
+    isActive: boolean;
+    primaryImage: ExternalBlob;
+    images: Array<ExternalBlob>;
+}
 export type StripeSessionStatus = {
     __kind__: "completed";
     completed: {
@@ -166,6 +182,7 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
+    addCategory(categoryInput: CategoryCreate): Promise<void>;
     addCategorySlide(category: string, newSlide: CarouselSlide): Promise<void>;
     addProduct(product: ProductCreate): Promise<void>;
     assignAdminRole(userPrincipal: Principal): Promise<void>;
@@ -174,10 +191,12 @@ export interface backendInterface {
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;
     createOrder(input: OrderCreate): Promise<void>;
     deleteProduct(productId: string): Promise<void>;
+    getAllCategories(): Promise<Array<Category>>;
     getAllCategorySlides(category: string): Promise<Array<CarouselSlide>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getCarouselRedirect(category: string): Promise<string | null>;
+    getCategory(name: string): Promise<Category | null>;
     getCategoryCarousel(category: string, carouselNumber: bigint): Promise<Array<ExternalBlob>>;
     getContactInfo(): Promise<{
         address: string;
@@ -204,15 +223,20 @@ export interface backendInterface {
     isOrderCancellable(orderId: string): Promise<boolean>;
     isStripeConfigured(): Promise<boolean>;
     removeCategorySlide(category: string, slideIndex: bigint): Promise<void>;
+    reorderCategories(newOrder: Array<string>): Promise<void>;
     reorderCategorySlides(category: string, newOrder: Array<bigint>): Promise<void>;
     respondToInquiry(inquiryId: string, response: string): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    setCategoryStatus(name: string, isActive: boolean): Promise<void>;
     setStripeConfiguration(config: StripeConfiguration): Promise<void>;
     submitInquiry(inquiry: CustomerInquiry): Promise<void>;
     toggleCategorySlide(category: string, slideIndex: bigint, enabled: boolean): Promise<void>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
     updateCarouselRedirect(category: string, redirectUrl: string): Promise<void>;
+    updateCategory(name: string, categoryInput: CategoryCreate): Promise<void>;
     updateCategoryCarousel(category: string, carouselNumber: bigint, images: Array<ExternalBlob>): Promise<void>;
+    updateCategoryImages(name: string, images: Array<ExternalBlob>): Promise<void>;
+    updateCategoryPrimaryImage(name: string, primaryImage: ExternalBlob): Promise<void>;
     updateCategorySlide(category: string, slideIndex: bigint, updatedSlide: CarouselSlide): Promise<void>;
     updateOrderStatus(orderId: string, status: OrderStatus): Promise<void>;
     updateProduct(product: ProductCreate): Promise<void>;

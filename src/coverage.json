@@ -1,46 +1,139 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-14T10:20:44.693Z",
+  "generatedAt": "2026-02-17T12:07:27.428Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 7,
+    "implemented": 6,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Restore the homepage product carousel so it is visible on the Home page and behaves as it did previously: 16:9 aspect ratio, auto-play enabled, horizontal slide transitions, and left/right navigation arrows, using admin-managed images and redirect URLs.",
-        "status": "implemented",
+        "summary": "Keep the main home page unchanged (no functional or UI changes to the existing homepage route and HomePage component).",
+        "status": "missing",
         "plannedFiles": [
-          "frontend/src/components/HomeCarousel.tsx",
+          "frontend/src/__tests__/homePageRegression.test.tsx",
           "frontend/src/pages/HomePage.tsx"
         ],
-        "matchedFiles": [
-          "frontend/src/pages/HomePage.tsx"
-        ]
+        "matchedFiles": []
       },
       {
         "id": "REQ-2",
-        "summary": "Update the 'Buy Now' button text color for product cards shown on the homepage to a dark bottle-green color for both customer and admin users, without changing header/footer.",
+        "summary": "Implement dedicated admin edit pages for each product category that allow admins to edit category fields (at minimum: name, display order/position, and description) and persist those changes in the backend.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/HomePage.tsx"
+          "frontend/src/pages/admin/CategoryEditPage.tsx",
+          "frontend/src/hooks/useAdminCategoryQueries.ts",
+          "frontend/src/pages/AdminDashboardPage.tsx",
+          "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/HomePage.tsx"
+          "frontend/src/pages/admin/CategoryEditPage.tsx",
+          "frontend/src/pages/AdminDashboardPage.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Add multi-image management for product categories in the admin UI, supporting adding, removing, and reordering category images, and persist the ordered image list in the backend.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/admin/CategoryImagesManager.tsx",
+          "frontend/src/pages/admin/CategoryEditPage.tsx",
+          "frontend/src/hooks/useAdminCategoryQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/admin/CategoryImagesManager.tsx",
+          "frontend/src/pages/admin/CategoryEditPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Apply the same multi-image management workflow to product-category carousels (category-specific carousels), including add/remove/reorder, while keeping existing redirect URL editing behavior.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/admin/CategoryCarouselManagement.tsx",
+          "frontend/src/hooks/useCategoryCarouselQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/admin/CategoryCarouselManagement.tsx"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Create a dedicated authenticated Customer Orders page that shows the logged-in user’s order history, current status, and full order details (including cancellation details when applicable), and make it reachable from an \"Orders\" entry in the authenticated user navigation.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/OrdersPage.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/Layout.tsx",
+          "frontend/src/components/OrderDetailModal.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/OrdersPage.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/Layout.tsx",
+          "frontend/src/components/OrderDetailModal.tsx"
+        ]
+      },
+      {
+        "id": "REQ-6",
+        "summary": "Create a dedicated Admin Orders page that allows admins to view all orders, update order status, cancel orders (with reason), and assign tracking information; include date-range filtering and month/year dropdown filters for narrowing the order list.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/admin/AdminOrdersPage.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/AdminDashboardPage.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/backend.d.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/admin/AdminOrdersPage.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/AdminDashboardPage.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/backend.d.ts"
+        ]
+      },
+      {
+        "id": "REQ-7",
+        "summary": "Remove/exclude the Excel download/export option from this version (do not add any Excel export UI, routes, utilities, or backend endpoints).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/OrdersPage.tsx",
+          "frontend/src/pages/admin/AdminOrdersPage.tsx",
+          "frontend/src/components/admin/OrderManagement.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/OrdersPage.tsx",
+          "frontend/src/pages/admin/AdminOrdersPage.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/pages/HomePage.tsx",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/Layout.tsx",
+    "frontend/src/components/OrderDetailModal.tsx",
+    "frontend/src/components/admin/CategoryCarouselManagement.tsx",
+    "frontend/src/components/admin/CategoryImagesManager.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/AdminDashboardPage.tsx",
+    "frontend/src/pages/OrdersPage.tsx",
+    "frontend/src/pages/admin/AdminOrdersPage.tsx",
+    "frontend/src/pages/admin/CategoryEditPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

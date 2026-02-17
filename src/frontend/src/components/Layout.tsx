@@ -1,189 +1,124 @@
-import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
+import { Outlet, useNavigate } from '@tanstack/react-router';
+import { Suspense } from 'react';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useQueryClient } from '@tanstack/react-query';
-import { ShoppingCart, LayoutDashboard, LogIn, User, LogOut, ChevronDown } from 'lucide-react';
-import { useIsCallerAdmin } from '../hooks/useQueries';
+import { Button } from './ui/button';
+import { ShoppingCart, User, LogOut, UserCircle, ShoppingBag } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
-import { Badge } from './ui/badge';
-import { useState, useEffect, Suspense } from 'react';
-import FooterSystem from './footer/FooterSystem';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from './ui/dropdown-menu';
 import RouteLoadingFallback from './RouteLoadingFallback';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from './ui/dropdown-menu';
-
-const CATEGORIES = [
-  { slug: 'necklace', label: 'Necklace' },
-  { slug: 'earrings', label: 'Earrings' },
-  { slug: 'rings', label: 'Rings' },
-  { slug: 'anklets', label: 'Anklets' },
-  { slug: 'lab-diamonds-jewellery', label: 'Lab Diamonds Jewellery' },
-  { slug: 'bridal-jewellery', label: 'Bridal Jewellery' },
-];
+import FooterSystem from './footer/FooterSystem';
+import { PRODUCT_CATEGORIES } from '../utils/productCategories';
 
 export default function Layout() {
-  const { login, clear, loginStatus, identity } = useInternetIdentity();
-  const { data: isAdmin } = useIsCallerAdmin();
-  const { getTotalItems } = useCart();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const routerState = useRouterState();
+  const { login, clear, loginStatus, identity } = useInternetIdentity();
+  const queryClient = useQueryClient();
+  const { items } = useCart();
 
   const isAuthenticated = !!identity;
   const disabled = loginStatus === 'logging-in';
-  const cartItemCount = getTotalItems();
 
-  const [scrolled, setScrolled] = useState(false);
-
-  // Scroll listener for compress behavior
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleLogin = async () => {
-    try {
-      await login();
-    } catch (error: any) {
-      console.error('Login error:', error);
-      if (error.message === 'User is already authenticated') {
-        await clear();
-        setTimeout(() => login(), 300);
+  const handleAuth = async () => {
+    if (isAuthenticated) {
+      await clear();
+      queryClient.clear();
+    } else {
+      try {
+        await login();
+      } catch (error: any) {
+        console.error('Login error:', error);
+        if (error.message === 'User is already authenticated') {
+          await clear();
+          setTimeout(() => login(), 300);
+        }
       }
     }
   };
 
-  const handleLogout = async () => {
-    await clear();
-    queryClient.clear();
-    navigate({ to: '/' });
-  };
-
-  const handleCategoryClick = (slug: string) => {
-    navigate({ to: '/category/$categorySlug', params: { categorySlug: slug } });
-  };
-
-  const currentPath = routerState.location.pathname;
+  const cartItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header with Transparent Logo Lockup */}
-      <header
-        className={`sticky top-0 z-50 w-full border-b border-gold-medium/20 bg-transparent transition-all duration-300 ${
-          scrolled ? 'h-16' : 'h-20'
-        }`}
-      >
-        <div className="container flex items-center justify-between px-4 h-full">
+      {/* Header */}
+      <header className="sticky top-0 z-50 w-full border-b border-gold-medium/20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center justify-between px-4">
+          {/* Logo */}
           <button
             onClick={() => navigate({ to: '/' })}
-            className={`header-brand-btn flex items-center transition-all duration-300 hover:opacity-80 ${
-              scrolled ? 'scale-90' : 'scale-100'
-            }`}
+            className="header-brand-btn flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
             <img
               src="/assets/generated/aurelie-lockup-transparent.dim_1000x320.png"
               alt="Aurelie Fine Jewellery"
-              className={`object-contain transition-all duration-300 ${
-                scrolled ? 'h-12' : 'h-16'
-              }`}
+              className="h-10 w-auto"
             />
           </button>
 
-          <nav className="flex items-center gap-1">
-            {/* Our Products Dropdown with Transparent Background */}
+          {/* Navigation */}
+          <nav className="flex items-center gap-4">
+            {/* Our Products Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="header-nav-btn-didot gap-1 px-3 py-2 rounded-md transition-opacity hover:opacity-70">
-                  <span className="text-sm font-light tracking-wide">Our Products</span>
-                  <ChevronDown className="h-3 w-3" />
-                </button>
+                <Button variant="ghost" className="text-bottle-green-dark hover:text-gold-medium">
+                  Our Products
+                </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                align="end" 
-                className="w-56 bg-transparent backdrop-blur-md border-gold-medium/30"
-              >
-                {CATEGORIES.map((category) => (
+              <DropdownMenuContent className="bg-background/95 backdrop-blur border-gold-medium/30">
+                {PRODUCT_CATEGORIES.map((category) => (
                   <DropdownMenuItem
                     key={category.slug}
-                    onClick={() => handleCategoryClick(category.slug)}
-                    className="cursor-pointer text-foreground hover:bg-gold-medium/20"
+                    onClick={() => navigate({ to: `/category/${category.slug}` })}
+                    className="cursor-pointer hover:bg-gold-medium/10"
                   >
-                    {category.label}
+                    {category.title}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {isAuthenticated && (
-              <>
-                <button
-                  onClick={() => navigate({ to: '/cart' })}
-                  className="header-nav-btn-didot gap-2 relative px-3 py-2 rounded-md transition-opacity hover:opacity-70"
-                >
-                  <ShoppingCart className="h-4 w-4" />
-                  {cartItemCount > 0 && (
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
-                      {cartItemCount}
-                    </Badge>
-                  )}
-                  <span className="hidden sm:inline text-sm font-light tracking-wide">Cart</span>
-                </button>
-                <button
-                  onClick={() => navigate({ to: '/dashboard' })}
-                  className={`header-nav-btn-didot gap-2 px-3 py-2 rounded-md transition-opacity hover:opacity-70 ${
-                    currentPath === '/dashboard' ? 'opacity-100' : 'opacity-70'
-                  }`}
-                >
-                  <LayoutDashboard className="h-4 w-4" />
-                  <span className="hidden sm:inline text-sm font-light tracking-wide">Dashboard</span>
-                </button>
-                {isAdmin && (
-                  <button
-                    onClick={() => navigate({ to: '/admin' })}
-                    className={`header-nav-btn-didot gap-2 px-3 py-2 rounded-md transition-opacity hover:opacity-70 ${
-                      currentPath === '/admin' ? 'opacity-100' : 'opacity-70'
-                    }`}
-                  >
-                    <LayoutDashboard className="h-4 w-4" />
-                    <span className="hidden sm:inline text-sm font-light tracking-wide">Admin</span>
-                  </button>
-                )}
-              </>
-            )}
+            {/* Cart */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate({ to: '/cart' })}
+              className="relative text-bottle-green-dark hover:text-gold-medium"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-gold-medium text-xs font-semibold text-secondary flex items-center justify-center">
+                  {cartItemCount}
+                </span>
+              )}
+            </Button>
 
-            {/* Auth Control - Dropdown when logged in, Login button when logged out */}
+            {/* Account / Login */}
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="header-nav-btn-didot gap-2 px-3 py-2 rounded-md transition-opacity hover:opacity-70">
-                    <User className="h-4 w-4" />
-                    <span className="hidden sm:inline text-sm font-light tracking-wide">Account</span>
-                    <ChevronDown className="h-3 w-3" />
-                  </button>
+                  <Button variant="ghost" size="icon" className="text-bottle-green-dark hover:text-gold-medium">
+                    <User className="h-5 w-5" />
+                  </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent 
-                  align="end" 
-                  className="w-48 bg-transparent backdrop-blur-md border-gold-medium/30"
-                >
+                <DropdownMenuContent className="bg-background/95 backdrop-blur border-gold-medium/30">
                   <DropdownMenuItem
                     onClick={() => navigate({ to: '/profile' })}
-                    className="cursor-pointer text-foreground hover:bg-gold-medium/20"
+                    className="cursor-pointer hover:bg-gold-medium/10"
                   >
-                    <User className="h-4 w-4 mr-2" />
+                    <UserCircle className="h-4 w-4 mr-2" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-gold-medium/20" />
                   <DropdownMenuItem
-                    onClick={handleLogout}
-                    className="cursor-pointer text-foreground hover:bg-gold-medium/20"
+                    onClick={() => navigate({ to: '/orders' })}
+                    className="cursor-pointer hover:bg-gold-medium/10"
+                  >
+                    <ShoppingBag className="h-4 w-4 mr-2" />
+                    Orders
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleAuth}
+                    className="cursor-pointer hover:bg-gold-medium/10"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     Logout
@@ -191,30 +126,26 @@ export default function Layout() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <button
-                onClick={handleLogin}
+              <Button
+                onClick={handleAuth}
                 disabled={disabled}
-                className="header-nav-btn-didot gap-2 px-4 py-2 rounded-md transition-opacity hover:opacity-70 disabled:opacity-50"
+                className="bg-gold-medium hover:bg-gold-dark text-secondary"
               >
-                <LogIn className="h-4 w-4" />
-                <span className="hidden sm:inline text-sm font-light tracking-wide">
-                  {disabled ? 'Logging in...' : 'Login'}
-                </span>
-              </button>
+                {disabled ? 'Logging in...' : 'Login'}
+              </Button>
             )}
           </nav>
         </div>
-        <div className="hairline-gold-divider" />
       </header>
 
-      {/* Main Content with Shimmering Beige Background */}
-      <main className="flex-1 shimmering-beige">
+      {/* Main Content */}
+      <main className="flex-1 bg-beige-champagne">
         <Suspense fallback={<RouteLoadingFallback />}>
           <Outlet />
         </Suspense>
       </main>
 
-      {/* Footer System - Always Split Layout */}
+      {/* Footer */}
       <FooterSystem />
     </div>
   );

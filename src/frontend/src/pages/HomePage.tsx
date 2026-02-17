@@ -6,6 +6,7 @@ import { ShoppingCart, Eye } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
 import { toast } from 'sonner';
 import HomeCarousel from '../components/HomeCarousel';
+import HomeCategoryCarouselsSection from '../components/HomeCategoryCarouselsSection';
 
 function formatINR(priceInCents: bigint): string {
   const amount = Number(priceInCents) / 100;
@@ -38,6 +39,9 @@ export default function HomePage() {
       <div className="w-full">
         <HomeCarousel />
       </div>
+
+      {/* Category Carousels Section */}
+      <HomeCategoryCarouselsSection />
 
       {/* Product Catalog */}
       <section className="container mx-auto px-4 py-12">

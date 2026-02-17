@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { useCart } from '../hooks/useCart';
 import { toast } from 'sonner';
 import ProductMediaCarousel from '../components/ProductMediaCarousel';
-import CategoryImageCarousel from '../components/CategoryImageCarousel';
 import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
 
 function formatINR(priceInCents: bigint): string {
@@ -72,21 +71,9 @@ export default function ProductDetailPage() {
     );
   }
 
-  const hasValidCategory = product.category && product.category.trim() !== '';
-
   return (
     <CustomerPageStyleScope>
       <div className="min-h-screen">
-        {/* Category Carousels at Top */}
-        {hasValidCategory && (
-          <section className="w-full py-8 bg-beige-light/50">
-            <div className="container mx-auto px-4 space-y-6">
-              <CategoryImageCarousel categorySlug={product.category} carouselIndex={1} />
-              <CategoryImageCarousel categorySlug={product.category} carouselIndex={2} />
-            </div>
-          </section>
-        )}
-
         {/* Product Details */}
         <div className="container mx-auto px-4 py-12">
           <Button
