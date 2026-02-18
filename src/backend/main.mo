@@ -6,6 +6,7 @@ import Iter "mo:core/Iter";
 import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
 import Time "mo:core/Time";
+import Migration "migration";
 
 // Component imports
 import Storage "blob-storage/Storage";
@@ -15,8 +16,8 @@ import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
 
-// For data migration on upgrades
-
+// With-clause for migration
+(with migration = Migration.run)
 actor {
   // Time Constants
   let cancellationWindowHours = 12;
@@ -61,6 +62,11 @@ actor {
     urlRedirect : Text;
     enabled : Bool;
     order : Nat;
+  };
+
+  public type CategoryHeader = {
+    image : Storage.ExternalBlob;
+    redirectUrl : Text;
   };
 
   public type OrderStatus = {
@@ -169,6 +175,8 @@ actor {
   let categoryCarousels = Map.empty<Text, CategoryCarousels>();
   let userProfiles = Map.empty<Principal, UserProfile>();
   let carouselRedirects = Map.empty<Text, Text>();
+  // Store category header data
+  let categoryHeaders = Map.empty<Text, CategoryHeader>();
   let categories = Map.empty<Text, Category>();
 
   var siteContent : SiteContent = {
@@ -206,6 +214,23 @@ actor {
       case ("rings") { ringsSlides };
       case (_) { Runtime.trap("Invalid category") };
     };
+  };
+
+  // ---------- Category Header Row Management ----------
+
+  public shared ({ caller }) func setCategoryHeader(categorySlug : Text, header : CategoryHeader) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can set category headers");
+    };
+    categoryHeaders.add(categorySlug, header);
+  };
+
+  public query ({ caller }) func getCategoryHeader(categorySlug : Text) : async ?CategoryHeader {
+    categoryHeaders.get(categorySlug);
+  };
+
+  public query ({ caller }) func getAllCategoryHeaders() : async [(Text, CategoryHeader)] {
+    categoryHeaders.toArray();
   };
 
   // ------------- Category Management (Admin Only) -------------
@@ -445,7 +470,7 @@ actor {
     categoryCarousels.add(category, updatedCarousels);
   };
 
-  public query func getCategoryCarousel(category : Text, carouselNumber : Nat) : async [Storage.ExternalBlob] {
+  public query ({ caller }) func getCategoryCarousel(category : Text, carouselNumber : Nat) : async [Storage.ExternalBlob] {
     switch (categoryCarousels.get(category)) {
       case (null) { [] };
       case (?carousels) {
@@ -468,7 +493,7 @@ actor {
   };
 
   // --------------- Stripe Integration ---------------
-  public query func isStripeConfigured() : async Bool {
+  public query ({ caller }) func isStripeConfigured() : async Bool {
     switch stripeConfig {
       case (null) { false };
       case (?_) { true };
@@ -503,7 +528,7 @@ actor {
     await Stripe.createCheckoutSession(getStripeConfiguration(), caller, items, successUrl, cancelUrl, transform);
   };
 
-  public query func transform(input : OutCall.TransformationInput) : async OutCall.TransformationOutput {
+  public query ({ caller }) func transform(input : OutCall.TransformationInput) : async OutCall.TransformationOutput {
     OutCall.transform(input);
   };
 

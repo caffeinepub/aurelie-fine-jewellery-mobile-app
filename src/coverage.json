@@ -1,139 +1,93 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T12:07:27.428Z",
+  "generatedAt": "2026-02-18T11:05:37.371Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 7,
-    "implemented": 6,
+    "total": 5,
+    "implemented": 4,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Keep the main home page unchanged (no functional or UI changes to the existing homepage route and HomePage component).",
-        "status": "missing",
+        "summary": "Add a horizontal, scrollable row of SMALL circular product category tiles directly below the site header on customer-facing pages. Each tile must render a category image inside a circle, with the category name displayed directly below the circle in bottle-green color.",
+        "status": "implemented",
         "plannedFiles": [
-          "frontend/src/__tests__/homePageRegression.test.tsx",
-          "frontend/src/pages/HomePage.tsx"
+          "frontend/src/components/HeaderCategoryNav.tsx",
+          "frontend/src/components/Layout.tsx",
+          "frontend/src/index.css"
         ],
-        "matchedFiles": []
+        "matchedFiles": [
+          "frontend/src/components/HeaderCategoryNav.tsx",
+          "frontend/src/components/Layout.tsx"
+        ]
       },
       {
         "id": "REQ-2",
-        "summary": "Implement dedicated admin edit pages for each product category that allow admins to edit category fields (at minimum: name, display order/position, and description) and persist those changes in the backend.",
+        "summary": "Implement category-tile click behavior so that clicking a circular category tile navigates to the category’s configured URL. If no custom URL is configured for that category, default to the existing internal route `/category/<categorySlug>`.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/admin/CategoryEditPage.tsx",
-          "frontend/src/hooks/useAdminCategoryQueries.ts",
-          "frontend/src/pages/AdminDashboardPage.tsx",
-          "frontend/src/App.tsx"
+          "frontend/src/components/HeaderCategoryNav.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/admin/CategoryEditPage.tsx",
-          "frontend/src/pages/AdminDashboardPage.tsx",
-          "frontend/src/App.tsx"
+          "frontend/src/components/HeaderCategoryNav.tsx"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Add multi-image management for product categories in the admin UI, supporting adding, removing, and reordering category images, and persist the ordered image list in the backend.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/admin/CategoryImagesManager.tsx",
-          "frontend/src/pages/admin/CategoryEditPage.tsx",
-          "frontend/src/hooks/useAdminCategoryQueries.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/admin/CategoryImagesManager.tsx",
-          "frontend/src/pages/admin/CategoryEditPage.tsx"
-        ]
+        "summary": "Add backend support for storing and retrieving admin-managed data for the header category row: per categorySlug, persist (1) the circular image (blob) and (2) a URL string used when the tile is clicked. Expose query methods for the frontend to read this data and shared admin-only methods to update it.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       },
       {
         "id": "REQ-4",
-        "summary": "Apply the same multi-image management workflow to product-category carousels (category-specific carousels), including add/remove/reorder, while keeping existing redirect URL editing behavior.",
+        "summary": "Add an admin UI in the existing Admin Dashboard to manage the header category row items: upload/replace the circular image for each category and set/update the click-through URL for each category. The admin UI must save to the backend and reflect changes after save.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/admin/CategoryCarouselManagement.tsx",
-          "frontend/src/hooks/useCategoryCarouselQueries.ts"
+          "frontend/src/hooks/useCategoryHeaderNav.ts",
+          "frontend/src/components/admin/HeaderCategoryNavManagement.tsx",
+          "frontend/src/pages/AdminDashboardPage.tsx",
+          "frontend/src/components/HeaderCategoryNav.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/admin/CategoryCarouselManagement.tsx"
+          "frontend/src/hooks/useCategoryHeaderNav.ts",
+          "frontend/src/components/admin/HeaderCategoryNavManagement.tsx",
+          "frontend/src/pages/AdminDashboardPage.tsx",
+          "frontend/src/components/HeaderCategoryNav.tsx"
         ]
       },
       {
         "id": "REQ-5",
-        "summary": "Create a dedicated authenticated Customer Orders page that shows the logged-in user’s order history, current status, and full order details (including cancellation details when applicable), and make it reachable from an \"Orders\" entry in the authenticated user navigation.",
+        "summary": "Update the authenticated user dropdown in the header to show an \"Admin\" menu item ONLY when the logged-in user is an admin. Clicking it must navigate to `/admin`. Non-admin users must not see the Admin option.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/OrdersPage.tsx",
-          "frontend/src/App.tsx",
-          "frontend/src/components/Layout.tsx",
-          "frontend/src/components/OrderDetailModal.tsx"
+          "frontend/src/components/Layout.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/OrdersPage.tsx",
-          "frontend/src/App.tsx",
-          "frontend/src/components/Layout.tsx",
-          "frontend/src/components/OrderDetailModal.tsx"
-        ]
-      },
-      {
-        "id": "REQ-6",
-        "summary": "Create a dedicated Admin Orders page that allows admins to view all orders, update order status, cancel orders (with reason), and assign tracking information; include date-range filtering and month/year dropdown filters for narrowing the order list.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/admin/AdminOrdersPage.tsx",
-          "frontend/src/App.tsx",
-          "frontend/src/pages/AdminDashboardPage.tsx",
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/backend.d.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/admin/AdminOrdersPage.tsx",
-          "frontend/src/App.tsx",
-          "frontend/src/pages/AdminDashboardPage.tsx",
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/backend.d.ts"
-        ]
-      },
-      {
-        "id": "REQ-7",
-        "summary": "Remove/exclude the Excel download/export option from this version (do not add any Excel export UI, routes, utilities, or backend endpoints).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/OrdersPage.tsx",
-          "frontend/src/pages/admin/AdminOrdersPage.tsx",
-          "frontend/src/components/admin/OrderManagement.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/OrdersPage.tsx",
-          "frontend/src/pages/admin/AdminOrdersPage.tsx"
+          "frontend/src/components/Layout.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
     "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
     "frontend/src/backend.d.ts",
     "frontend/src/backend.ts",
+    "frontend/src/components/HeaderCategoryNav.tsx",
     "frontend/src/components/Layout.tsx",
-    "frontend/src/components/OrderDetailModal.tsx",
-    "frontend/src/components/admin/CategoryCarouselManagement.tsx",
-    "frontend/src/components/admin/CategoryImagesManager.tsx",
+    "frontend/src/components/admin/HeaderCategoryNavManagement.tsx",
     "frontend/src/declarations/backend.did.d.ts",
     "frontend/src/declarations/backend.did.js",
-    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/hooks/useCategoryHeaderNav.ts",
     "frontend/src/pages/AdminDashboardPage.tsx",
-    "frontend/src/pages/OrdersPage.tsx",
-    "frontend/src/pages/admin/AdminOrdersPage.tsx",
-    "frontend/src/pages/admin/CategoryEditPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

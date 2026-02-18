@@ -3,18 +3,21 @@ import { Suspense } from 'react';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from './ui/button';
-import { ShoppingCart, User, LogOut, UserCircle, ShoppingBag } from 'lucide-react';
+import { ShoppingCart, User, LogOut, UserCircle, ShoppingBag, Settings } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from './ui/dropdown-menu';
 import RouteLoadingFallback from './RouteLoadingFallback';
 import FooterSystem from './footer/FooterSystem';
 import { PRODUCT_CATEGORIES } from '../utils/productCategories';
+import HeaderCategoryNav from './HeaderCategoryNav';
+import { useIsCallerAdmin } from '../hooks/useQueries';
 
 export default function Layout() {
   const navigate = useNavigate();
   const { login, clear, loginStatus, identity } = useInternetIdentity();
   const queryClient = useQueryClient();
   const { items } = useCart();
+  const { data: isAdmin } = useIsCallerAdmin();
 
   const isAuthenticated = !!identity;
   const disabled = loginStatus === 'logging-in';
@@ -115,6 +118,18 @@ export default function Layout() {
                     <ShoppingBag className="h-4 w-4 mr-2" />
                     Orders
                   </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => navigate({ to: '/admin' })}
+                        className="cursor-pointer hover:bg-gold-medium/10"
+                      >
+                        <Settings className="h-4 w-4 mr-2" />
+                        Admin
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={handleAuth}
@@ -137,6 +152,9 @@ export default function Layout() {
           </nav>
         </div>
       </header>
+
+      {/* Header Category Navigation */}
+      <HeaderCategoryNav />
 
       {/* Main Content */}
       <main className="flex-1 bg-beige-champagne">

@@ -50,6 +50,10 @@ export interface CustomerInquiry {
     message: string;
     response?: string;
 }
+export interface CategoryHeader {
+    redirectUrl: string;
+    image: ExternalBlob;
+}
 export interface ShippingAddress {
     name: string;
     email: string;
@@ -192,12 +196,14 @@ export interface backendInterface {
     createOrder(input: OrderCreate): Promise<void>;
     deleteProduct(productId: string): Promise<void>;
     getAllCategories(): Promise<Array<Category>>;
+    getAllCategoryHeaders(): Promise<Array<[string, CategoryHeader]>>;
     getAllCategorySlides(category: string): Promise<Array<CarouselSlide>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getCarouselRedirect(category: string): Promise<string | null>;
     getCategory(name: string): Promise<Category | null>;
     getCategoryCarousel(category: string, carouselNumber: bigint): Promise<Array<ExternalBlob>>;
+    getCategoryHeader(categorySlug: string): Promise<CategoryHeader | null>;
     getContactInfo(): Promise<{
         address: string;
         contactEmail: string;
@@ -227,6 +233,7 @@ export interface backendInterface {
     reorderCategorySlides(category: string, newOrder: Array<bigint>): Promise<void>;
     respondToInquiry(inquiryId: string, response: string): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    setCategoryHeader(categorySlug: string, header: CategoryHeader): Promise<void>;
     setCategoryStatus(name: string, isActive: boolean): Promise<void>;
     setStripeConfiguration(config: StripeConfiguration): Promise<void>;
     submitInquiry(inquiry: CustomerInquiry): Promise<void>;

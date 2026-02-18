@@ -33,6 +33,10 @@ export interface CategoryCreate {
   'primaryImage' : ExternalBlob,
   'images' : Array<ExternalBlob>,
 }
+export interface CategoryHeader {
+  'redirectUrl' : string,
+  'image' : ExternalBlob,
+}
 export interface CustomerInquiry {
   'id' : string,
   'customer' : Principal,
@@ -191,12 +195,14 @@ export interface _SERVICE {
   'createOrder' : ActorMethod<[OrderCreate], undefined>,
   'deleteProduct' : ActorMethod<[string], undefined>,
   'getAllCategories' : ActorMethod<[], Array<Category>>,
+  'getAllCategoryHeaders' : ActorMethod<[], Array<[string, CategoryHeader]>>,
   'getAllCategorySlides' : ActorMethod<[string], Array<CarouselSlide>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getCarouselRedirect' : ActorMethod<[string], [] | [string]>,
   'getCategory' : ActorMethod<[string], [] | [Category]>,
   'getCategoryCarousel' : ActorMethod<[string, bigint], Array<ExternalBlob>>,
+  'getCategoryHeader' : ActorMethod<[string], [] | [CategoryHeader]>,
   'getContactInfo' : ActorMethod<
     [],
     { 'address' : string, 'contactEmail' : string, 'phoneNumber' : string }
@@ -228,6 +234,7 @@ export interface _SERVICE {
   'reorderCategorySlides' : ActorMethod<[string, Array<bigint>], undefined>,
   'respondToInquiry' : ActorMethod<[string, string], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'setCategoryHeader' : ActorMethod<[string, CategoryHeader], undefined>,
   'setCategoryStatus' : ActorMethod<[string, boolean], undefined>,
   'setStripeConfiguration' : ActorMethod<[StripeConfiguration], undefined>,
   'submitInquiry' : ActorMethod<[CustomerInquiry], undefined>,

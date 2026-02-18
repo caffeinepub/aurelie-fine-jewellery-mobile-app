@@ -1,198 +1,97 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Admin category editing + customer/admin orders pages (no Excel export; homepage unchanged)",
+  "title": "Header category circle scroller + admin-managed header category images/URLs + admin dropdown link",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Ensure the existing homepage route and HomePage component remain unchanged while adding new features elsewhere.",
+      "summary": "Add a small circular, horizontally scrollable category tile row directly under the header on customer-facing pages with bottle-green category names.",
       "acceptanceCriteria": [
-        "Navigating to / renders the same HomePage behavior and layout as before this update.",
-        "No new admin/customer features are added to the homepage UI."
+        "A horizontally scrollable category row is visible directly under the header (and above the main page content).",
+        "Each category tile displays a circular (fully rounded) image with the category name underneath.",
+        "Category name text uses the existing bottle-green token/class (e.g., text-bottle-green-dark / text-bottle-green-medium).",
+        "The circular icons are visually small (not large) and fit multiple categories in the viewport with horizontal scrolling available.",
+        "Category row works on mobile and desktop (touch scroll on mobile, mouse/trackpad scroll on desktop)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/__tests__/homePageRegression.test.tsx",
+          "path": "frontend/src/components/HeaderCategoryNav.tsx",
           "operation": "create",
-          "description": "Add a regression test that mounts the app at / and asserts key existing HomePage elements remain present (to guard against accidental homepage changes)."
+          "description": "Create a reusable header-adjacent category nav component that renders a horizontally scrollable row of small circular image tiles with the category name beneath (bottle-green text). Use existing category definitions (e.g., PRODUCT_CATEGORIES) to determine tile order and labels, and render images via ExternalBlob.getDirectURL when available; fall back to an existing static placeholder asset when a category has no configured header image. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/pages/HomePage.tsx",
+          "path": "frontend/src/components/Layout.tsx",
           "operation": "modify",
-          "description": "Do not change any UI/behavior. Only add an explicit file-level comment noting the homepage is immutable per REQ-1 to prevent accidental edits during future work."
+          "description": "Wire the new HeaderCategoryNav directly below the header and above the main content, and ensure it is only shown on customer-facing pages (hide on /admin routes). Keep the tile row visible across customer pages while maintaining existing sticky header behavior. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "If needed to meet the small/scrollable design requirement across devices, add minimal global styling utilities for the horizontal scroller (e.g., optional scrollbar hiding/consistent spacing) using existing Tailwind conventions and tokens; do not introduce new design tokens beyond current palette."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add admin-only, category-specific edit pages for category metadata (name, display order, description) with save to backend capabilities.",
+      "summary": "Navigate on category-tile click using stored URL when configured, otherwise default to internal /category/<categorySlug>, with support for absolute external URLs.",
       "acceptanceCriteria": [
-        "Admin can open a category-specific edit page for each category and update category metadata fields.",
-        "Category metadata updates persist after refresh and are reflected anywhere categories are listed/used.",
-        "Non-admin users cannot access category edit pages or perform category update mutations."
+        "Clicking a category tile navigates to the stored URL for that category.",
+        "If a category has no stored URL, clicking navigates to `/category/<categorySlug>` using the existing router.",
+        "If a stored URL is an absolute `http(s)` URL, the app navigates to that external URL (same tab is acceptable unless otherwise required)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/admin/CategoryEditPage.tsx",
-          "operation": "create",
-          "description": "Create an admin-only CategoryEditPage that loads the category by slug/name and provides editable fields for name, display order/position, and description, saving changes via backend actor calls. Use the authorization component’s role checks (e.g., isCallerAdmin) to gate access. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useAdminCategoryQueries.ts",
-          "operation": "create",
-          "description": "Add React Query hooks for fetching a single category and updating category metadata (and invalidating category-related caches) used by the admin category edit pages."
-        },
-        {
-          "path": "frontend/src/pages/AdminDashboardPage.tsx",
+          "path": "frontend/src/components/HeaderCategoryNav.tsx",
           "operation": "modify",
-          "description": "Wire category edit pages into the existing admin experience by adding a category list (links/buttons) in the existing admin UI (e.g., within the Edit tab) that navigates to each category’s dedicated edit page."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register a new admin route for category editing (e.g., /admin/categories/$categorySlug/edit) that renders CategoryEditPage. Ensure the existing index route (/) still points to HomePage unchanged."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Implement admin multi-image management for product categories (add/remove/reorder) with ordered persistence to backend, including limit validation messaging in English.",
-      "acceptanceCriteria": [
-        "Admin can upload multiple images for a category, remove specific images, and reorder images.",
-        "The saved order is preserved and returned in the same order by the backend.",
-        "Enforce any existing per-category image limits consistently across UI and backend (show a clear validation message in English if exceeded)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/admin/CategoryImagesManager.tsx",
-          "operation": "create",
-          "description": "Create a reusable CategoryImagesManager component used by CategoryEditPage to add/remove/reorder category images (ordered list). Use the blob-storage component’s ExternalBlob for upload and direct URL rendering. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/admin/CategoryEditPage.tsx",
-          "operation": "modify",
-          "description": "Integrate CategoryImagesManager into the category edit page and persist ordered image lists using backend actor calls; show a clear English validation error if the category image limit is exceeded."
-        },
-        {
-          "path": "frontend/src/hooks/useAdminCategoryQueries.ts",
-          "operation": "modify",
-          "description": "Extend admin category hooks to support updating the ordered category image list and invalidating any queries that list or display categories after a successful save."
+          "description": "Implement tile click handling: if a configured redirectUrl exists, route to it (use window.location.href for absolute http(s) URLs; use router navigation for internal paths); otherwise route to `/category/<categorySlug>`. Ensure empty/whitespace redirectUrl is treated as not configured. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
       "id": "REQ-4",
-      "summary": "Upgrade admin category carousel editing to support multi-image add/remove/reorder while keeping redirect URL editing behavior intact.",
+      "summary": "Add Admin Dashboard UI to upload/replace header category circle images and set/update per-category click-through URLs, saving to backend and updating the customer header row via cache invalidation.",
       "acceptanceCriteria": [
-        "Admin can manage images for each category carousel with add/remove/reorder controls.",
-        "Carousel image order is preserved on save and reload.",
-        "Existing redirect URL configuration remains available and functional."
+        "Admin UI is accessible from the existing `/admin` experience for users who pass `useIsCallerAdmin()`.",
+        "Admin can upload/replace an image per category and set a URL per category, then save changes.",
+        "Uploaded images are optimized client-side consistently with existing patterns (e.g., using `optimizeImage` and `ExternalBlob`).",
+        "After saving, the customer-facing header category row shows the updated images/URLs without requiring a hard refresh (react-query invalidation or equivalent)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/admin/CategoryCarouselManagement.tsx",
-          "operation": "modify",
-          "description": "Replace the fixed-slot carousel editor with a true ordered list workflow (add/remove/reorder). Persist ordering using existing updateCategoryCarousel calls; keep redirect URL editing unchanged and visible. Use blob-storage ExternalBlob direct URLs for previews and uploads. Verify the component's usage instructions before implementing."
+          "path": "frontend/src/hooks/useCategoryHeaderNav.ts",
+          "operation": "create",
+          "description": "Add react-query hooks to (1) fetch all header category nav items (using backend getAllCategoryHeaders) and (2) update a single category header item (using backend setCategoryHeader), including query invalidation so the header row reflects updates without hard refresh. Ensure hooks integrate with the existing useActor pattern. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/hooks/useCategoryCarouselQueries.ts",
+          "path": "frontend/src/components/admin/HeaderCategoryNavManagement.tsx",
+          "operation": "create",
+          "description": "Create an Admin Dashboard management panel for header category nav items: list categories (using existing PRODUCT_CATEGORIES), show current configured image preview (ExternalBlob.getDirectURL when present), allow image upload/replace per category with client-side optimization via optimizeImage and upload progress via ExternalBlob.withUploadProgress, and allow editing/saving redirect URL per category. Use toast feedback consistent with existing admin tools. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/AdminDashboardPage.tsx",
           "operation": "modify",
-          "description": "Adjust category carousel hooks usage patterns if needed to support ordered list updates (still saving the complete ordered array) and ensure queries invalidate correctly after save."
+          "description": "Wire HeaderCategoryNavManagement into the existing Admin Dashboard UI (e.g., as a new section under an existing tab such as Carousel or Edit, without creating a new route) and ensure it is only reachable in the existing /admin experience guarded by useIsCallerAdmin(). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/HeaderCategoryNav.tsx",
+          "operation": "modify",
+          "description": "Update the customer header category row to consume the new hooks (useCategoryHeaderNav) so it renders the admin-managed images and redirect URLs, and updates automatically when react-query invalidation occurs after admin saves. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
       "id": "REQ-5",
-      "summary": "Create an authenticated customer Orders page with order history list + full detail view, and add an \"Orders\" entry to authenticated navigation.",
+      "summary": "Show an Admin link in the authenticated user dropdown only for admins and navigate to /admin when clicked.",
       "acceptanceCriteria": [
-        "Authenticated users can navigate to a dedicated Orders page and see only their own orders.",
-        "The page shows a list/history view and supports viewing full details for a selected order.",
-        "Order statuses are displayed clearly, including cancelled orders and cancellation reason when present.",
-        "Unauthenticated users are prompted to authenticate (consistent with existing app patterns) before viewing orders."
+        "When logged in as an admin, the header account dropdown includes an \"Admin\" item that routes to `/admin`.",
+        "When logged in as a non-admin, the \"Admin\" dropdown item is not visible.",
+        "When not logged in, no \"Admin\" item is shown."
       ],
       "file_operations": [
-        {
-          "path": "frontend/src/pages/OrdersPage.tsx",
-          "operation": "modify",
-          "description": "Implement the customer OrdersPage UI: require authentication, fetch only customer orders, show a history/list view, and allow opening a full order detail view (reusing existing OrderDetailModal where appropriate). Ensure cancelled orders show the cancellation reason when present."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Add a new route (e.g., /orders) wired to OrdersPage, keeping the existing homepage route and HomePage component unchanged."
-        },
         {
           "path": "frontend/src/components/Layout.tsx",
           "operation": "modify",
-          "description": "Add an \"Orders\" navigation entry visible only for authenticated users that navigates to /orders (do not add any Excel export action)."
-        },
-        {
-          "path": "frontend/src/components/OrderDetailModal.tsx",
-          "operation": "modify",
-          "description": "Ensure the order detail UI clearly displays status, and if cancelled, shows the cancellation reason in English; keep behavior consistent across dashboard and Orders page."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Create a dedicated admin Orders page (admin-only) supporting list/detail, status updates, cancellation with reason, tracking info editing, and date/month/year filtering.",
-      "acceptanceCriteria": [
-        "Admin-only access is enforced for the Admin Orders page and related backend mutations/queries.",
-        "Admin can update order status through the supported status lifecycle and see the result reflected in the list and detail views.",
-        "Admin can cancel an order with a required cancellation reason and see that reason in order details.",
-        "Admin can assign and persist tracking information on an order and see it in order details.",
-        "Orders can be filtered by a selectable date range and by month/year dropdowns; filters can be cleared to return to the full list."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/admin/AdminOrdersPage.tsx",
-          "operation": "create",
-          "description": "Create a dedicated AdminOrdersPage gated by admin checks (authorization component role-based access). Provide an orders list + detail panel, status update controls, cancel-with-reason flow, tracking info editor, and local date-range + month/year dropdown filtering with clear/reset. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register a new admin-only route (e.g., /admin/orders) wired to AdminOrdersPage, without altering the existing homepage route and HomePage component."
-        },
-        {
-          "path": "frontend/src/pages/AdminDashboardPage.tsx",
-          "operation": "modify",
-          "description": "Add a clear navigation path from the existing admin UI to the dedicated Admin Orders page (e.g., a button/link in the Orders tab header) while keeping the current embedded OrderManagement available if desired."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add/adjust React Query mutations and cache invalidations needed by AdminOrdersPage (status updates, cancellation). If tracking info requires a new backend capability, add the corresponding typed call in the frontend integration once available."
-        },
-        {
-          "path": "frontend/src/backend.d.ts",
-          "operation": "modify",
-          "description": "Update frontend backend type declarations to include tracking information fields and the associated backend function signatures required by AdminOrdersPage once the backend adds this capability (keep typings aligned with generated declarations)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "summary": "Ensure no Excel export/download functionality is present in this version across customer/admin orders experiences.",
-      "acceptanceCriteria": [
-        "No Excel export/download button or menu item exists in admin or customer orders UI.",
-        "No backend method is introduced solely for exporting orders to Excel/CSV in this version."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/OrdersPage.tsx",
-          "operation": "modify",
-          "description": "Confirm OrdersPage contains no export/download UI or logic; ensure only on-screen viewing of list and details is supported."
-        },
-        {
-          "path": "frontend/src/pages/admin/AdminOrdersPage.tsx",
-          "operation": "modify",
-          "description": "Confirm AdminOrdersPage contains no export/download UI or logic (no Excel/CSV actions), focusing only on filtering and order management."
-        },
-        {
-          "path": "frontend/src/components/admin/OrderManagement.tsx",
-          "operation": "modify",
-          "description": "Verify the existing admin OrderManagement UI does not expose any Excel/CSV export actions; remove any export-related UI if present (keep printing if already implemented)."
+          "description": "Use the existing useIsCallerAdmin() hook to conditionally render an \"Admin\" DropdownMenuItem in the authenticated account dropdown only when the user is an admin; clicking navigates to /admin using the existing router navigation. Ensure it is not shown for non-admins or logged-out users. Verify the component's usage instructions before implementing."
         }
       ]
     }

@@ -12,6 +12,7 @@ import InquiryManagement from '../components/admin/InquiryManagement';
 import SiteContentManagement from '../components/admin/SiteContentManagement';
 import CarouselManagement from '../components/admin/CarouselManagement';
 import CategoryCarouselManagement from '../components/admin/CategoryCarouselManagement';
+import HeaderCategoryNavManagement from '../components/admin/HeaderCategoryNavManagement';
 import { useAdminUiBodyAttribute } from '../hooks/useAdminUiBodyAttribute';
 import { PRODUCT_CATEGORIES } from '../utils/productCategories';
 
@@ -195,6 +196,9 @@ export default function AdminDashboardPage() {
 
         <TabsContent value="edit">
           <div className="space-y-6">
+            {/* Header Category Navigation Management */}
+            <HeaderCategoryNavManagement />
+
             {/* Category Management Section */}
             <Card className="gold-border admin-surface">
               <CardHeader>

@@ -2,12 +2,33 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-implement-dedicated-admin-edit-pages-for-each-product-category-that-allow-admins-to-edit-category-fields-at-minimum-name-display-order-position-and-description-and-persist-those-changes-in-the-backend",
-      "featureTitle": "Implement dedicated admin edit pages for each product category that allow admins to edit category fields (at minimum: name, display order/position, and description) and persist those changes in the backend.",
+      "featureId": "feature-add-a-horizontal-scrollable-row-of-small-circular-product-category-tiles-directly-below-the-site-header-on-customer-facing-pages-each-tile-must-render-a-category-image-inside-a-circle-with-the-category-name-displayed-directly-below-the-circle-in-bottle-green-color",
+      "featureTitle": "Add a horizontal, scrollable row of SMALL circular product category tiles directly below the site header on customer-facing pages. Each tile must render a category image inside a circle, with the category name displayed directly below the circle in bottle-green color.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/pages/AdminDashboardPage.tsx",
-        "frontend/src/pages/admin/CategoryEditPage.tsx"
+        "frontend/src/components/HeaderCategoryNav.tsx",
+        "frontend/src/components/Layout.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-category-tile-click-behavior-so-that-clicking-a-circular-category-tile-navigates-to-the-category-s-configured-url-if-no-custom-url-is-configured-for-that-category-default-to-the-existing-internal-route-category-categoryslug",
+      "featureTitle": "Implement category-tile click behavior so that clicking a circular category tile navigates to the category’s configured URL. If no custom URL is configured for that category, default to the existing internal route `/category/<categorySlug>`.",
+      "files": [
+        "frontend/src/components/HeaderCategoryNav.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -26,33 +47,13 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-multi-image-management-for-product-categories-in-the-admin-ui-supporting-adding-removing-and-reordering-category-images-and-persist-the-ordered-image-list-in-the-backend",
-      "featureTitle": "Add multi-image management for product categories in the admin UI, supporting adding, removing, and reordering category images, and persist the ordered image list in the backend.",
+      "featureId": "feature-add-an-admin-ui-in-the-existing-admin-dashboard-to-manage-the-header-category-row-items-upload-replace-the-circular-image-for-each-category-and-set-update-the-click-through-url-for-each-category-the-admin-ui-must-save-to-the-backend-and-reflect-changes-after-save",
+      "featureTitle": "Add an admin UI in the existing Admin Dashboard to manage the header category row items: upload/replace the circular image for each category and set/update the click-through URL for each category. The admin UI must save to the backend and reflect changes after save.",
       "files": [
-        "frontend/src/components/admin/CategoryImagesManager.tsx",
-        "frontend/src/pages/admin/CategoryEditPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-apply-the-same-multi-image-management-workflow-to-product-category-carousels-category-specific-carousels-including-add-remove-reorder-while-keeping-existing-redirect-url-editing-behavior",
-      "featureTitle": "Apply the same multi-image management workflow to product-category carousels (category-specific carousels), including add/remove/reorder, while keeping existing redirect URL editing behavior.",
-      "files": [
-        "frontend/src/components/admin/CategoryCarouselManagement.tsx"
+        "frontend/src/components/HeaderCategoryNav.tsx",
+        "frontend/src/components/admin/HeaderCategoryNavManagement.tsx",
+        "frontend/src/hooks/useCategoryHeaderNav.ts",
+        "frontend/src/pages/AdminDashboardPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -71,13 +72,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-create-a-dedicated-authenticated-customer-orders-page-that-shows-the-logged-in-user-s-order-history-current-status-and-full-order-details-including-cancellation-details-when-applicable-and-make-it-reachable-from-an-orders-entry-in-the-authenticated-user-navigation",
-      "featureTitle": "Create a dedicated authenticated Customer Orders page that shows the logged-in user’s order history, current status, and full order details (including cancellation details when applicable), and make it reachable from an \"Orders\" entry in the authenticated user navigation.",
+      "featureId": "feature-update-the-authenticated-user-dropdown-in-the-header-to-show-an-admin-menu-item-only-when-the-logged-in-user-is-an-admin-clicking-it-must-navigate-to-admin-non-admin-users-must-not-see-the-admin-option",
+      "featureTitle": "Update the authenticated user dropdown in the header to show an \"Admin\" menu item ONLY when the logged-in user is an admin. Clicking it must navigate to `/admin`. Non-admin users must not see the Admin option.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/Layout.tsx",
-        "frontend/src/components/OrderDetailModal.tsx",
-        "frontend/src/pages/OrdersPage.tsx"
+        "frontend/src/components/Layout.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -92,54 +90,6 @@
       ],
       "testIds": [
         "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-create-a-dedicated-admin-orders-page-that-allows-admins-to-view-all-orders-update-order-status-cancel-orders-with-reason-and-assign-tracking-information-include-date-range-filtering-and-month-year-dropdown-filters-for-narrowing-the-order-list",
-      "featureTitle": "Create a dedicated Admin Orders page that allows admins to view all orders, update order status, cancel orders (with reason), and assign tracking information; include date-range filtering and month/year dropdown filters for narrowing the order list.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/AdminDashboardPage.tsx",
-        "frontend/src/pages/admin/AdminOrdersPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-remove-exclude-the-excel-download-export-option-from-this-version-do-not-add-any-excel-export-ui-routes-utilities-or-backend-endpoints",
-      "featureTitle": "Remove/exclude the Excel download/export option from this version (do not add any Excel export UI, routes, utilities, or backend endpoints).",
-      "files": [
-        "frontend/src/pages/OrdersPage.tsx",
-        "frontend/src/pages/admin/AdminOrdersPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
       ],
       "confidence": "high"
     }

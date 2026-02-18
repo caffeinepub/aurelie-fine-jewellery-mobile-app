@@ -1,15 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Add admin category editing (including multi-image management) and dedicated customer/admin orders pages, while keeping the homepage unchanged and excluding any Excel export.
+**Goal:** Add a small, horizontally scrollable circular category navigation row under the header, with admin-managed category images and click-through URLs, plus an Admin link in the user dropdown for admins.
 
 **Planned changes:**
-- Keep the existing homepage route and HomePage component unchanged.
-- Add admin-only, dedicated edit pages per product category to update category metadata (name, display order/position, description) with backend persistence.
-- Add admin multi-image management for product categories (add/remove/reorder) and persist ordered image lists in the backend, enforcing existing image limits with clear English validation.
-- Apply the same multi-image add/remove/reorder workflow to category-specific carousels while preserving existing redirect URL editing behavior.
-- Add an authenticated Customer Orders page accessible from an "Orders" entry in the signed-in user navigation, showing the user’s order history, statuses, and full order details (including cancellation reason when present).
-- Add an admin-only Admin Orders page to view all orders, update order status, cancel orders (with required reason), assign tracking info, and filter orders by date range and month/year dropdowns.
-- Ensure no Excel export/download UI, routes, utilities, or backend endpoints are added.
+- Add a horizontal, scrollable row of small circular category tiles directly below the site header on customer-facing pages; show the category image inside a circle with the category name below in bottle-green.
+- Make each category tile navigate to an admin-configured URL when set; otherwise default to the existing internal route `/category/<categorySlug>` (support external `http(s)` URLs too).
+- Add backend persistence and APIs to store/retrieve per-`categorySlug` data for the header row: circular image blob and optional URL; restrict updates to admin-only callers.
+- Add an Admin Dashboard UI to upload/replace each category’s image and set/update its URL; save to backend and reflect changes on the customer-facing header row after save.
+- Update the authenticated user dropdown in the header to show an “Admin” menu item only for admin users, routing to `/admin`.
 
-**User-visible outcome:** Customers can view their own orders and order details from a dedicated Orders page, and admins can edit categories (including images) and manage all orders (status, cancellations, tracking, filtering) via dedicated admin pages—without any changes to the homepage and without any Excel export option.
+**User-visible outcome:** Customers see a small, scrollable circular category strip under the header that navigates to the correct category links, while admins can manage each category’s image and URL from the Admin Dashboard and see an “Admin” option in their header dropdown.

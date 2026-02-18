@@ -83,6 +83,10 @@ export const Category = IDL.Record({
   'primaryImage' : ExternalBlob,
   'images' : IDL.Vec(ExternalBlob),
 });
+export const CategoryHeader = IDL.Record({
+  'redirectUrl' : IDL.Text,
+  'image' : ExternalBlob,
+});
 export const UserProfile = IDL.Record({
   'dob' : IDL.Text,
   'name' : IDL.Text,
@@ -212,6 +216,11 @@ export const idlService = IDL.Service({
   'createOrder' : IDL.Func([OrderCreate], [], []),
   'deleteProduct' : IDL.Func([IDL.Text], [], []),
   'getAllCategories' : IDL.Func([], [IDL.Vec(Category)], ['query']),
+  'getAllCategoryHeaders' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Text, CategoryHeader))],
+      ['query'],
+    ),
   'getAllCategorySlides' : IDL.Func(
       [IDL.Text],
       [IDL.Vec(CarouselSlide)],
@@ -224,6 +233,11 @@ export const idlService = IDL.Service({
   'getCategoryCarousel' : IDL.Func(
       [IDL.Text, IDL.Nat],
       [IDL.Vec(ExternalBlob)],
+      ['query'],
+    ),
+  'getCategoryHeader' : IDL.Func(
+      [IDL.Text],
+      [IDL.Opt(CategoryHeader)],
       ['query'],
     ),
   'getContactInfo' : IDL.Func(
@@ -271,6 +285,7 @@ export const idlService = IDL.Service({
   'reorderCategorySlides' : IDL.Func([IDL.Text, IDL.Vec(IDL.Nat)], [], []),
   'respondToInquiry' : IDL.Func([IDL.Text, IDL.Text], [], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'setCategoryHeader' : IDL.Func([IDL.Text, CategoryHeader], [], []),
   'setCategoryStatus' : IDL.Func([IDL.Text, IDL.Bool], [], []),
   'setStripeConfiguration' : IDL.Func([StripeConfiguration], [], []),
   'submitInquiry' : IDL.Func([CustomerInquiry], [], []),
@@ -372,6 +387,10 @@ export const idlFactory = ({ IDL }) => {
     'isActive' : IDL.Bool,
     'primaryImage' : ExternalBlob,
     'images' : IDL.Vec(ExternalBlob),
+  });
+  const CategoryHeader = IDL.Record({
+    'redirectUrl' : IDL.Text,
+    'image' : ExternalBlob,
   });
   const UserProfile = IDL.Record({
     'dob' : IDL.Text,
@@ -499,6 +518,11 @@ export const idlFactory = ({ IDL }) => {
     'createOrder' : IDL.Func([OrderCreate], [], []),
     'deleteProduct' : IDL.Func([IDL.Text], [], []),
     'getAllCategories' : IDL.Func([], [IDL.Vec(Category)], ['query']),
+    'getAllCategoryHeaders' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Text, CategoryHeader))],
+        ['query'],
+      ),
     'getAllCategorySlides' : IDL.Func(
         [IDL.Text],
         [IDL.Vec(CarouselSlide)],
@@ -515,6 +539,11 @@ export const idlFactory = ({ IDL }) => {
     'getCategoryCarousel' : IDL.Func(
         [IDL.Text, IDL.Nat],
         [IDL.Vec(ExternalBlob)],
+        ['query'],
+      ),
+    'getCategoryHeader' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(CategoryHeader)],
         ['query'],
       ),
     'getContactInfo' : IDL.Func(
@@ -566,6 +595,7 @@ export const idlFactory = ({ IDL }) => {
     'reorderCategorySlides' : IDL.Func([IDL.Text, IDL.Vec(IDL.Nat)], [], []),
     'respondToInquiry' : IDL.Func([IDL.Text, IDL.Text], [], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'setCategoryHeader' : IDL.Func([IDL.Text, CategoryHeader], [], []),
     'setCategoryStatus' : IDL.Func([IDL.Text, IDL.Bool], [], []),
     'setStripeConfiguration' : IDL.Func([StripeConfiguration], [], []),
     'submitInquiry' : IDL.Func([CustomerInquiry], [], []),

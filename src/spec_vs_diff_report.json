@@ -1,71 +1,60 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T12:07:27.424Z",
-  "summary": "Most requested admin/customer pages and category editing scaffolding were added (new /orders, /admin/orders, /admin/categories/$categorySlug/edit, multi-image managers). However, the diff indicates the HomePage was changed (violating REQ-1), and the Admin Orders page does not show evidence of required cancel-with-reason and tracking assignment features (REQ-6). Several unrelated features also appear added (e.g., profile-based admin detection, print receipts, new category route).",
+  "generatedAt": "2026-02-18T11:05:37.368Z",
+  "summary": "REQ-1/REQ-2/REQ-4 appear implemented via new HeaderCategoryNav component + admin management UI + react-query hooks. Backend persistence initialization for new stable state is evidenced via backend/migration.mo and new CategoryHeader type, but the diff summary does not show the required backend query/update methods or their admin-only authorization checks. Several unrelated frontend features/routes (orders pages, category edit routes, profile setup modal/admin detection) appear added beyond the request scope.",
   "missing_requirements": [
     {
-      "id": "REQ-1",
-      "requirement": "Keep the main home page unchanged (no functional or UI changes to the existing homepage route and HomePage component).",
-      "reason": "Diff summary explicitly reports HomePage changes, including adding a \"new category carousels section\" and other layout/content changes, which contradicts the requirement to keep the homepage unchanged.",
+      "id": "REQ-3",
+      "requirement": "Backend query method(s) to fetch header-category nav items and admin-only update method(s) to set image+URL per categorySlug, with non-admin callers rejected, persisting across upgrades.",
+      "reason": "The diff shows a new CategoryHeader type and a migration initializing a new categoryHeaders map, but does not provide evidence (in the visible backend/main.mo diff summary) of the required public query methods (e.g., getAllCategoryHeaders/getCategoryHeader) nor the admin-only setter (e.g., setCategoryHeader) and corresponding authorization checks.",
       "evidence": [
-        "frontend-file-summaries.txt (entry for frontend/src/pages/HomePage.tsx describes new category carousels section and other changes)"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "requirement": "Admin Orders page allows admins to update order status, cancel orders (with reason), and assign tracking information.",
-      "reason": "The new AdminOrdersPage shows hooks for fetching orders/products and updating order status, plus filtering UI, but the diff provides no evidence of cancel-with-reason controls/mutations or any tracking information fields/UI. Backend Order type shown also lacks any tracking field.",
-      "evidence": [
-        "frontend/src/pages/admin/AdminOrdersPage.tsx (imports/use: useUpdateOrderStatus; no visible cancel/tracking hooks in truncated excerpt)",
-        "backend/main.mo (Order type includes id/customer/productId/quantity/totalPriceInCents/status/upiId/timestamp/cancellable/shippingAddress; no tracking info field)"
+        "backend/migration.mo",
+        "backend/main.mo (truncated)",
+        "frontend/src/hooks/useCategoryHeaderNav.ts (calls actor.getAllCategoryHeaders(), actor.getCategoryHeader(), actor.setCategoryHeader())"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Homepage updated with new category carousels section and other behavior/layout changes.",
-      "reason": "BuildRequest explicitly says to keep homepage unchanged; the diff summary indicates new homepage content/sections were added.",
+      "description": "Added/updated TanStack Router routes for customer orders (/orders), admin orders (/admin/orders), and category edit pages (/admin/categories/$categorySlug/edit).",
+      "reason": "Not requested by any REQ; the request explicitly scoped to header-adjacent category row + admin-managed images/URLs + admin dropdown link, and noted not to implement other separate requests unless reconfirmed.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/pages/HomePage.tsx summary mentions \"new category carousels section\")"
+        "frontend-file-summaries.txt (entry for frontend/src/App.tsx)"
       ]
     },
     {
-      "description": "Automatic admin role detection based on a specific email address in ProfileSetupModal.",
-      "reason": "BuildRequest does not request changing admin determination logic or adding email-based admin auto-detection.",
+      "description": "Implemented/modified ProfileSetupModal with first-time profile setup flow and 'automatic admin role detection' based on a specific email address.",
+      "reason": "Not requested; also risks changing admin/auth behavior beyond 'continue using Internet Identity only' and the specified admin-only UI affordance in REQ-5.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/components/ProfileSetupModal.tsx mentions \"automatic admin role detection for aureliefinejewellery06@gmail.com\")"
+        "frontend-file-summaries.txt (entry for frontend/src/components/ProfileSetupModal.tsx)"
       ]
     },
     {
-      "description": "Admin order receipt printing feature/button.",
-      "reason": "BuildRequest requests admin orders management (status/cancel/tracking/filtering) and explicitly excludes export; it does not request printing receipts.",
+      "description": "Added a full customer Orders page with order history UI and modals.",
+      "reason": "Not requested by any REQ in this build request.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/components/admin/OrderManagement.tsx mentions a \"clear print button\" for generating order receipts)"
+        "frontend-file-summaries.txt (entry for frontend/src/pages/OrdersPage.tsx)"
       ]
     },
     {
-      "description": "New unified public category route (/category/$categorySlug).",
-      "reason": "BuildRequest is focused on admin category editing and orders pages; it does not request adding/changing customer-facing category routing.",
+      "description": "Introduced category management/editing features in the admin dashboard (category edit links/pages and related hooks).",
+      "reason": "Not requested; the only requested admin dashboard change was management UI for header category nav images/URLs (REQ-4).",
       "evidence": [
-        "frontend/src/App.tsx (comment \"New unified category route for /category/<slug>\" and route definition)"
+        "frontend-file-summaries.txt (entries for frontend/src/hooks/useQueries.ts, frontend/src/pages/AdminDashboardPage.tsx, frontend/src/App.tsx)"
       ]
     }
   ],
-  "confidence": 0.72,
+  "confidence": 0.63,
   "changed_files": [
     "backend/main.mo",
+    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/App.tsx",
+    "frontend/src/components/HeaderCategoryNav.tsx",
     "frontend/src/components/Layout.tsx",
-    "frontend/src/components/OrderDetailModal.tsx",
-    "frontend/src/components/admin/CategoryCarouselManagement.tsx",
-    "frontend/src/components/admin/CategoryImagesManager.tsx",
-    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/components/admin/HeaderCategoryNavManagement.tsx",
+    "frontend/src/hooks/useCategoryHeaderNav.ts",
     "frontend/src/pages/AdminDashboardPage.tsx",
-    "frontend/src/pages/OrdersPage.tsx",
-    "frontend/src/pages/admin/AdminOrdersPage.tsx",
-    "frontend/src/pages/admin/CategoryEditPage.tsx",
     "project_state.json"
   ]
 }
