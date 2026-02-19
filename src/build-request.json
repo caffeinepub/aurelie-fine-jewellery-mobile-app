@@ -1,116 +1,37 @@
 {
   "kind": "build_request",
-  "title": "Add scrollable circular category nav under header + admin-managed images/URLs + admin dropdown link",
-  "projectName": "Aurelie Fine Jewellery",
-  "priority": "normal",
+  "title": "Retry deployment",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add a horizontal, scrollable row of SMALL circular product category tiles directly below the site header on customer-facing pages. Each tile must render a category image inside a circle, with the category name displayed directly below the circle in bottle-green color.",
-      "target": "frontend",
+      "text": "Retry the deployment of the existing application to the Internet Computer network without any code changes",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-last"
         ],
         "quotes": [
-          "Below the header, can we add horizontal scrolling product category with images and category name. Image of each category enclosed in a circle and below that name of category",
-          "Proceed but note that the product category circles to be smaller in size not big",
-          "The text  which will be directly below the circular scrollable category to be in bottle green colour."
+          "1 retry"
         ]
       },
       "acceptanceCriteria": [
-        "A horizontally scrollable category row is visible directly under the header (and above the main page content).",
-        "Each category tile displays a circular (fully rounded) image with the category name underneath.",
-        "Category name text uses the existing bottle-green token/class (e.g., text-bottle-green-dark / text-bottle-green-medium).",
-        "The circular icons are visually small (not large) and fit multiple categories in the viewport with horizontal scrolling available.",
-        "Category row works on mobile and desktop (touch scroll on mobile, mouse/trackpad scroll on desktop)."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Implement category-tile click behavior so that clicking a circular category tile navigates to the category’s configured URL. If no custom URL is configured for that category, default to the existing internal route `/category/<categorySlug>`.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Also, the admin should manage the images which needs to be updated inside circle and connected to a url"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Clicking a category tile navigates to the stored URL for that category.",
-        "If a category has no stored URL, clicking navigates to `/category/<categorySlug>` using the existing router.",
-        "If a stored URL is an absolute `http(s)` URL, the app navigates to that external URL (same tab is acceptable unless otherwise required)."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Add backend support for storing and retrieving admin-managed data for the header category row: per categorySlug, persist (1) the circular image (blob) and (2) a URL string used when the tile is clicked. Expose query methods for the frontend to read this data and shared admin-only methods to update it.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Also, the admin should manage the images which needs to be updated inside circle and connected to a url"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend provides a query method to fetch all header-category nav items (at minimum: categorySlug, image blob, url string (possibly empty)).",
-        "Backend provides admin-only update methods to set/update the image and URL for a categorySlug.",
-        "Non-admin callers cannot modify this data (must trap/reject similarly to other admin-only methods in `backend/main.mo`).",
-        "Data persists across reloads/upgrades according to the project’s existing persistence approach (add `migration.mo` only if required by current stable-state usage)."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Add an admin UI in the existing Admin Dashboard to manage the header category row items: upload/replace the circular image for each category and set/update the click-through URL for each category. The admin UI must save to the backend and reflect changes after save.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Also, the admin should manage the images which needs to be updated inside circle and connected to a url"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Admin UI is accessible from the existing `/admin` experience for users who pass `useIsCallerAdmin()`.",
-        "Admin can upload/replace an image per category and set a URL per category, then save changes.",
-        "Uploaded images are optimized client-side consistently with existing patterns (e.g., using `optimizeImage` and `ExternalBlob`).",
-        "After saving, the customer-facing header category row shows the updated images/URLs without requiring a hard refresh (react-query invalidation or equivalent)."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Update the authenticated user dropdown in the header to show an \"Admin\" menu item ONLY when the logged-in user is an admin. Clicking it must navigate to `/admin`. Non-admin users must not see the Admin option.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "And let the application have admin option in drop-down when logged in from admin id"
-        ]
-      },
-      "acceptanceCriteria": [
-        "When logged in as an admin, the header account dropdown includes an \"Admin\" item that routes to `/admin`.",
-        "When logged in as a non-admin, the \"Admin\" dropdown item is not visible.",
-        "When not logged in, no \"Admin\" item is shown."
+        "The deployment completes successfully",
+        "All canisters are deployed and running on the Internet Computer",
+        "The application is accessible via its canister URL"
       ]
     }
   ],
   "constraints": [
-    "Use English for all user-facing text.",
-    "Do not edit any files under `frontend/src/components/ui` (compose existing shadcn components instead).",
-    "Do not modify files listed in `SYSTEM_CONTEXT.frontend.immutablePaths`.",
-    "Backend must remain a single Motoko actor in `backend/main.mo`; only introduce `backend/migration.mo` if required by an upgrade that changes stable state."
+    "Do not modify any existing code",
+    "Do not change backend schema or state structures",
+    "Preserve all existing functionality"
   ],
   "nonGoals": [
-    "Do not add new authentication providers; continue using Internet Identity only.",
-    "Do not implement the separate request \"Home page: add a horizontal scrollable product row per category\" unless it is explicitly re-confirmed in scope.",
-    "Do not change existing homepage/category carousel behavior (this request is specifically for a new header-adjacent category row and an admin dropdown link)."
+    "Adding new features",
+    "Modifying UI components",
+    "Changing business logic",
+    "Updating dependencies"
   ],
   "imageRequirements": {
     "required": [],

@@ -6,7 +6,7 @@ import Iter "mo:core/Iter";
 import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
 import Time "mo:core/Time";
-import Migration "migration";
+
 
 // Component imports
 import Storage "blob-storage/Storage";
@@ -17,7 +17,7 @@ import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
 
 // With-clause for migration
-(with migration = Migration.run)
+
 actor {
   // Time Constants
   let cancellationWindowHours = 12;

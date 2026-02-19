@@ -1,84 +1,22 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "E-commerce site (Aurelie Fine Jewellery) with customer-facing home page category navigation and an admin panel (/admin) managed via Internet Identity permissions.",
-  "architectural_notes": [
-    "Admin access uses Internet Identity permissions; admin panel is available at /admin.",
-    "Role-based UI: show admin navigation options only for admin users when logged in."
-  ],
-  "known_issues": [
-    "Generated 'example images' were sent as base64 data strings and did not render/download properly for the user (needs proper image rendering/attachment approach)."
-  ],
-  "isFixRequest": true,
-  "existing_features": [
-    {
-      "id": "feature-add-a-horizontal-scrollable-row-of-small-circular-product-category-tiles-directly-below-the-site-header-on-customer-facing-pages-each-tile-must-render-a-category-image-inside-a-circle-with-the-category-name-displayed-directly-below-the-circle-in-bottle-green-color",
-      "title": "Add a horizontal, scrollable row of SMALL circular product category tiles directly below the site header on customer-facing pages. Each tile must render a category image inside a circle, with the category name displayed directly below the circle in bottle-green color.",
-      "reqIds": [
-        "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-category-tile-click-behavior-so-that-clicking-a-circular-category-tile-navigates-to-the-category-s-configured-url-if-no-custom-url-is-configured-for-that-category-default-to-the-existing-internal-route-category-categoryslug",
-      "title": "Implement category-tile click behavior so that clicking a circular category tile navigates to the category’s configured URL. If no custom URL is configured for that category, default to the existing internal route `/category/<categorySlug>`.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-an-admin-ui-in-the-existing-admin-dashboard-to-manage-the-header-category-row-items-upload-replace-the-circular-image-for-each-category-and-set-update-the-click-through-url-for-each-category-the-admin-ui-must-save-to-the-backend-and-reflect-changes-after-save",
-      "title": "Add an admin UI in the existing Admin Dashboard to manage the header category row items: upload/replace the circular image for each category and set/update the click-through URL for each category. The admin UI must save to the backend and reflect changes after save.",
-      "reqIds": [
-        "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-authenticated-user-dropdown-in-the-header-to-show-an-admin-menu-item-only-when-the-logged-in-user-is-an-admin-clicking-it-must-navigate-to-admin-non-admin-users-must-not-see-the-admin-option",
-      "title": "Update the authenticated user dropdown in the header to show an \"Admin\" menu item ONLY when the logged-in user is an admin. Clicking it must navigate to `/admin`. Non-admin users must not see the Admin option.",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "version": 1
-    }
-  ],
+  "summary": "New project",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [],
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add a horizontal scrollable row of small circular category images directly below the header, with category name text below in bottle-green color.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Allow admin to upload/update the circular category images and configure a click-through URL/link for each category item.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Show an 'Admin' option in the header drop-down only when logged in as an admin user.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Home page: add a horizontal scrollable product row per category showing all products for that category, with 2–3 products visible at once.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Add backend support for storing and retrieving admin-managed data for the header category row: per categorySlug, persist (1) the circular image (blob) and (2) a URL string used when the tile is clicked. Expose query methods for the frontend to read this data and shared admin-only methods to update it.",
+      "summary": "Retry the deployment of the existing application to the Internet Computer network without any code changes",
       "reqIds": [
-        "REQ-3"
+        "REQ-1"
       ],
       "status": "pending"
     }
   ],
-  "projectName": "Aurelie Fine Jewellery",
+  "projectName": "Retry deployment",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

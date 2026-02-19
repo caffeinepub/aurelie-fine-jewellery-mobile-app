@@ -1,97 +1,21 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Header category circle scroller + admin-managed header category images/URLs + admin dropdown link",
+  "title": "Retry Deployment Without Code Changes",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add a small circular, horizontally scrollable category tile row directly under the header on customer-facing pages with bottle-green category names.",
+      "summary": "Retry deployment to Internet Computer without modifying any code",
       "acceptanceCriteria": [
-        "A horizontally scrollable category row is visible directly under the header (and above the main page content).",
-        "Each category tile displays a circular (fully rounded) image with the category name underneath.",
-        "Category name text uses the existing bottle-green token/class (e.g., text-bottle-green-dark / text-bottle-green-medium).",
-        "The circular icons are visually small (not large) and fit multiple categories in the viewport with horizontal scrolling available.",
-        "Category row works on mobile and desktop (touch scroll on mobile, mouse/trackpad scroll on desktop)."
+        "The deployment completes successfully",
+        "All canisters are deployed and running on the Internet Computer",
+        "The application is accessible via its canister URL"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/HeaderCategoryNav.tsx",
-          "operation": "create",
-          "description": "Create a reusable header-adjacent category nav component that renders a horizontally scrollable row of small circular image tiles with the category name beneath (bottle-green text). Use existing category definitions (e.g., PRODUCT_CATEGORIES) to determine tile order and labels, and render images via ExternalBlob.getDirectURL when available; fall back to an existing static placeholder asset when a category has no configured header image. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/Layout.tsx",
+          "path": "frontend/package.json",
           "operation": "modify",
-          "description": "Wire the new HeaderCategoryNav directly below the header and above the main content, and ensure it is only shown on customer-facing pages (hide on /admin routes). Keep the tile row visible across customer pages while maintaining existing sticky header behavior. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "If needed to meet the small/scrollable design requirement across devices, add minimal global styling utilities for the horizontal scroller (e.g., optional scrollbar hiding/consistent spacing) using existing Tailwind conventions and tokens; do not introduce new design tokens beyond current palette."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Navigate on category-tile click using stored URL when configured, otherwise default to internal /category/<categorySlug>, with support for absolute external URLs.",
-      "acceptanceCriteria": [
-        "Clicking a category tile navigates to the stored URL for that category.",
-        "If a category has no stored URL, clicking navigates to `/category/<categorySlug>` using the existing router.",
-        "If a stored URL is an absolute `http(s)` URL, the app navigates to that external URL (same tab is acceptable unless otherwise required)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/HeaderCategoryNav.tsx",
-          "operation": "modify",
-          "description": "Implement tile click handling: if a configured redirectUrl exists, route to it (use window.location.href for absolute http(s) URLs; use router navigation for internal paths); otherwise route to `/category/<categorySlug>`. Ensure empty/whitespace redirectUrl is treated as not configured. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Add Admin Dashboard UI to upload/replace header category circle images and set/update per-category click-through URLs, saving to backend and updating the customer header row via cache invalidation.",
-      "acceptanceCriteria": [
-        "Admin UI is accessible from the existing `/admin` experience for users who pass `useIsCallerAdmin()`.",
-        "Admin can upload/replace an image per category and set a URL per category, then save changes.",
-        "Uploaded images are optimized client-side consistently with existing patterns (e.g., using `optimizeImage` and `ExternalBlob`).",
-        "After saving, the customer-facing header category row shows the updated images/URLs without requiring a hard refresh (react-query invalidation or equivalent)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useCategoryHeaderNav.ts",
-          "operation": "create",
-          "description": "Add react-query hooks to (1) fetch all header category nav items (using backend getAllCategoryHeaders) and (2) update a single category header item (using backend setCategoryHeader), including query invalidation so the header row reflects updates without hard refresh. Ensure hooks integrate with the existing useActor pattern. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/admin/HeaderCategoryNavManagement.tsx",
-          "operation": "create",
-          "description": "Create an Admin Dashboard management panel for header category nav items: list categories (using existing PRODUCT_CATEGORIES), show current configured image preview (ExternalBlob.getDirectURL when present), allow image upload/replace per category with client-side optimization via optimizeImage and upload progress via ExternalBlob.withUploadProgress, and allow editing/saving redirect URL per category. Use toast feedback consistent with existing admin tools. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/AdminDashboardPage.tsx",
-          "operation": "modify",
-          "description": "Wire HeaderCategoryNavManagement into the existing Admin Dashboard UI (e.g., as a new section under an existing tab such as Carousel or Edit, without creating a new route) and ensure it is only reachable in the existing /admin experience guarded by useIsCallerAdmin(). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/HeaderCategoryNav.tsx",
-          "operation": "modify",
-          "description": "Update the customer header category row to consume the new hooks (useCategoryHeaderNav) so it renders the admin-managed images and redirect URLs, and updates automatically when react-query invalidation occurs after admin saves. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Show an Admin link in the authenticated user dropdown only for admins and navigate to /admin when clicked.",
-      "acceptanceCriteria": [
-        "When logged in as an admin, the header account dropdown includes an \"Admin\" item that routes to `/admin`.",
-        "When logged in as a non-admin, the \"Admin\" dropdown item is not visible.",
-        "When not logged in, no \"Admin\" item is shown."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/Layout.tsx",
-          "operation": "modify",
-          "description": "Use the existing useIsCallerAdmin() hook to conditionally render an \"Admin\" DropdownMenuItem in the authenticated account dropdown only when the user is an admin; clicking navigates to /admin using the existing router navigation. Ensure it is not shown for non-admins or logged-out users. Verify the component's usage instructions before implementing."
+          "description": "Verify deployment configuration is correct. This is a verification-only operation - do not change any code, dependencies, or scripts. Ensure all build and deployment scripts reference the correct canister IDs and network settings. If everything is correct, no changes should be made."
         }
       ]
     }

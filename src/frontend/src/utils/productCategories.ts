@@ -27,7 +27,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
   },
   {
     slug: 'lab-diamonds-jewellery',
-    title: 'Lab Diamonds Jewellery',
+    title: 'Lab Diamonds',
     description: 'Sustainable luxury with ethically sourced lab-grown diamonds, offering the same brilliance and beauty as natural diamonds.',
   },
   {

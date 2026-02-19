@@ -8,7 +8,6 @@ import { useCart } from '../hooks/useCart';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from './ui/dropdown-menu';
 import RouteLoadingFallback from './RouteLoadingFallback';
 import FooterSystem from './footer/FooterSystem';
-import { PRODUCT_CATEGORIES } from '../utils/productCategories';
 import HeaderCategoryNav from './HeaderCategoryNav';
 import { useIsCallerAdmin } from '../hooks/useQueries';
 
@@ -60,26 +59,6 @@ export default function Layout() {
 
           {/* Navigation */}
           <nav className="flex items-center gap-4">
-            {/* Our Products Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-bottle-green-dark hover:text-gold-medium">
-                  Our Products
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-background/95 backdrop-blur border-gold-medium/30">
-                {PRODUCT_CATEGORIES.map((category) => (
-                  <DropdownMenuItem
-                    key={category.slug}
-                    onClick={() => navigate({ to: `/category/${category.slug}` })}
-                    className="cursor-pointer hover:bg-gold-medium/10"
-                  >
-                    {category.title}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
             {/* Cart */}
             <Button
               variant="ghost"
