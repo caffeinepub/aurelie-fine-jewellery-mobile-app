@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Skeleton } from '../components/ui/skeleton';
 import { ScrollArea } from '../components/ui/scroll-area';
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Settings, Image, Edit } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Settings, Image, Edit, MessageCircle } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 import ProductManagement from '../components/admin/ProductManagement';
 import OrderManagement from '../components/admin/OrderManagement';
@@ -13,6 +13,7 @@ import SiteContentManagement from '../components/admin/SiteContentManagement';
 import CarouselManagement from '../components/admin/CarouselManagement';
 import CategoryCarouselManagement from '../components/admin/CategoryCarouselManagement';
 import HeaderCategoryNavManagement from '../components/admin/HeaderCategoryNavManagement';
+import BannerManagement from '../components/admin/BannerManagement';
 import { useAdminUiBodyAttribute } from '../hooks/useAdminUiBodyAttribute';
 import { PRODUCT_CATEGORIES } from '../utils/productCategories';
 
@@ -110,7 +111,7 @@ export default function AdminDashboardPage() {
 
       {/* Management Tabs */}
       <Tabs defaultValue="products" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5 admin-surface border border-gold-medium/30">
+        <TabsList className="grid w-full grid-cols-6 admin-surface border border-gold-medium/30">
           <TabsTrigger value="products" className="text-bottle-green-dark data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
             <Package className="h-4 w-4 mr-2" />
             Products
@@ -122,6 +123,10 @@ export default function AdminDashboardPage() {
           <TabsTrigger value="inquiries" className="text-bottle-green-dark data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
             <MessageSquare className="h-4 w-4 mr-2" />
             Inquiries
+          </TabsTrigger>
+          <TabsTrigger value="banner" className="text-bottle-green-dark data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
+            <MessageCircle className="h-4 w-4 mr-2" />
+            Banner
           </TabsTrigger>
           <TabsTrigger value="carousel" className="text-bottle-green-dark data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
             <Image className="h-4 w-4 mr-2" />
@@ -152,6 +157,10 @@ export default function AdminDashboardPage() {
 
         <TabsContent value="inquiries">
           <InquiryManagement />
+        </TabsContent>
+
+        <TabsContent value="banner">
+          <BannerManagement />
         </TabsContent>
 
         <TabsContent value="carousel">

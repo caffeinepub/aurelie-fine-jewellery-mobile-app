@@ -75,6 +75,11 @@ export const OrderCreate = IDL.Record({
   'quantity' : IDL.Nat,
   'shippingAddress' : ShippingAddress,
 });
+export const BannerMessage = IDL.Record({
+  'order' : IDL.Nat,
+  'enabled' : IDL.Bool,
+  'message' : IDL.Text,
+});
 export const Category = IDL.Record({
   'displayOrder' : IDL.Nat,
   'name' : IDL.Text,
@@ -205,6 +210,7 @@ export const idlService = IDL.Service({
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  'addBannerMessage' : IDL.Func([IDL.Text, IDL.Nat, IDL.Bool], [IDL.Nat], []),
   'addCategory' : IDL.Func([CategoryCreate], [], []),
   'addCategorySlide' : IDL.Func([IDL.Text, CarouselSlide], [], []),
   'addProduct' : IDL.Func([ProductCreate], [], []),
@@ -217,7 +223,9 @@ export const idlService = IDL.Service({
       [],
     ),
   'createOrder' : IDL.Func([OrderCreate], [], []),
+  'deleteBannerMessage' : IDL.Func([IDL.Nat], [], []),
   'deleteProduct' : IDL.Func([IDL.Text], [], []),
+  'getAllBannerMessages' : IDL.Func([], [IDL.Vec(BannerMessage)], ['query']),
   'getAllCategories' : IDL.Func([], [IDL.Vec(Category)], ['query']),
   'getAllCategoryHeaders' : IDL.Func(
       [],
@@ -298,6 +306,7 @@ export const idlService = IDL.Service({
       [TransformationOutput],
       ['query'],
     ),
+  'updateBannerMessage' : IDL.Func([IDL.Nat, IDL.Text, IDL.Bool], [], []),
   'updateCarouselRedirect' : IDL.Func([IDL.Text, IDL.Text], [], []),
   'updateCategory' : IDL.Func([IDL.Text, CategoryCreate], [], []),
   'updateCategoryCarousel' : IDL.Func(
@@ -382,6 +391,11 @@ export const idlFactory = ({ IDL }) => {
     'upiId' : IDL.Text,
     'quantity' : IDL.Nat,
     'shippingAddress' : ShippingAddress,
+  });
+  const BannerMessage = IDL.Record({
+    'order' : IDL.Nat,
+    'enabled' : IDL.Bool,
+    'message' : IDL.Text,
   });
   const Category = IDL.Record({
     'displayOrder' : IDL.Nat,
@@ -510,6 +524,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    'addBannerMessage' : IDL.Func([IDL.Text, IDL.Nat, IDL.Bool], [IDL.Nat], []),
     'addCategory' : IDL.Func([CategoryCreate], [], []),
     'addCategorySlide' : IDL.Func([IDL.Text, CarouselSlide], [], []),
     'addProduct' : IDL.Func([ProductCreate], [], []),
@@ -522,7 +537,9 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'createOrder' : IDL.Func([OrderCreate], [], []),
+    'deleteBannerMessage' : IDL.Func([IDL.Nat], [], []),
     'deleteProduct' : IDL.Func([IDL.Text], [], []),
+    'getAllBannerMessages' : IDL.Func([], [IDL.Vec(BannerMessage)], ['query']),
     'getAllCategories' : IDL.Func([], [IDL.Vec(Category)], ['query']),
     'getAllCategoryHeaders' : IDL.Func(
         [],
@@ -611,6 +628,7 @@ export const idlFactory = ({ IDL }) => {
         [TransformationOutput],
         ['query'],
       ),
+    'updateBannerMessage' : IDL.Func([IDL.Nat, IDL.Text, IDL.Bool], [], []),
     'updateCarouselRedirect' : IDL.Func([IDL.Text, IDL.Text], [], []),
     'updateCategory' : IDL.Func([IDL.Text, CategoryCreate], [], []),
     'updateCategoryCarousel' : IDL.Func(

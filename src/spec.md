@@ -1,13 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Fix category circle styling by removing rectangular backgrounds and adding glow animations, then enhance the footer with social media icons and policy links managed through the admin panel.
+**Goal:** Add an admin-controlled marquee text banner that displays multiple scrolling messages below the header.
 
 **Planned changes:**
-- Remove rectangular background shapes from the scrollable product category circles below the header
-- Apply glow effect animation to category circles that matches the animated beige body background
-- Add Instagram, Facebook, and X social media icons to the footer with clickable links
-- Create admin settings panel to manage social media URLs
-- Add Privacy Policy, Shipping Policy, and Terms & Conditions links in the footer that navigate to separate detail pages
+- Add backend storage and API methods for managing banner messages (CRUD operations, display order, enabled status)
+- Restrict banner management to admin user (aureliefinejewellery06@gmail.com)
+- Create MarqueeBanner component with smooth horizontal scrolling in gold/beige luxury theme
+- Add banner management interface to admin dashboard (add, edit, delete, reorder, enable/disable messages)
+- Integrate MarqueeBanner into Layout component below the header across all pages
 
-**User-visible outcome:** Users will see cleaner category circles with subtle glow animations on the home page. The footer will display social media icons linking to company profiles and policy links that open detailed information pages. Admins can update social media URLs through the admin settings panel.
+**User-visible outcome:** Customers see a scrolling marquee banner with promotional messages below the header on all pages. The admin can manage multiple banner messages through the dashboard, controlling which messages display and their order.

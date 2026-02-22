@@ -1,119 +1,121 @@
 {
   "kind": "build_request",
-  "title": "Fix Category Circle Styling and Add Footer Social Media & Policy Links",
+  "title": "Add admin-controlled marquee text banner with multiple messages",
   "projectName": "Aurelie Fine Jewellery",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove rectangular background shapes from the scrollable product category circles located just below the header on the home page",
-      "target": "frontend",
+      "text": "Add backend storage and API methods for managing marquee banner messages, including fields for message text, display order, and enabled status. Support CRUD operations (create, read, update, delete) for banner messages.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-1",
           "msg-5"
         ],
         "quotes": [
-          "on home page just below header, there are produced categorys scrollable circle. Behind that there are rectangular shaped object which needs to be removed"
+          "admin should be able to add multiple message"
         ]
       },
       "acceptanceCriteria": [
-        "Category circles appear without any rectangular background containers",
-        "Circles maintain their scrollable functionality",
-        "Visual styling matches the animated beige body background"
+        "Backend stores banner messages with text, order, and enabled status",
+        "API methods allow creating, reading, updating, and deleting banner messages",
+        "Messages can be reordered by updating their display order value",
+        "Only enabled messages are returned to the frontend"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Apply glow effect animation to category circles that matches the animated beige body background theme",
-      "target": "frontend",
+      "text": "Restrict banner message management API methods to only the admin user with email 'aureliefinejewellery06@gmail.com'. Use the existing admin authorization pattern from the codebase.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-2",
-          "msg-5"
+          "msg-3"
         ],
         "quotes": [
-          "match the animated beige body background, and add proper glow effect animation"
+          "only for the admin control with login ID aureliefinejewellery06@gmail.com"
         ]
       },
       "acceptanceCriteria": [
-        "Category circles display a subtle glow animation",
-        "Glow effect color scheme harmonizes with the beige animated background",
-        "Animation loops smoothly without performance issues"
+        "Banner message mutations require admin authorization",
+        "Only the specified email address can manage banner messages",
+        "Unauthorized attempts return appropriate error responses"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Add Instagram, Facebook, and X (Twitter) social media icons to the footer with clickable links that redirect to URLs controlled through the admin panel",
-      "target": "both",
+      "text": "Create a MarqueeBanner component that displays below the header in a static position (not fixed/sticky). The banner should smoothly scroll enabled messages horizontally in a continuous loop with a gold/beige luxury theme matching the existing brand styling.",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1",
+          "msg-3",
           "msg-5"
         ],
         "quotes": [
-          "on footer, place social media icons which directs to details in admin control"
+          "below the header and remain static in location",
+          "Smooth horizontal scrolling with gold/beige luxury styling"
         ]
       },
       "acceptanceCriteria": [
-        "Footer displays three social media icons (Instagram, Facebook, X)",
-        "Each icon links to the URL stored in the backend",
-        "Icons are visually consistent with the footer design",
-        "Links open in new tabs when clicked"
+        "Banner appears below the header on all pages",
+        "Messages scroll horizontally in a smooth, continuous marquee effect",
+        "Banner uses gold/beige colors consistent with the Aurelie brand",
+        "Banner position is static (scrolls with page content, not fixed)",
+        "Multiple messages display in sequence within the scrolling marquee"
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Create an admin settings panel with input fields to manage and update social media URLs for Instagram, Facebook, and X",
-      "target": "both",
+      "text": "Add banner message management interface to the admin dashboard with functionality to add, edit, delete, and reorder multiple banner messages. Include controls for enabling/disabling individual messages.",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2",
+          "msg-3",
           "msg-5"
         ],
         "quotes": [
-          "Admin Interface: Settings panel with fields to manage social media URLs"
+          "admin should be able to add multiple message",
+          "Add, edit, delete, and reorder multiple messages"
         ]
       },
       "acceptanceCriteria": [
-        "Admin dashboard includes a settings section for social media URLs",
-        "Form fields allow updating Instagram, Facebook, and X URLs",
-        "Changes save to backend and immediately reflect in the footer",
-        "Validation ensures URLs are properly formatted"
+        "Admin dashboard includes a new tab or section for banner management",
+        "Interface allows adding new banner messages with text input",
+        "Existing messages can be edited or deleted",
+        "Messages can be reordered using drag-and-drop or up/down controls",
+        "Each message has an enable/disable toggle",
+        "Only enabled messages appear in the public marquee banner"
       ]
     },
     {
       "id": "REQ-5",
-      "text": "Add clickable Privacy Policy, Shipping Policy, and Terms & Conditions links in the footer that navigate to separate detail pages displaying the respective policy content",
-      "target": "both",
+      "text": "Integrate the MarqueeBanner component into the Layout component so it appears below the header across all pages of the site.",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2",
-          "msg-5"
+          "msg-3"
         ],
         "quotes": [
-          "Footer Policy Links: Clickable Privacy Policy, Shipping Policy, and Terms & Conditions opening separate detail pages"
+          "below the header and remain static in location"
         ]
       },
       "acceptanceCriteria": [
-        "Footer contains three policy links: Privacy Policy, Shipping Policy, Terms & Conditions",
-        "Each link navigates to a dedicated page showing the full policy text",
-        "Policy pages display content stored in the backend site content",
-        "Pages are accessible to all users without authentication"
+        "Banner renders in Layout component after the header",
+        "Banner appears on all customer-facing and admin pages",
+        "Banner fetches and displays enabled messages from the backend"
       ]
     }
   ],
   "constraints": [
-    "Maintain single-actor architecture in backend/main.mo",
-    "Do not modify immutable frontend paths including hooks/useInternetIdentity.ts, hooks/useActor.ts, main.tsx, and components/ui directory",
-    "Preserve existing e-commerce functionality including cart, checkout, and order management",
-    "Keep the current Tailwind CSS and React Query stack"
+    "Only the admin user with email 'aureliefinejewellery06@gmail.com' can manage banner messages",
+    "Banner must use gold/beige luxury theme matching existing Aurelie brand styling",
+    "Banner position must be static (not fixed/sticky) and appear below the header"
   ],
   "nonGoals": [
-    "Changing the overall site color scheme or branding",
-    "Modifying existing product management features",
-    "Adding real-time social media feed integration",
-    "Implementing social media authentication or API connections"
+    "Animated transitions between individual messages (continuous scroll only)",
+    "Multiple banner styles or templates",
+    "Scheduled banner messages or time-based display",
+    "A/B testing or analytics for banner messages",
+    "Rich text formatting or HTML in banner messages"
   ],
   "imageRequirements": {
     "required": [],

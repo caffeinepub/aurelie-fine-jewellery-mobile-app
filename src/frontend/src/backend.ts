@@ -89,88 +89,24 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface Product {
-    id: string;
-    media: ProductMedia;
-    inStock: boolean;
+export interface UserProfile {
+    dob: string;
     name: string;
-    description: string;
-    category: string;
-    priceInCents: bigint;
-}
-export interface Category {
-    displayOrder: bigint;
-    name: string;
-    description: string;
-    isActive: boolean;
-    primaryImage: ExternalBlob;
-    images: Array<ExternalBlob>;
-}
-export interface CarouselSlide {
-    order: bigint;
-    enabled: boolean;
-    visualContent: ExternalBlob;
-    urlRedirect: string;
+    email: string;
+    address: string;
+    phone: string;
 }
 export interface TransformationOutput {
     status: bigint;
     body: Uint8Array;
     headers: Array<http_header>;
 }
-export interface CustomerInquiry {
-    id: string;
-    customer: Principal;
-    name: string;
-    email: string;
-    message: string;
-    response?: string;
-}
-export interface CategoryHeader {
-    redirectUrl: string;
-    image: ExternalBlob;
-}
 export interface _CaffeineStorageRefillInformation {
     proposed_top_up_amount?: bigint;
-}
-export interface ShippingAddress {
-    name: string;
-    email: string;
-    address: string;
-    phone: string;
 }
 export interface _CaffeineStorageCreateCertificateResult {
     method: string;
     blob_hash: string;
-}
-export interface Order {
-    id: string;
-    status: OrderStatus;
-    totalPriceInCents: bigint;
-    customer: Principal;
-    productId: string;
-    cancellable: boolean;
-    timestamp: bigint;
-    upiId: string;
-    quantity: bigint;
-    shippingAddress: ShippingAddress;
-}
-export interface http_header {
-    value: string;
-    name: string;
-}
-export interface http_request_result {
-    status: bigint;
-    body: Uint8Array;
-    headers: Array<http_header>;
-}
-export interface OrderCreate {
-    id: string;
-    totalPriceInCents: bigint;
-    customer: Principal;
-    productId: string;
-    upiId: string;
-    quantity: bigint;
-    shippingAddress: ShippingAddress;
 }
 export type OrderStatus = {
     __kind__: "shipped";
@@ -190,29 +126,9 @@ export type OrderStatus = {
     __kind__: "confirmed";
     confirmed: null;
 };
-export interface ShoppingItem {
-    productName: string;
-    currency: string;
-    quantity: bigint;
-    priceInCents: bigint;
-    productDescription: string;
-}
-export interface ProductCreate {
-    id: string;
-    media: ProductMedia;
-    inStock: boolean;
-    name: string;
-    description: string;
-    category: string;
-    priceInCents: bigint;
-}
 export interface TransformationInput {
     context: Uint8Array;
     response: http_request_result;
-}
-export interface ProductMedia {
-    video?: ExternalBlob;
-    images: Array<ExternalBlob>;
 }
 export interface CategoryCreate {
     displayOrder: bigint;
@@ -255,19 +171,108 @@ export interface SiteContent {
     footerContent: string;
     termsOfService: string;
 }
-export interface CancelReason {
-    reason: string;
+export interface Category {
+    displayOrder: bigint;
+    name: string;
+    description: string;
+    isActive: boolean;
+    primaryImage: ExternalBlob;
+    images: Array<ExternalBlob>;
 }
-export interface _CaffeineStorageRefillResult {
-    success?: boolean;
-    topped_up_amount?: bigint;
+export interface CarouselSlide {
+    order: bigint;
+    enabled: boolean;
+    visualContent: ExternalBlob;
+    urlRedirect: string;
 }
-export interface UserProfile {
-    dob: string;
+export interface CustomerInquiry {
+    id: string;
+    customer: Principal;
+    name: string;
+    email: string;
+    message: string;
+    response?: string;
+}
+export interface CategoryHeader {
+    redirectUrl: string;
+    image: ExternalBlob;
+}
+export interface BannerMessage {
+    order: bigint;
+    enabled: boolean;
+    message: string;
+}
+export interface ShippingAddress {
     name: string;
     email: string;
     address: string;
     phone: string;
+}
+export interface Order {
+    id: string;
+    status: OrderStatus;
+    totalPriceInCents: bigint;
+    customer: Principal;
+    productId: string;
+    cancellable: boolean;
+    timestamp: bigint;
+    upiId: string;
+    quantity: bigint;
+    shippingAddress: ShippingAddress;
+}
+export interface http_header {
+    value: string;
+    name: string;
+}
+export interface http_request_result {
+    status: bigint;
+    body: Uint8Array;
+    headers: Array<http_header>;
+}
+export interface OrderCreate {
+    id: string;
+    totalPriceInCents: bigint;
+    customer: Principal;
+    productId: string;
+    upiId: string;
+    quantity: bigint;
+    shippingAddress: ShippingAddress;
+}
+export interface ShoppingItem {
+    productName: string;
+    currency: string;
+    quantity: bigint;
+    priceInCents: bigint;
+    productDescription: string;
+}
+export interface ProductCreate {
+    id: string;
+    media: ProductMedia;
+    inStock: boolean;
+    name: string;
+    description: string;
+    category: string;
+    priceInCents: bigint;
+}
+export interface ProductMedia {
+    video?: ExternalBlob;
+    images: Array<ExternalBlob>;
+}
+export interface CancelReason {
+    reason: string;
+}
+export interface Product {
+    id: string;
+    media: ProductMedia;
+    inStock: boolean;
+    name: string;
+    description: string;
+    category: string;
+    priceInCents: bigint;
+}
+export interface _CaffeineStorageRefillResult {
+    success?: boolean;
+    topped_up_amount?: bigint;
 }
 export enum UserRole {
     admin = "admin",
@@ -282,6 +287,7 @@ export interface backendInterface {
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
+    addBannerMessage(message: string, order: bigint, enabled: boolean): Promise<bigint>;
     addCategory(categoryInput: CategoryCreate): Promise<void>;
     addCategorySlide(category: string, newSlide: CarouselSlide): Promise<void>;
     addProduct(product: ProductCreate): Promise<void>;
@@ -290,7 +296,9 @@ export interface backendInterface {
     cancelOrder(orderId: string, cancelReason: CancelReason): Promise<void>;
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;
     createOrder(input: OrderCreate): Promise<void>;
+    deleteBannerMessage(order: bigint): Promise<void>;
     deleteProduct(productId: string): Promise<void>;
+    getAllBannerMessages(): Promise<Array<BannerMessage>>;
     getAllCategories(): Promise<Array<Category>>;
     getAllCategoryHeaders(): Promise<Array<[string, CategoryHeader]>>;
     getAllCategorySlides(category: string): Promise<Array<CarouselSlide>>;
@@ -335,6 +343,7 @@ export interface backendInterface {
     submitInquiry(inquiry: CustomerInquiry): Promise<void>;
     toggleCategorySlide(category: string, slideIndex: bigint, enabled: boolean): Promise<void>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
+    updateBannerMessage(order: bigint, message: string, enabled: boolean): Promise<void>;
     updateCarouselRedirect(category: string, redirectUrl: string): Promise<void>;
     updateCategory(name: string, categoryInput: CategoryCreate): Promise<void>;
     updateCategoryCarousel(category: string, carouselNumber: bigint, images: Array<ExternalBlob>): Promise<void>;
@@ -443,6 +452,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor._initializeAccessControlWithSecret(arg0);
+            return result;
+        }
+    }
+    async addBannerMessage(arg0: string, arg1: bigint, arg2: boolean): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addBannerMessage(arg0, arg1, arg2);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addBannerMessage(arg0, arg1, arg2);
             return result;
         }
     }
@@ -558,6 +581,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async deleteBannerMessage(arg0: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.deleteBannerMessage(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.deleteBannerMessage(arg0);
+            return result;
+        }
+    }
     async deleteProduct(arg0: string): Promise<void> {
         if (this.processError) {
             try {
@@ -569,6 +606,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.deleteProduct(arg0);
+            return result;
+        }
+    }
+    async getAllBannerMessages(): Promise<Array<BannerMessage>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getAllBannerMessages();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAllBannerMessages();
             return result;
         }
     }
@@ -1081,6 +1132,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.transform(arg0);
+            return result;
+        }
+    }
+    async updateBannerMessage(arg0: bigint, arg1: string, arg2: boolean): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateBannerMessage(arg0, arg1, arg2);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateBannerMessage(arg0, arg1, arg2);
             return result;
         }
     }

@@ -1,109 +1,83 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-22T16:11:59.379Z",
+  "generatedAt": "2026-02-22T16:57:02.010Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
     "total": 5,
-    "implemented": 5,
+    "implemented": 3,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Remove rectangular background shapes from the scrollable product category circles located just below the header on the home page",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/HeaderCategoryNav.tsx",
-          "frontend/src/index.css"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/HeaderCategoryNav.tsx",
-          "frontend/src/index.css"
-        ]
+        "summary": "Add backend storage and API methods for managing marquee banner messages, including fields for message text, display order, and enabled status. Support CRUD operations (create, read, update, delete) for banner messages.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       },
       {
         "id": "REQ-2",
-        "summary": "Apply glow effect animation to category circles that matches the animated beige body background theme",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/HeaderCategoryNav.tsx",
-          "frontend/src/index.css"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/HeaderCategoryNav.tsx",
-          "frontend/src/index.css"
-        ]
+        "summary": "Restrict banner message management API methods to only the admin user with email 'aureliefinejewellery06@gmail.com'. Use the existing admin authorization pattern from the codebase.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       },
       {
         "id": "REQ-3",
-        "summary": "Add Instagram, Facebook, and X (Twitter) social media icons to the footer with clickable links that redirect to URLs controlled through the admin panel",
+        "summary": "Create a MarqueeBanner component that displays below the header in a static position (not fixed/sticky). The banner should smoothly scroll enabled messages horizontally in a continuous loop with a gold/beige luxury theme matching the existing brand styling.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/footer/FooterSystem.tsx"
+          "frontend/src/components/MarqueeBanner.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/footer/FooterSystem.tsx"
+          "frontend/src/components/MarqueeBanner.tsx"
         ]
       },
       {
         "id": "REQ-4",
-        "summary": "Create an admin settings panel with input fields to manage and update social media URLs for Instagram, Facebook, and X",
+        "summary": "Add banner message management interface to the admin dashboard with functionality to add, edit, delete, and reorder multiple banner messages. Include controls for enabling/disabling individual messages.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/admin/SiteContentManagement.tsx"
+          "frontend/src/components/admin/BannerManagement.tsx",
+          "frontend/src/hooks/useBannerQueries.ts",
+          "frontend/src/pages/AdminDashboardPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/admin/SiteContentManagement.tsx"
+          "frontend/src/components/admin/BannerManagement.tsx",
+          "frontend/src/hooks/useBannerQueries.ts",
+          "frontend/src/pages/AdminDashboardPage.tsx"
         ]
       },
       {
         "id": "REQ-5",
-        "summary": "Add clickable Privacy Policy, Shipping Policy, and Terms & Conditions links in the footer that navigate to separate detail pages displaying the respective policy content",
+        "summary": "Integrate the MarqueeBanner component into the Layout component so it appears below the header across all pages of the site.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/footer/FooterSystem.tsx",
-          "frontend/src/pages/PrivacyPolicyPage.tsx",
-          "frontend/src/pages/ShippingPolicyPage.tsx",
-          "frontend/src/pages/TermsConditionsPage.tsx",
-          "frontend/src/App.tsx"
+          "frontend/src/components/Layout.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/footer/FooterSystem.tsx",
-          "frontend/src/pages/PrivacyPolicyPage.tsx",
-          "frontend/src/pages/ShippingPolicyPage.tsx",
-          "frontend/src/pages/TermsConditionsPage.tsx",
-          "frontend/src/App.tsx"
+          "frontend/src/components/Layout.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
     "backend/main.mo",
-    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
     "frontend/src/backend.d.ts",
     "frontend/src/backend.ts",
-    "frontend/src/components/HeaderCategoryNav.tsx",
-    "frontend/src/components/admin/SiteContentManagement.tsx",
-    "frontend/src/components/footer/FooterSystem.tsx",
+    "frontend/src/components/Layout.tsx",
+    "frontend/src/components/MarqueeBanner.tsx",
+    "frontend/src/components/admin/BannerManagement.tsx",
     "frontend/src/declarations/backend.did.d.ts",
     "frontend/src/declarations/backend.did.js",
-    "frontend/src/index.css",
-    "frontend/src/pages/PaymentFailurePage.tsx",
-    "frontend/src/pages/PrivacyPolicyPage.tsx",
-    "frontend/src/pages/ShippingPolicyPage.tsx",
-    "frontend/src/pages/TermsConditionsPage.tsx",
-    "frontend/src/pages/categories/AnkletsPage.tsx",
-    "frontend/src/pages/categories/BridalJewelleryPage.tsx",
-    "frontend/src/pages/categories/EarringsPage.tsx",
-    "frontend/src/pages/categories/NecklacePage.tsx",
-    "frontend/src/pages/categories/RingsPage.tsx",
+    "frontend/src/hooks/useBannerQueries.ts",
+    "frontend/src/pages/AdminDashboardPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

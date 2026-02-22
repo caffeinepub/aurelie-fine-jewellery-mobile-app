@@ -9,6 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import RouteLoadingFallback from './RouteLoadingFallback';
 import FooterSystem from './footer/FooterSystem';
 import HeaderCategoryNav from './HeaderCategoryNav';
+import MarqueeBanner from './MarqueeBanner';
 import { useIsCallerAdmin } from '../hooks/useQueries';
 
 export default function Layout() {
@@ -134,6 +135,9 @@ export default function Layout() {
 
       {/* Header Category Navigation */}
       <HeaderCategoryNav />
+
+      {/* Marquee Banner */}
+      <MarqueeBanner />
 
       {/* Main Content */}
       <main className="flex-1 bg-beige-champagne">

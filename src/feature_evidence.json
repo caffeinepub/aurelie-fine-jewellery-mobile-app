@@ -2,56 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-rectangular-background-shapes-from-the-scrollable-product-category-circles-located-just-below-the-header-on-the-home-page",
-      "featureTitle": "Remove rectangular background shapes from the scrollable product category circles located just below the header on the home page",
+      "featureId": "feature-create-a-marqueebanner-component-that-displays-below-the-header-in-a-static-position-not-fixed-sticky-the-banner-should-smoothly-scroll-enabled-messages-horizontally-in-a-continuous-loop-with-a-gold-beige-luxury-theme-matching-the-existing-brand-styling",
+      "featureTitle": "Create a MarqueeBanner component that displays below the header in a static position (not fixed/sticky). The banner should smoothly scroll enabled messages horizontally in a continuous loop with a gold/beige luxury theme matching the existing brand styling.",
       "files": [
-        "frontend/src/components/HeaderCategoryNav.tsx",
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-apply-glow-effect-animation-to-category-circles-that-matches-the-animated-beige-body-background-theme",
-      "featureTitle": "Apply glow effect animation to category circles that matches the animated beige body background theme",
-      "files": [
-        "frontend/src/components/HeaderCategoryNav.tsx",
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-instagram-facebook-and-x-twitter-social-media-icons-to-the-footer-with-clickable-links-that-redirect-to-urls-controlled-through-the-admin-panel",
-      "featureTitle": "Add Instagram, Facebook, and X (Twitter) social media icons to the footer with clickable links that redirect to URLs controlled through the admin panel",
-      "files": [
-        "frontend/src/components/footer/FooterSystem.tsx"
+        "frontend/src/components/MarqueeBanner.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -70,10 +24,12 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-create-an-admin-settings-panel-with-input-fields-to-manage-and-update-social-media-urls-for-instagram-facebook-and-x",
-      "featureTitle": "Create an admin settings panel with input fields to manage and update social media URLs for Instagram, Facebook, and X",
+      "featureId": "feature-add-banner-message-management-interface-to-the-admin-dashboard-with-functionality-to-add-edit-delete-and-reorder-multiple-banner-messages-include-controls-for-enabling-disabling-individual-messages",
+      "featureTitle": "Add banner message management interface to the admin dashboard with functionality to add, edit, delete, and reorder multiple banner messages. Include controls for enabling/disabling individual messages.",
       "files": [
-        "frontend/src/components/admin/SiteContentManagement.tsx"
+        "frontend/src/components/admin/BannerManagement.tsx",
+        "frontend/src/hooks/useBannerQueries.ts",
+        "frontend/src/pages/AdminDashboardPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -92,14 +48,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-clickable-privacy-policy-shipping-policy-and-terms-conditions-links-in-the-footer-that-navigate-to-separate-detail-pages-displaying-the-respective-policy-content",
-      "featureTitle": "Add clickable Privacy Policy, Shipping Policy, and Terms & Conditions links in the footer that navigate to separate detail pages displaying the respective policy content",
+      "featureId": "feature-integrate-the-marqueebanner-component-into-the-layout-component-so-it-appears-below-the-header-across-all-pages-of-the-site",
+      "featureTitle": "Integrate the MarqueeBanner component into the Layout component so it appears below the header across all pages of the site.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/footer/FooterSystem.tsx",
-        "frontend/src/pages/PrivacyPolicyPage.tsx",
-        "frontend/src/pages/ShippingPolicyPage.tsx",
-        "frontend/src/pages/TermsConditionsPage.tsx"
+        "frontend/src/components/Layout.tsx"
       ],
       "components": [
         "authorization@4.0.0",

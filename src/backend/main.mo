@@ -13,10 +13,9 @@ import OutCall "http-outcalls/outcall";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
-import Migration "migration";
 
 // With-clause for migration
-(with migration = Migration.run)
+
 actor {
   // Time Constants
   let cancellationWindowHours = 12;
@@ -163,6 +162,13 @@ actor {
     images : [Storage.ExternalBlob];
   };
 
+  // New type for banner messages
+  public type BannerMessage = {
+    message : Text;
+    order : Nat;
+    enabled : Bool;
+  };
+
   // Storage
   let products = Map.empty<Text, Product>();
   let orders = Map.empty<Text, Order>();
@@ -177,6 +183,7 @@ actor {
   let categoryCarousels = Map.empty<Text, CategoryCarousels>();
   let userProfiles = Map.empty<Principal, UserProfile>();
   let carouselRedirects = Map.empty<Text, Text>();
+  let bannerMessages = Map.empty<Nat, BannerMessage>(); // New map for banner messages
   // Store category header data
   let categoryHeaders = Map.empty<Text, CategoryHeader>();
   let categories = Map.empty<Text, Category>();
@@ -221,8 +228,61 @@ actor {
     };
   };
 
-  // ---------- Category Header Row Management ----------
+  // ---------- Banner Message Management (Admin Only) ----------
+  public shared ({ caller }) func addBannerMessage(message : Text, order : Nat, enabled : Bool) : async Nat {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can add banner messages");
+    };
 
+    let newMessage : BannerMessage = {
+      message;
+      order;
+      enabled;
+    };
+
+    bannerMessages.add(order, newMessage); // Use order as index
+
+    order;
+  };
+
+  public shared ({ caller }) func updateBannerMessage(order : Nat, message : Text, enabled : Bool) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can update banner messages");
+    };
+
+    switch (bannerMessages.get(order)) {
+      case (null) { Runtime.trap("Message not found") };
+      case (?existing) {
+        let updatedMessage : BannerMessage = {
+          existing with
+          message;
+          enabled;
+        };
+        bannerMessages.add(order, updatedMessage);
+      };
+    };
+  };
+
+  public shared ({ caller }) func deleteBannerMessage(order : Nat) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can delete banner messages");
+    };
+
+    if (not bannerMessages.containsKey(order)) {
+      Runtime.trap("Message not found");
+    };
+
+    bannerMessages.remove(order);
+  };
+
+  public query ({ caller }) func getAllBannerMessages() : async [BannerMessage] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can view banner messages");
+    };
+    bannerMessages.values().toArray();
+  };
+
+  // ---------- Category Header Row Management ----------
   public shared ({ caller }) func setCategoryHeader(categorySlug : Text, header : CategoryHeader) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can set category headers");

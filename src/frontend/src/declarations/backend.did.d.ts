@@ -10,6 +10,11 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface BannerMessage {
+  'order' : bigint,
+  'enabled' : boolean,
+  'message' : string,
+}
 export interface CancelReason { 'reason' : string }
 export interface CarouselSlide {
   'order' : bigint,
@@ -185,6 +190,7 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'addBannerMessage' : ActorMethod<[string, bigint, boolean], bigint>,
   'addCategory' : ActorMethod<[CategoryCreate], undefined>,
   'addCategorySlide' : ActorMethod<[string, CarouselSlide], undefined>,
   'addProduct' : ActorMethod<[ProductCreate], undefined>,
@@ -196,7 +202,9 @@ export interface _SERVICE {
     string
   >,
   'createOrder' : ActorMethod<[OrderCreate], undefined>,
+  'deleteBannerMessage' : ActorMethod<[bigint], undefined>,
   'deleteProduct' : ActorMethod<[string], undefined>,
+  'getAllBannerMessages' : ActorMethod<[], Array<BannerMessage>>,
   'getAllCategories' : ActorMethod<[], Array<Category>>,
   'getAllCategoryHeaders' : ActorMethod<[], Array<[string, CategoryHeader]>>,
   'getAllCategorySlides' : ActorMethod<[string], Array<CarouselSlide>>,
@@ -243,6 +251,7 @@ export interface _SERVICE {
   'submitInquiry' : ActorMethod<[CustomerInquiry], undefined>,
   'toggleCategorySlide' : ActorMethod<[string, bigint, boolean], undefined>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
+  'updateBannerMessage' : ActorMethod<[bigint, string, boolean], undefined>,
   'updateCarouselRedirect' : ActorMethod<[string, string], undefined>,
   'updateCategory' : ActorMethod<[string, CategoryCreate], undefined>,
   'updateCategoryCarousel' : ActorMethod<
