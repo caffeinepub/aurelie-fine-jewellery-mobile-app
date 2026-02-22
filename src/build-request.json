@@ -1,37 +1,119 @@
 {
   "kind": "build_request",
-  "title": "Retry deployment",
-  "priority": "high",
+  "title": "Fix Category Circle Styling and Add Footer Social Media & Policy Links",
+  "projectName": "Aurelie Fine Jewellery",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Retry the deployment of the existing application to the Internet Computer network without any code changes",
-      "target": "both",
+      "text": "Remove rectangular background shapes from the scrollable product category circles located just below the header on the home page",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-last"
+          "msg-1",
+          "msg-5"
         ],
         "quotes": [
-          "1 retry"
+          "on home page just below header, there are produced categorys scrollable circle. Behind that there are rectangular shaped object which needs to be removed"
         ]
       },
       "acceptanceCriteria": [
-        "The deployment completes successfully",
-        "All canisters are deployed and running on the Internet Computer",
-        "The application is accessible via its canister URL"
+        "Category circles appear without any rectangular background containers",
+        "Circles maintain their scrollable functionality",
+        "Visual styling matches the animated beige body background"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Apply glow effect animation to category circles that matches the animated beige body background theme",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2",
+          "msg-5"
+        ],
+        "quotes": [
+          "match the animated beige body background, and add proper glow effect animation"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Category circles display a subtle glow animation",
+        "Glow effect color scheme harmonizes with the beige animated background",
+        "Animation loops smoothly without performance issues"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Add Instagram, Facebook, and X (Twitter) social media icons to the footer with clickable links that redirect to URLs controlled through the admin panel",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1",
+          "msg-5"
+        ],
+        "quotes": [
+          "on footer, place social media icons which directs to details in admin control"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Footer displays three social media icons (Instagram, Facebook, X)",
+        "Each icon links to the URL stored in the backend",
+        "Icons are visually consistent with the footer design",
+        "Links open in new tabs when clicked"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Create an admin settings panel with input fields to manage and update social media URLs for Instagram, Facebook, and X",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2",
+          "msg-5"
+        ],
+        "quotes": [
+          "Admin Interface: Settings panel with fields to manage social media URLs"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin dashboard includes a settings section for social media URLs",
+        "Form fields allow updating Instagram, Facebook, and X URLs",
+        "Changes save to backend and immediately reflect in the footer",
+        "Validation ensures URLs are properly formatted"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Add clickable Privacy Policy, Shipping Policy, and Terms & Conditions links in the footer that navigate to separate detail pages displaying the respective policy content",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2",
+          "msg-5"
+        ],
+        "quotes": [
+          "Footer Policy Links: Clickable Privacy Policy, Shipping Policy, and Terms & Conditions opening separate detail pages"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Footer contains three policy links: Privacy Policy, Shipping Policy, Terms & Conditions",
+        "Each link navigates to a dedicated page showing the full policy text",
+        "Policy pages display content stored in the backend site content",
+        "Pages are accessible to all users without authentication"
       ]
     }
   ],
   "constraints": [
-    "Do not modify any existing code",
-    "Do not change backend schema or state structures",
-    "Preserve all existing functionality"
+    "Maintain single-actor architecture in backend/main.mo",
+    "Do not modify immutable frontend paths including hooks/useInternetIdentity.ts, hooks/useActor.ts, main.tsx, and components/ui directory",
+    "Preserve existing e-commerce functionality including cart, checkout, and order management",
+    "Keep the current Tailwind CSS and React Query stack"
   ],
   "nonGoals": [
-    "Adding new features",
-    "Modifying UI components",
-    "Changing business logic",
-    "Updating dependencies"
+    "Changing the overall site color scheme or branding",
+    "Modifying existing product management features",
+    "Adding real-time social media feed integration",
+    "Implementing social media authentication or API connections"
   ],
   "imageRequirements": {
     "required": [],

@@ -1,21 +1,118 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Retry Deployment Without Code Changes",
+  "title": "Fix Category Circle Styling and Add Footer Social Media & Policy Links",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Retry deployment to Internet Computer without modifying any code",
+      "summary": "Remove rectangular background shapes from scrollable product category circles below header",
       "acceptanceCriteria": [
-        "The deployment completes successfully",
-        "All canisters are deployed and running on the Internet Computer",
-        "The application is accessible via its canister URL"
+        "Category circles appear without any rectangular background containers",
+        "Circles maintain their scrollable functionality",
+        "Visual styling matches the animated beige body background"
       ],
       "file_operations": [
         {
-          "path": "frontend/package.json",
+          "path": "frontend/src/components/HeaderCategoryNav.tsx",
           "operation": "modify",
-          "description": "Verify deployment configuration is correct. This is a verification-only operation - do not change any code, dependencies, or scripts. Ensure all build and deployment scripts reference the correct canister IDs and network settings. If everything is correct, no changes should be made."
+          "description": "Remove or override any rectangular background styling (background colors, borders, box shadows) from the category circle container and individual category items. Ensure the scrollable horizontal layout remains functional while eliminating visible rectangular shapes behind the circular category images."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "If HeaderCategoryNav uses utility classes that create rectangular backgrounds, add targeted CSS overrides to remove backgrounds, borders, or shadows from category navigation elements while preserving the animated beige body background."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Apply glow effect animation to category circles matching the animated beige background theme",
+      "acceptanceCriteria": [
+        "Category circles display a subtle glow animation",
+        "Glow effect color scheme harmonizes with the beige animated background",
+        "Animation loops smoothly without performance issues"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/HeaderCategoryNav.tsx",
+          "operation": "modify",
+          "description": "Add CSS classes or inline styles to apply a subtle glow animation to category circle images. Use box-shadow with appropriate beige/gold tones from the Aurelie color palette (beige-50, gold, aurelie-gold) and create a pulsing or shimmer effect using CSS keyframe animations."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Define keyframe animations for the category circle glow effect (e.g., @keyframes category-glow) using box-shadow transitions with beige and gold color values. Ensure the animation duration and easing function create a smooth, continuous loop that complements the existing animated beige body background."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Add Instagram, Facebook, and X social media icons to footer with admin-controlled URLs",
+      "acceptanceCriteria": [
+        "Footer displays three social media icons (Instagram, Facebook, X)",
+        "Each icon links to the URL stored in the backend",
+        "Icons are visually consistent with the footer design",
+        "Links open in new tabs when clicked"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/footer/FooterSystem.tsx",
+          "operation": "modify",
+          "description": "Add a social media icons section to the footer that fetches instagramUrl, facebookUrl, and xUrl from the SiteContent backend data. Render three icon links (Instagram, Facebook, X) using appropriate SVG icons or icon library components. Each link should use target='_blank' and rel='noopener noreferrer' to open in new tabs. Style the icons to match the existing footer design using Aurelie color palette (gold, beige, or navy)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Create admin settings panel to manage social media URLs",
+      "acceptanceCriteria": [
+        "Admin dashboard includes a settings section for social media URLs",
+        "Form fields allow updating Instagram, Facebook, and X URLs",
+        "Changes save to backend and immediately reflect in the footer",
+        "Validation ensures URLs are properly formatted"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/admin/SiteContentManagement.tsx",
+          "operation": "modify",
+          "description": "Add three input fields to the site content management form for social media URLs: instagramUrl, facebookUrl, and xUrl. Include labels for each field (e.g., 'Instagram URL', 'Facebook URL', 'X (Twitter) URL'). Implement URL validation using standard URL regex or browser URL validation. Ensure the form submission calls updateSiteContent mutation which invalidates the siteContent query cache so changes immediately reflect in the footer."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Add Privacy Policy, Shipping Policy, and Terms & Conditions footer links with detail pages",
+      "acceptanceCriteria": [
+        "Footer contains three policy links: Privacy Policy, Shipping Policy, Terms & Conditions",
+        "Each link navigates to a dedicated page showing the full policy text",
+        "Policy pages display content stored in the backend site content",
+        "Pages are accessible to all users without authentication"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/footer/FooterSystem.tsx",
+          "operation": "modify",
+          "description": "Add three policy links in the footer: 'Privacy Policy', 'Shipping Policy', and 'Terms & Conditions'. Use React Router Link components to navigate to /privacy-policy, /shipping-policy, and /terms-conditions respectively. Style the links consistently with existing footer elements using appropriate text colors and hover states."
+        },
+        {
+          "path": "frontend/src/pages/PrivacyPolicyPage.tsx",
+          "operation": "create",
+          "description": "Create a public page component that fetches site content using useGetSiteContent hook and displays the privacyPolicy field content. Include a page title 'Privacy Policy' and render the policy text in a readable format with appropriate typography. Wrap content in CustomerPageStyleScope component for consistent styling."
+        },
+        {
+          "path": "frontend/src/pages/ShippingPolicyPage.tsx",
+          "operation": "create",
+          "description": "Create a public page component that fetches site content using useGetSiteContent hook and displays the shippingPolicy field content. Include a page title 'Shipping Policy' and render the policy text in a readable format with appropriate typography. Wrap content in CustomerPageStyleScope component for consistent styling."
+        },
+        {
+          "path": "frontend/src/pages/TermsConditionsPage.tsx",
+          "operation": "create",
+          "description": "Create a public page component that fetches site content using useGetSiteContent hook and displays the termsOfService field content. Include a page title 'Terms & Conditions' and render the policy text in a readable format with appropriate typography. Wrap content in CustomerPageStyleScope component for consistent styling."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Register three new routes in the TanStack Router configuration: '/privacy-policy' mapping to PrivacyPolicyPage, '/shipping-policy' mapping to ShippingPolicyPage, and '/terms-conditions' mapping to TermsConditionsPage. Use lazy loading for these route components to maintain consistency with existing route patterns."
         }
       ]
     }

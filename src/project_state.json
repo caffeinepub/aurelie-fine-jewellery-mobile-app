@@ -1,22 +1,95 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
-  "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
-  "existing_features": [],
-  "new_feature_requests": [
+  "summary": "Existing e-commerce application requiring UI fixes: remove rectangular backgrounds from category circles on homepage, add glow effect animation, implement admin-controllable social media icons in footer, and add clickable policy links",
+  "architectural_notes": [
+    "Category circles are scrollable product categories positioned below header on homepage",
+    "Footer requires social media icon integration with admin-configurable URLs",
+    "Admin panel needs settings section for social media URL management",
+    "Policy pages (Privacy, Shipping, Terms) need separate detail page routes"
+  ],
+  "known_issues": [
+    "Version 78 deployed but features not reflecting: rectangular backgrounds still present on category circles",
+    "Social media icons not appearing in footer despite deployment",
+    "Admin interface for social media URLs may not be properly connected to frontend components",
+    "Previous build encountered errors and required retry"
+  ],
+  "isFixRequest": true,
+  "existing_features": [
     {
-      "id": "AR-1",
-      "summary": "Retry the deployment of the existing application to the Internet Computer network without any code changes",
+      "id": "feature-remove-rectangular-background-shapes-from-the-scrollable-product-category-circles-located-just-below-the-header-on-the-home-page",
+      "title": "Remove rectangular background shapes from the scrollable product category circles located just below the header on the home page",
       "reqIds": [
         "REQ-1"
       ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-glow-effect-animation-to-category-circles-that-matches-the-animated-beige-body-background-theme",
+      "title": "Apply glow effect animation to category circles that matches the animated beige body background theme",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-instagram-facebook-and-x-twitter-social-media-icons-to-the-footer-with-clickable-links-that-redirect-to-urls-controlled-through-the-admin-panel",
+      "title": "Add Instagram, Facebook, and X (Twitter) social media icons to the footer with clickable links that redirect to URLs controlled through the admin panel",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-an-admin-settings-panel-with-input-fields-to-manage-and-update-social-media-urls-for-instagram-facebook-and-x",
+      "title": "Create an admin settings panel with input fields to manage and update social media URLs for Instagram, Facebook, and X",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-clickable-privacy-policy-shipping-policy-and-terms-conditions-links-in-the-footer-that-navigate-to-separate-detail-pages-displaying-the-respective-policy-content",
+      "title": "Add clickable Privacy Policy, Shipping Policy, and Terms & Conditions links in the footer that navigate to separate detail pages displaying the respective policy content",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Remove rectangular backgrounds from category circles on homepage",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Add glow effect animation to category circles matching animated beige body background",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Add Instagram, Facebook, and X social media icons in footer with admin-controllable URLs",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Create admin settings panel to manage social media URLs",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Add clickable Privacy Policy, Shipping Policy, and Terms & Conditions links in footer that open separate detail pages",
+      "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Retry deployment",
+  "projectName": "Aurelie Fine Jewellery",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

@@ -1,19 +1,52 @@
-import Map "mo:core/Map";
-import Text "mo:core/Text";
-import Storage "blob-storage/Storage";
-
 module {
-  type CategoryHeader = {
-    image : Storage.ExternalBlob;
-    redirectUrl : Text;
+  type OldSiteContent = {
+    contactEmail : Text;
+    phoneNumber : Text;
+    address : Text;
+    officialName : Text;
+    aboutUs : Text;
+    generalInfo : Text;
+    termsOfService : Text;
+    privacyPolicy : Text;
+    shippingPolicy : Text;
+    billingPolicy : Text;
+    generalDisclaimer : Text;
+    footerContent : Text;
+  };
+
+  type NewSiteContent = {
+    contactEmail : Text;
+    phoneNumber : Text;
+    address : Text;
+    officialName : Text;
+    aboutUs : Text;
+    generalInfo : Text;
+    termsOfService : Text;
+    privacyPolicy : Text;
+    shippingPolicy : Text;
+    billingPolicy : Text;
+    generalDisclaimer : Text;
+    footerContent : Text;
+    facebookUrl : Text;
+    instagramUrl : Text;
+    xUrl : Text;
+  };
+
+  type OldActor = {
+    siteContent : OldSiteContent;
   };
 
   type NewActor = {
-    categoryHeaders : Map.Map<Text, CategoryHeader>;
+    siteContent : NewSiteContent;
   };
 
-  public func run(_old : {}) : NewActor {
-    // New categoryHeaders field must be explicitly initialized as empty
-    { categoryHeaders = Map.empty<Text, CategoryHeader>() };
+  public func run(old : OldActor) : NewActor {
+    let newSiteContent : NewSiteContent = {
+      old.siteContent with
+      facebookUrl = "https://facebook.com/AurelieFineJew";
+      instagramUrl = "https://instagram.com/AurelieFineJew";
+      xUrl = "https://x.com/AurelieFineJew";
+    };
+    { siteContent = newSiteContent };
   };
 };

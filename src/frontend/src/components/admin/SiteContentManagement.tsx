@@ -26,6 +26,9 @@ export default function SiteContentManagement() {
     billingPolicy: '',
     generalDisclaimer: '',
     footerContent: '',
+    facebookUrl: '',
+    instagramUrl: '',
+    xUrl: '',
   });
 
   useEffect(() => {
@@ -68,7 +71,7 @@ export default function SiteContentManagement() {
       <CardHeader>
         <CardTitle className="text-bottle-green-dark">Edit Site Content</CardTitle>
         <CardDescription className="text-bottle-green-medium">
-          Manage contact details, footer information, and static text content
+          Manage contact details, footer information, social media links, and static text content
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -118,6 +121,49 @@ export default function SiteContentManagement() {
                 id="officialName"
                 value={formData.officialName}
                 onChange={(e) => handleChange('officialName', e.target.value)}
+                className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
+              />
+            </div>
+          </div>
+
+          {/* Social Media Section */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-bottle-green-dark border-b border-gold-medium/30 pb-2">
+              Social Media Links
+            </h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="instagramUrl" className="admin-label-text">Instagram URL</Label>
+              <Input
+                id="instagramUrl"
+                type="url"
+                value={formData.instagramUrl}
+                onChange={(e) => handleChange('instagramUrl', e.target.value)}
+                placeholder="https://instagram.com/yourprofile"
+                className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="facebookUrl" className="admin-label-text">Facebook URL</Label>
+              <Input
+                id="facebookUrl"
+                type="url"
+                value={formData.facebookUrl}
+                onChange={(e) => handleChange('facebookUrl', e.target.value)}
+                placeholder="https://facebook.com/yourpage"
+                className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="xUrl" className="admin-label-text">X (Twitter) URL</Label>
+              <Input
+                id="xUrl"
+                type="url"
+                value={formData.xUrl}
+                onChange={(e) => handleChange('xUrl', e.target.value)}
+                placeholder="https://x.com/yourprofile"
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
             </div>

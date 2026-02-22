@@ -31,7 +31,7 @@ export default function HeaderCategoryNav() {
   };
 
   return (
-    <div className="w-full border-b border-gold-medium/20 bg-background/95 backdrop-blur">
+    <div className="w-full border-b border-gold-medium/20 bg-transparent backdrop-blur">
       <div className="container px-4 py-3">
         <div className="flex items-center gap-6 overflow-x-auto hide-scrollbar">
           {PRODUCT_CATEGORIES.map((category) => {
@@ -43,9 +43,9 @@ export default function HeaderCategoryNav() {
               <button
                 key={category.slug}
                 onClick={() => handleCategoryClick(category.slug, redirectUrl)}
-                className="flex flex-col items-center gap-2 min-w-[80px] hover:opacity-80 transition-opacity group flex-shrink-0"
+                className="flex flex-col items-center gap-2 min-w-[80px] hover:opacity-80 transition-opacity group shrink-0"
               >
-                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gold-medium/30 group-hover:border-gold-medium transition-colors flex items-center justify-center bg-background">
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gold-medium/30 group-hover:border-gold-medium transition-all flex items-center justify-center bg-transparent category-circle-glow">
                   {imageUrl ? (
                     <img
                       src={imageUrl}
@@ -53,7 +53,7 @@ export default function HeaderCategoryNav() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-beige-champagne flex items-center justify-center">
+                    <div className="w-full h-full bg-beige-champagne/50 flex items-center justify-center">
                       <span className="text-xs text-bottle-green-medium text-center px-1">
                         {category.title.split(' ')[0]}
                       </span>

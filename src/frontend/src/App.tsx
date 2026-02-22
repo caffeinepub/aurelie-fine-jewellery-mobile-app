@@ -1,139 +1,331 @@
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { RouterProvider, createRouter, createRoute, createRootRoute } from '@tanstack/react-router';
-import { lazy, Suspense } from 'react';
-import HomePage from './pages/HomePage';
-import Layout from './components/Layout';
-import { Toaster } from './components/ui/sonner';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
+import { Toaster } from './components/ui/sonner';
+import Layout from './components/Layout';
+import RouteLoadingFallback from './components/RouteLoadingFallback';
 import ProfileSetupModal from './components/ProfileSetupModal';
 import { useInternetIdentity } from './hooks/useInternetIdentity';
 import { useGetCallerUserProfile } from './hooks/useQueries';
-import RouteLoadingFallback from './components/RouteLoadingFallback';
 
-// Lazy load non-home routes for code splitting
+// Lazy load pages
+const HomePage = lazy(() => import('./pages/HomePage'));
 const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage'));
-const CustomerDashboardPage = lazy(() => import('./pages/CustomerDashboardPage'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
-const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage'));
 const CartPage = lazy(() => import('./pages/CartPage'));
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
-const ProductCategoryPage = lazy(() => import('./pages/ProductCategoryPage'));
-const ProfileDetailsPage = lazy(() => import('./pages/ProfileDetailsPage'));
+const PaymentSuccessPage = lazy(() => import('./pages/PaymentSuccessPage'));
+const PaymentFailurePage = lazy(() => import('./pages/PaymentFailurePage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const CustomerDashboardPage = lazy(() => import('./pages/CustomerDashboardPage'));
 const OrdersPage = lazy(() => import('./pages/OrdersPage'));
+const ProfileDetailsPage = lazy(() => import('./pages/ProfileDetailsPage'));
+const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage'));
 const AdminOrdersPage = lazy(() => import('./pages/admin/AdminOrdersPage'));
 const CategoryEditPage = lazy(() => import('./pages/admin/CategoryEditPage'));
+const ProductCategoryPage = lazy(() => import('./pages/ProductCategoryPage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const ShippingPolicyPage = lazy(() => import('./pages/ShippingPolicyPage'));
+const TermsConditionsPage = lazy(() => import('./pages/TermsConditionsPage'));
 
-function AppContent() {
+// Category pages
+const BridalJewelleryPage = lazy(() => import('./pages/categories/BridalJewelleryPage'));
+const RingsPage = lazy(() => import('./pages/categories/RingsPage'));
+const EarringsPage = lazy(() => import('./pages/categories/EarringsPage'));
+const NecklacePage = lazy(() => import('./pages/categories/NecklacePage'));
+const AnkletsPage = lazy(() => import('./pages/categories/AnkletsPage'));
+const LabGrownDiamondsJewelleryPage = lazy(() => import('./pages/categories/LabGrownDiamondsJewelleryPage'));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+function ProfileSetupWrapper() {
   const { identity } = useInternetIdentity();
   const { data: userProfile, isLoading: profileLoading, isFetched } = useGetCallerUserProfile();
+  const [showProfileSetup, setShowProfileSetup] = useState(false);
 
   const isAuthenticated = !!identity;
-  const showProfileSetup = isAuthenticated && !profileLoading && isFetched && userProfile === null;
+
+  useEffect(() => {
+    if (isAuthenticated && !profileLoading && isFetched && userProfile === null) {
+      setShowProfileSetup(true);
+    } else {
+      setShowProfileSetup(false);
+    }
+  }, [isAuthenticated, profileLoading, isFetched, userProfile]);
 
   return (
-    <>
-      <ProfileSetupModal
-        open={showProfileSetup}
-        onComplete={() => {}}
-      />
-    </>
+    <ProfileSetupModal
+      open={showProfileSetup}
+      onComplete={() => setShowProfileSetup(false)}
+    />
   );
 }
 
 const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <Layout />
-      <AppContent />
-    </>
-  ),
+  component: Layout,
 });
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: HomePage,
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <HomePage />
+    </Suspense>
+  ),
 });
 
-const productRoute = createRoute({
+const productDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/product/$productId',
-  component: ProductDetailPage,
-});
-
-// New unified category route for /category/<slug>
-const categoryRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/category/$categorySlug',
-  component: ProductCategoryPage,
-});
-
-const customerDashboardRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dashboard',
-  component: CustomerDashboardPage,
-});
-
-const contactRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/contact',
-  component: ContactPage,
-});
-
-const adminRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/admin',
-  component: AdminDashboardPage,
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <ProductDetailPage />
+    </Suspense>
+  ),
 });
 
 const cartRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/cart',
-  component: CartPage,
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <CartPage />
+    </Suspense>
+  ),
 });
 
 const checkoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/checkout',
-  component: CheckoutPage,
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <CheckoutPage />
+    </Suspense>
+  ),
 });
 
-const profileRoute = createRoute({
+const paymentSuccessRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/profile',
-  component: ProfileDetailsPage,
+  path: '/payment-success',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <PaymentSuccessPage />
+    </Suspense>
+  ),
+});
+
+const paymentFailureRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/payment-failure',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <PaymentFailurePage />
+    </Suspense>
+  ),
+});
+
+const contactRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/contact',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <ContactPage />
+    </Suspense>
+  ),
+});
+
+const dashboardRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/dashboard',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <CustomerDashboardPage />
+    </Suspense>
+  ),
 });
 
 const ordersRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/orders',
-  component: OrdersPage,
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <OrdersPage />
+    </Suspense>
+  ),
+});
+
+const profileRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/profile',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <ProfileDetailsPage />
+    </Suspense>
+  ),
+});
+
+const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <AdminDashboardPage />
+    </Suspense>
+  ),
 });
 
 const adminOrdersRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/admin/orders',
-  component: AdminOrdersPage,
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <AdminOrdersPage />
+    </Suspense>
+  ),
 });
 
 const categoryEditRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/admin/categories/$categorySlug/edit',
-  component: CategoryEditPage,
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <CategoryEditPage />
+    </Suspense>
+  ),
+});
+
+const productCategoryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/category/$categorySlug',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <ProductCategoryPage />
+    </Suspense>
+  ),
+});
+
+const bridalJewelleryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/category/bridal-jewellery',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <BridalJewelleryPage />
+    </Suspense>
+  ),
+});
+
+const ringsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/category/rings',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <RingsPage />
+    </Suspense>
+  ),
+});
+
+const earringsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/category/earrings',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <EarringsPage />
+    </Suspense>
+  ),
+});
+
+const necklaceRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/category/necklace',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <NecklacePage />
+    </Suspense>
+  ),
+});
+
+const ankletsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/category/anklets',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <AnkletsPage />
+    </Suspense>
+  ),
+});
+
+const labGrownDiamondsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/category/lab-diamonds-jewellery',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <LabGrownDiamondsJewelleryPage />
+    </Suspense>
+  ),
+});
+
+const privacyPolicyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/privacy-policy',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <PrivacyPolicyPage />
+    </Suspense>
+  ),
+});
+
+const shippingPolicyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/shipping-policy',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <ShippingPolicyPage />
+    </Suspense>
+  ),
+});
+
+const termsConditionsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/terms-conditions',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <TermsConditionsPage />
+    </Suspense>
+  ),
 });
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
-  productRoute,
-  categoryRoute,
-  customerDashboardRoute,
-  contactRoute,
-  adminRoute,
+  productDetailRoute,
   cartRoute,
   checkoutRoute,
-  profileRoute,
+  paymentSuccessRoute,
+  paymentFailureRoute,
+  contactRoute,
+  dashboardRoute,
   ordersRoute,
+  profileRoute,
+  adminRoute,
   adminOrdersRoute,
   categoryEditRoute,
+  productCategoryRoute,
+  bridalJewelleryRoute,
+  ringsRoute,
+  earringsRoute,
+  necklaceRoute,
+  ankletsRoute,
+  labGrownDiamondsRoute,
+  privacyPolicyRoute,
+  shippingPolicyRoute,
+  termsConditionsRoute,
 ]);
 
 const router = createRouter({ routeTree });
@@ -144,13 +336,14 @@ declare module '@tanstack/react-router' {
   }
 }
 
-function App() {
+export default function App() {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-      <RouterProvider router={router} />
-      <Toaster />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <RouterProvider router={router} />
+        <Toaster />
+        <ProfileSetupWrapper />
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
-
-export default App;

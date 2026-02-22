@@ -74,6 +74,11 @@
     --border: 30% 0.03 280;
     --input: 30% 0.03 280;
     --ring: 35% 0.08 160;
+    --chart-1: 60% 0.15 220;
+    --chart-2: 65% 0.12 160;
+    --chart-3: 70% 0.10 40;
+    --chart-4: 55% 0.18 280;
+    --chart-5: 50% 0.20 340;
   }
 }
 
@@ -88,159 +93,238 @@
 }
 
 @layer utilities {
-  /* Shimmering beige background for main content */
-  .shimmering-beige {
-    background: linear-gradient(
-      135deg,
-      oklch(var(--beige-light)) 0%,
-      oklch(var(--beige-champagne)) 50%,
-      oklch(var(--beige-sand)) 100%
-    );
-    background-size: 200% 200%;
-    animation: shimmer 8s ease-in-out infinite;
-  }
-
-  /* Off-white surface utility */
-  .off-white {
-    background-color: oklch(var(--beige-light));
-  }
-
-  /* Gold text utility (opt-in) */
-  .gold-text {
-    color: oklch(var(--gold-medium));
-  }
-
-  /* Hairline gold divider */
-  .hairline-gold-divider {
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      oklch(var(--gold-medium)) 50%,
-      transparent 100%
-    );
-  }
-
-  /* Header brand button - transparent background override */
-  .header-brand-btn {
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-  }
-
-  /* Header navigation buttons with Didot font */
-  .header-nav-btn-didot {
-    @apply flex items-center font-serif text-bottle-green-dark;
-  }
-
-  /* Hide scrollbar utility */
   .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
 }
 
-@layer components {
-  /* Shimmering gold buttons with metallic silver text */
-  button:not([data-admin-scope]):not([data-customer-control]):not([data-checkout-scope]):not(.header-nav-btn-didot):not(.header-brand-btn):not([class*="ghost"]):not([class*="outline"]):not([class*="link"]):not([class*="secondary"]) {
-    background: linear-gradient(
-      135deg,
-      oklch(var(--gold-light)),
-      oklch(var(--gold-medium)),
-      oklch(var(--gold-dark))
-    );
-    background-size: 200% 200%;
-    animation: shimmer 3s linear infinite;
-    color: oklch(var(--silver-oxidized));
-    font-weight: 600;
-    border: none;
-    box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
-    transition: all 0.3s ease;
-  }
+/* Animated beige background */
+body {
+  background: linear-gradient(
+    135deg,
+    oklch(var(--beige-champagne)),
+    oklch(var(--beige-sand)),
+    oklch(var(--beige-light))
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
 
-  button:not([data-admin-scope]):not([data-customer-control]):not([data-checkout-scope]):not(.header-nav-btn-didot):not(.header-brand-btn):not([class*="ghost"]):not([class*="outline"]):not([class*="link"]):not([class*="secondary"]):hover:not(:disabled) {
-    box-shadow: 0 6px 16px rgba(184, 134, 11, 0.4);
-    transform: translateY(-1px);
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
   }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 
-  /* Admin-scoped bottle-green buttons */
-  [data-admin-scope] button:not([class*="ghost"]):not([class*="outline"]):not([class*="link"]):not([class*="secondary"]) {
-    background: linear-gradient(
-      135deg,
-      oklch(var(--bottle-green-light)),
-      oklch(var(--bottle-green-medium)),
-      oklch(var(--bottle-green-dark))
-    );
-    background-size: 200% 200%;
-    animation: shimmer 3s linear infinite;
-    color: oklch(var(--gold-light));
-    font-weight: 600;
-    border: none;
-    box-shadow: 0 4px 12px rgba(30, 70, 50, 0.3);
+/* Category circle glow effect */
+@keyframes category-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px oklch(var(--gold-medium) / 0.3),
+                0 0 16px oklch(var(--gold-light) / 0.2);
   }
+  50% {
+    box-shadow: 0 0 12px oklch(var(--gold-medium) / 0.5),
+                0 0 24px oklch(var(--gold-light) / 0.3),
+                0 0 32px oklch(var(--beige-sand) / 0.2);
+  }
+}
 
-  /* Customer control scoped dark-purple buttons */
-  [data-customer-control] button:not([class*="ghost"]):not([class*="outline"]):not([class*="link"]):not([class*="secondary"]) {
-    background: oklch(var(--navy-dark));
-    color: oklch(var(--gold-light));
-    font-weight: 600;
-    border: none;
-    box-shadow: 0 4px 12px rgba(20, 30, 80, 0.3);
-  }
+.category-circle-glow {
+  animation: category-glow 3s ease-in-out infinite;
+}
 
-  /* Checkout-scoped light-green buttons with dark-purple text */
-  [data-checkout-scope] button:not([class*="ghost"]):not([class*="outline"]):not([class*="link"]):not([class*="secondary"]) {
-    background: oklch(65% 0.12 160);
-    color: oklch(var(--navy-dark));
-    font-weight: 600;
-    border: none;
-    box-shadow: 0 4px 12px rgba(100, 200, 150, 0.3);
-  }
+/* Gold gradient button */
+.gold-gradient {
+  background: linear-gradient(
+    135deg,
+    oklch(var(--gold-dark)),
+    oklch(var(--gold-medium)),
+    oklch(var(--gold-light))
+  );
+  background-size: 200% 200%;
+  animation: shimmer 3s ease infinite;
+  color: oklch(var(--silver-oxidized));
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
 
-  /* Customer page scoped styling for off-white surfaces and #392A48 text */
-  [data-customer-page] {
-    background-color: oklch(var(--beige-light));
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
   }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 
-  [data-customer-page] .off-white,
-  [data-customer-page] [class*="bg-off-white"] {
-    background-color: oklch(var(--beige-light));
-  }
+.gold-gradient:hover {
+  animation-duration: 1.5s;
+}
 
-  [data-customer-page] h1,
-  [data-customer-page] h2,
-  [data-customer-page] h3,
-  [data-customer-page] p,
-  [data-customer-page] span {
-    color: #392A48;
-  }
+/* Admin-scoped bottle-green buttons */
+[data-admin-scope] button:not(.gold-gradient):not([class*="destructive"]):not([class*="ghost"]):not([class*="outline"]) {
+  background-color: oklch(var(--bottle-green-medium));
+  color: oklch(var(--beige-light));
+}
 
-  /* Footer scoped styling - dark-purple text for all text elements except logo */
-  [data-footer-scope] h1,
-  [data-footer-scope] h2,
-  [data-footer-scope] h3,
-  [data-footer-scope] h4,
-  [data-footer-scope] h5,
-  [data-footer-scope] h6,
-  [data-footer-scope] p,
-  [data-footer-scope] span,
-  [data-footer-scope] a,
-  [data-footer-scope] div {
-    color: oklch(var(--bottle-green-dark));
-  }
+[data-admin-scope] button:not(.gold-gradient):not([class*="destructive"]):not([class*="ghost"]):not([class*="outline"]):hover {
+  background-color: oklch(var(--bottle-green-dark));
+}
 
-  /* Ensure logo image is not affected by footer text color */
-  [data-footer-scope] img {
-    color: initial;
-  }
+/* Customer control scoped dark-purple buttons */
+[data-customer-control] button:not(.gold-gradient):not([class*="destructive"]):not([class*="ghost"]):not([class*="outline"]):not(.customer-cta-btn) {
+  background-color: #392A48;
+  color: white;
+}
 
-  /* Customer CTA button text override - white text for Add to Cart and Buy Now */
-  .customer-cta-btn,
-  .customer-cta-btn * {
-    color: white !important;
-  }
+[data-customer-control] button:not(.gold-gradient):not([class*="destructive"]):not([class*="ghost"]):not([class*="outline"]):not(.customer-cta-btn):hover {
+  background-color: #2d2138;
+}
+
+/* Checkout-scoped light-green buttons with dark-purple text */
+[data-checkout-scope] button:not(.gold-gradient):not([class*="destructive"]):not([class*="ghost"]):not([class*="outline"]) {
+  background-color: #C8E6C9;
+  color: #392A48;
+  font-weight: 600;
+}
+
+[data-checkout-scope] button:not(.gold-gradient):not([class*="destructive"]):not([class*="ghost"]):not([class*="outline"]):hover {
+  background-color: #A5D6A7;
+}
+
+/* Customer page scoped off-white surfaces and #392A48 text */
+[data-customer-page] {
+  background-color: #FAF9F6;
+  color: #392A48;
+}
+
+[data-customer-page] .card,
+[data-customer-page] [class*="card"] {
+  background-color: #FAF9F6;
+  color: #392A48;
+}
+
+[data-customer-page] h1,
+[data-customer-page] h2,
+[data-customer-page] h3,
+[data-customer-page] h4,
+[data-customer-page] h5,
+[data-customer-page] h6,
+[data-customer-page] p,
+[data-customer-page] span,
+[data-customer-page] label {
+  color: #392A48;
+}
+
+/* Customer CTA button class for white text on Add to Cart/Buy Now */
+.customer-cta-btn {
+  color: white !important;
+}
+
+/* Opt-in gold text class */
+.gold-text {
+  color: oklch(var(--gold-medium));
+}
+
+/* Footer-scoped bottle-green text (excluding logo) */
+[data-footer-scope] h1,
+[data-footer-scope] h2,
+[data-footer-scope] h3,
+[data-footer-scope] h4,
+[data-footer-scope] h5,
+[data-footer-scope] h6,
+[data-footer-scope] p,
+[data-footer-scope] span,
+[data-footer-scope] a,
+[data-footer-scope] div {
+  color: oklch(var(--bottle-green-dark));
+}
+
+[data-footer-scope] img {
+  color: initial;
+}
+
+/* Luxury header and footer utilities */
+.luxury-header {
+  background: linear-gradient(
+    to bottom,
+    oklch(var(--beige-light)),
+    oklch(var(--beige-champagne))
+  );
+  border-bottom: 1px solid oklch(var(--gold-medium) / 0.2);
+}
+
+.luxury-footer {
+  background: linear-gradient(
+    to top,
+    oklch(var(--beige-light)),
+    oklch(var(--beige-champagne))
+  );
+  border-top: 1px solid oklch(var(--gold-medium) / 0.2);
+}
+
+/* Off-white surface utility replacing chrome-surface */
+.off-white-surface {
+  background-color: #FAF9F6;
+  border: 1px solid oklch(var(--gold-medium) / 0.2);
+}
+
+/* Admin surface */
+.admin-surface {
+  background-color: oklch(var(--beige-light) / 0.8);
+}
+
+/* Gold border utility */
+.gold-border {
+  border: 2px solid oklch(var(--gold-medium));
+}
+
+/* Shadow utilities */
+.shadow-gold {
+  box-shadow: 0 4px 12px oklch(var(--gold-medium) / 0.3);
+}
+
+.shadow-silver {
+  box-shadow: 0 4px 12px oklch(var(--silver-oxidized) / 0.2);
+}
+
+/* Silver gradient utility */
+.silver-gradient {
+  background: linear-gradient(
+    135deg,
+    oklch(var(--silver-dark)),
+    oklch(var(--silver-oxidized)),
+    oklch(var(--silver-light))
+  );
+}
+
+/* Admin label text */
+.admin-label-text {
+  color: oklch(var(--bottle-green-dark));
+  font-weight: 600;
+}
+
+/* Header brand button override for transparent logo */
+.header-brand-btn {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.header-brand-btn:hover {
+  background: transparent !important;
+  opacity: 0.9;
 }

@@ -6,8 +6,6 @@ import Iter "mo:core/Iter";
 import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
 import Time "mo:core/Time";
-
-
 // Component imports
 import Storage "blob-storage/Storage";
 import Stripe "stripe/stripe";
@@ -15,9 +13,10 @@ import OutCall "http-outcalls/outcall";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
+import Migration "migration";
 
 // With-clause for migration
-
+(with migration = Migration.run)
 actor {
   // Time Constants
   let cancellationWindowHours = 12;
@@ -119,6 +118,9 @@ actor {
     billingPolicy : Text;
     generalDisclaimer : Text;
     footerContent : Text;
+    facebookUrl : Text;
+    instagramUrl : Text;
+    xUrl : Text;
   };
 
   public type UserProfile = {
@@ -192,6 +194,9 @@ actor {
     billingPolicy = "Aurélie Fine Jewellery accepts multiple payment methods, including credit cards, debit cards, and secure online payments. Our billing policy outlines the payment process, invoicing details, taxes and fees, and refund procedures. We strive for transparency and security in all financial transactions. Please refer to our website for complete billing information or contact us with questions.";
     generalDisclaimer = "The information provided on the Aurélie Fine Jewellery website, including product descriptions, pricing, and images, is for informational purposes only. While we strive for accuracy, errors may occasionally occur. We reserve the right to correct inaccuracies and update information without prior notice. We encourage customers to contact us directly for any clarifications or specific inquiries.";
     footerContent = "Follow us on social media | LinkedIn | Facebook";
+    facebookUrl = "https://facebook.com/AurelieFineJew";
+    instagramUrl = "https://instagram.com/AurelieFineJew";
+    xUrl = "https://x.com/AurelieFineJew";
   };
 
   // Stripe Integration
