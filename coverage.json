@@ -1,0 +1,87 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-25T10:41:12.850Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 4,
+    "implemented": 4,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Rename all instances of the 'Boys' label/tab to 'For Him' and the 'Girls' label/tab to 'For Her' across the entire frontend, including GenderCategoryTabs, navigation, route labels, page headings, and any hardcoded strings.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/GenderCategoryTabs.tsx",
+          "frontend/src/pages/BoysHomePage.tsx",
+          "frontend/src/pages/GirlsHomePage.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/GenderCategoryTabs.tsx",
+          "frontend/src/pages/BoysHomePage.tsx",
+          "frontend/src/pages/GirlsHomePage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Add a simultaneous swipe-in entrance animation to the product category circles on both the For Him (BoysHomePage) and For Her (GirlsHomePage) pages. When the page loads, each circle should animate in from a different edge (top, bottom, left, right) all at the same time, converging into their final grid positions.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/BoysHomePage.tsx",
+          "frontend/src/pages/GirlsHomePage.tsx",
+          "frontend/src/index.css"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/BoysHomePage.tsx",
+          "frontend/src/pages/GirlsHomePage.tsx",
+          "frontend/src/index.css"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Update the footer background colour in FooterSystem.tsx to off-white (e.g., #f5f5f0 or Tailwind equivalent such as `bg-stone-50` or `bg-neutral-50`).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/footer/FooterSystem.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/footer/FooterSystem.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Move the original product category section that currently appears just below the header (HeaderCategoryNav) so that it only renders on the For Her (GirlsHomePage). It should no longer appear globally below the header on all pages.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/Layout.tsx",
+          "frontend/src/pages/GirlsHomePage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/Layout.tsx",
+          "frontend/src/pages/GirlsHomePage.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/components/GenderCategoryTabs.tsx",
+    "frontend/src/components/HeaderCategoryNav.tsx",
+    "frontend/src/components/Layout.tsx",
+    "frontend/src/components/footer/FooterSystem.tsx",
+    "frontend/src/index.css",
+    "frontend/src/pages/BoysHomePage.tsx",
+    "frontend/src/pages/GirlsHomePage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

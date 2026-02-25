@@ -1,0 +1,96 @@
+{
+  "kind": "build_request",
+  "title": "Category circles swipe-in animation, footer colour, label renames, and category section relocation",
+  "projectName": "Aurelie Fine Jewellery",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Rename all instances of the 'Boys' label/tab to 'For Him' and the 'Girls' label/tab to 'For Her' across the entire frontend, including GenderCategoryTabs, navigation, route labels, page headings, and any hardcoded strings.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-12"
+        ],
+        "quotes": [
+          "change the label of Boys to For Him and for girls to For Her"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The gender tab bar shows 'For Him' and 'For Her' instead of 'Boys' and 'Girls'",
+        "All headings and labels on BoysHomePage and GirlsHomePage reflect the new names",
+        "No visible 'Boys' or 'Girls' text remains in customer-facing UI"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add a simultaneous swipe-in entrance animation to the product category circles on both the For Him (BoysHomePage) and For Her (GirlsHomePage) pages. When the page loads, each circle should animate in from a different edge (top, bottom, left, right) all at the same time, converging into their final grid positions.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-12"
+        ],
+        "quotes": [
+          "the circles should slide in from all the direction simultaneously",
+          "they currently appear, just need swipe in animation"
+        ]
+      },
+      "acceptanceCriteria": [
+        "On page load, all category circles animate in simultaneously from different screen edges (top, bottom, left, right)",
+        "Circles converge to their final positions in a smooth transition",
+        "Animation triggers each time the For Him or For Her home page is navigated to",
+        "No layout shift or overflow occurs during the animation"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Update the footer background colour in FooterSystem.tsx to off-white (e.g., #f5f5f0 or Tailwind equivalent such as `bg-stone-50` or `bg-neutral-50`).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-12"
+        ],
+        "quotes": [
+          "the footer colour needs to be updated to Off-white"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The site footer background is visibly off-white rather than its previous colour",
+        "Footer text remains legible against the off-white background"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Move the original product category section that currently appears just below the header (HeaderCategoryNav) so that it only renders on the For Her (GirlsHomePage). It should no longer appear globally below the header on all pages.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-12"
+        ],
+        "quotes": [
+          "the original product category which is still just below the header, move them to girls home page"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The product category section (formerly below the header) no longer appears globally on all pages",
+        "The product category section is visible on the For Her (GirlsHomePage)",
+        "The For Him (BoysHomePage) and other pages do not show this category section"
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not change backend data models or storage",
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui",
+    "Swipe-in animation must be CSS/JS only — no new animation libraries required unless already present in the project"
+  ],
+  "nonGoals": [
+    "Redesigning the category circles or changing their images",
+    "Adding new product categories",
+    "Changes to the admin panel labels or backend gender field values",
+    "Any backend migration"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Category circles swipe-in animation, footer colour, label renames, and category section relocation",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Rename all instances of 'Boys' label/tab to 'For Him' and 'Girls' label/tab to 'For Her' across the entire frontend",
+      "acceptanceCriteria": [
+        "The gender tab bar shows 'For Him' and 'For Her' instead of 'Boys' and 'Girls'",
+        "All headings and labels on BoysHomePage and GirlsHomePage reflect the new names",
+        "No visible 'Boys' or 'Girls' text remains in customer-facing UI"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/GenderCategoryTabs.tsx",
+          "operation": "modify",
+          "description": "Update the tab labels from 'Boys' to 'For Him' and 'Girls' to 'For Her' in the navigation tabs component"
+        },
+        {
+          "path": "frontend/src/pages/BoysHomePage.tsx",
+          "operation": "modify",
+          "description": "Update page title, headings, and any visible text from 'Boys' to 'For Him'"
+        },
+        {
+          "path": "frontend/src/pages/GirlsHomePage.tsx",
+          "operation": "modify",
+          "description": "Update page title, headings, and any visible text from 'Girls' to 'For Her'"
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Update route paths and meta tags to use 'for-him' and 'for-her' instead of 'boys' and 'girls' if they appear in route definitions or titles"
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Add simultaneous swipe-in entrance animation to product category circles on For Him and For Her pages",
+      "acceptanceCriteria": [
+        "On page load, all category circles animate in simultaneously from different screen edges (top, bottom, left, right)",
+        "Circles converge to their final positions in a smooth transition",
+        "Animation triggers each time the For Him or For Her home page is navigated to",
+        "No layout shift or overflow occurs during the animation"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/BoysHomePage.tsx",
+          "operation": "modify",
+          "description": "Add CSS-based swipe-in animation to the category circles using Tailwind animation utilities or CSS keyframes. Each circle should animate from a different edge (top, bottom, left, right) simultaneously on page load. Use CSS transforms and transitions with staggered animation delays based on position index to create the converging effect. Ensure overflow is hidden during animation and layout stability is maintained."
+        },
+        {
+          "path": "frontend/src/pages/GirlsHomePage.tsx",
+          "operation": "modify",
+          "description": "Add CSS-based swipe-in animation to the category circles using Tailwind animation utilities or CSS keyframes. Each circle should animate from a different edge (top, bottom, left, right) simultaneously on page load. Use CSS transforms and transitions with staggered animation delays based on position index to create the converging effect. Ensure overflow is hidden during animation and layout stability is maintained."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add reusable keyframe definitions for swipe-in animations from all four directions (slideInFromTop, slideInFromBottom, slideInFromLeft, slideInFromRight) using CSS @keyframes with transform properties. These animations will be applied to category circles on the For Him and For Her pages."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Update footer background colour to off-white in FooterSystem.tsx",
+      "acceptanceCriteria": [
+        "The site footer background is visibly off-white rather than its previous colour",
+        "Footer text remains legible against the off-white background"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/footer/FooterSystem.tsx",
+          "operation": "modify",
+          "description": "Change the footer background color to off-white using Tailwind class `bg-stone-50` or `bg-neutral-50` (or equivalent custom color like #f5f5f0). Verify text contrast remains accessible."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Move the product category section from global header to For Her page only",
+      "acceptanceCriteria": [
+        "The product category section (formerly below the header) no longer appears globally on all pages",
+        "The product category section is visible on the For Her (GirlsHomePage)",
+        "The For Him (BoysHomePage) and other pages do not show this category section"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Layout.tsx",
+          "operation": "modify",
+          "description": "Remove the HeaderCategoryNav component from the global Layout so it no longer appears below the header on all pages"
+        },
+        {
+          "path": "frontend/src/pages/GirlsHomePage.tsx",
+          "operation": "modify",
+          "description": "Import and render the HeaderCategoryNav component within the GirlsHomePage layout, positioning it appropriately below the hero header and above the category circles section"
+        }
+      ]
+    }
+  ]
+}
