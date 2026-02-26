@@ -1,4 +1,5 @@
 import CategoryImageCarousel from './CategoryImageCarousel';
+import CategoryProductRow from './CategoryProductRow';
 import { PRODUCT_CATEGORIES } from '../utils/productCategories';
 
 export default function HomeCategoryCarouselsSection() {
@@ -8,7 +9,7 @@ export default function HomeCategoryCarouselsSection() {
         <h2 className="text-3xl font-serif font-bold text-center mb-12 text-bottle-green-dark">
           Explore Our Collections
         </h2>
-        
+
         <div className="space-y-16">
           {PRODUCT_CATEGORIES.map((category) => (
             <div key={category.slug} className="space-y-6">
@@ -21,16 +22,24 @@ export default function HomeCategoryCarouselsSection() {
                   {category.description}
                 </p>
               </div>
-              
+
               {/* Category Carousels */}
               <div className="space-y-6">
-                <CategoryImageCarousel 
-                  categorySlug={category.slug} 
+                <CategoryImageCarousel
+                  categorySlug={category.slug}
                   carouselIndex={1}
                 />
-                <CategoryImageCarousel 
-                  categorySlug={category.slug} 
+                <CategoryImageCarousel
+                  categorySlug={category.slug}
                   carouselIndex={2}
+                />
+              </div>
+
+              {/* Horizontally scrollable product row — 3 squares visible at once */}
+              <div className="mt-4">
+                <CategoryProductRow
+                  categorySlug={category.slug}
+                  genderFilter="girls"
                 />
               </div>
             </div>

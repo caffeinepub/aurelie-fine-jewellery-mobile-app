@@ -164,12 +164,12 @@
 @keyframes category-circle-glow {
   0%,
   100% {
-    box-shadow: 0 0 8px oklch(var(--gold-medium) / 0.3),
-      0 0 16px oklch(var(--beige-sand) / 0.2);
+    box-shadow: 0 0 8px oklch(65% 0.15 80 / 0.3),
+      0 0 16px oklch(85% 0.04 60 / 0.2);
   }
   50% {
-    box-shadow: 0 0 16px oklch(var(--gold-medium) / 0.5),
-      0 0 24px oklch(var(--beige-sand) / 0.3);
+    box-shadow: 0 0 16px oklch(65% 0.15 80 / 0.5),
+      0 0 24px oklch(85% 0.04 60 / 0.3);
   }
 }
 
@@ -211,6 +211,37 @@
 .category-circle-swipe.arrived {
   opacity: 1;
   transform: translate(0, 0);
+}
+
+/* ============================================================
+   Gender Label Glow Animation
+   Elegant, continuously pulsing warm gold glow on the
+   "For Him" and "For Her" tab labels.
+   ============================================================ */
+
+@keyframes gender-label-glow-pulse {
+  0%, 100% {
+    text-shadow:
+      0 0 6px oklch(65% 0.15 80 / 0.0),
+      0 0 12px oklch(75% 0.12 80 / 0.0),
+      0 0 20px oklch(55% 0.15 80 / 0.0);
+  }
+  40% {
+    text-shadow:
+      0 0 6px oklch(65% 0.15 80 / 0.55),
+      0 0 14px oklch(75% 0.12 80 / 0.35),
+      0 0 28px oklch(55% 0.15 80 / 0.20);
+  }
+  60% {
+    text-shadow:
+      0 0 8px oklch(65% 0.15 80 / 0.65),
+      0 0 18px oklch(75% 0.12 80 / 0.40),
+      0 0 32px oklch(55% 0.15 80 / 0.25);
+  }
+}
+
+.gender-label-glow {
+  animation: gender-label-glow-pulse 3s ease-in-out infinite;
 }
 
 /* Scoped Button Styles */
@@ -303,5 +334,84 @@
   }
   100% {
     background-position: 200% 0;
+  }
+}
+
+/* ============================================================
+   Masonry Product Grid — Card Entrance Animations
+   Cards slide in from four directions with staggered delays.
+   Respects prefers-reduced-motion for accessibility.
+   ============================================================ */
+
+/* Masonry grid responsive column count */
+.masonry-grid {
+  --masonry-cols: 2;
+}
+
+@media (min-width: 640px) {
+  .masonry-grid {
+    --masonry-cols: 2;
+  }
+}
+
+@media (min-width: 768px) {
+  .masonry-grid {
+    --masonry-cols: 3;
+  }
+}
+
+@media (min-width: 1024px) {
+  .masonry-grid {
+    --masonry-cols: 3;
+  }
+}
+
+@media (min-width: 1280px) {
+  .masonry-grid {
+    --masonry-cols: 4;
+  }
+}
+
+/* Base card entrance state */
+.card-entrance {
+  opacity: 0;
+  transition:
+    opacity 0.55s ease-out,
+    transform 0.60s cubic-bezier(0.34, 1.20, 0.64, 1);
+}
+
+/* Direction-specific starting positions */
+.card-entrance.from-left {
+  transform: translateX(-60px);
+}
+
+.card-entrance.from-right {
+  transform: translateX(60px);
+}
+
+.card-entrance.from-top {
+  transform: translateY(-60px);
+}
+
+.card-entrance.from-bottom {
+  transform: translateY(60px);
+}
+
+/* Arrived / visible state */
+.card-entrance.arrived {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Accessibility: disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card-entrance {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .card-entrance.arrived {
+    opacity: 1;
+    transform: none;
   }
 }

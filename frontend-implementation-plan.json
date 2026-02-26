@@ -1,99 +1,118 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Category circles swipe-in animation, footer colour, label renames, and category section relocation",
+  "title": "Remove Our Story strip, verify product page filters/nav, add category product rows on homepage",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Rename all instances of 'Boys' label/tab to 'For Him' and 'Girls' label/tab to 'For Her' across the entire frontend",
+      "summary": "Remove the OurStoryStrip component from the homepage",
       "acceptanceCriteria": [
-        "The gender tab bar shows 'For Him' and 'For Her' instead of 'Boys' and 'Girls'",
-        "All headings and labels on BoysHomePage and GirlsHomePage reflect the new names",
-        "No visible 'Boys' or 'Girls' text remains in customer-facing UI"
+        "The OurStoryStrip component is no longer rendered on the homepage",
+        "No visual gap or empty space is left where the strip used to be",
+        "The rest of the homepage layout remains unaffected"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/GenderCategoryTabs.tsx",
+          "path": "frontend/src/pages/HomePage.tsx",
           "operation": "modify",
-          "description": "Update the tab labels from 'Boys' to 'For Him' and 'Girls' to 'For Her' in the navigation tabs component"
-        },
-        {
-          "path": "frontend/src/pages/BoysHomePage.tsx",
-          "operation": "modify",
-          "description": "Update page title, headings, and any visible text from 'Boys' to 'For Him'"
-        },
-        {
-          "path": "frontend/src/pages/GirlsHomePage.tsx",
-          "operation": "modify",
-          "description": "Update page title, headings, and any visible text from 'Girls' to 'For Her'"
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Update route paths and meta tags to use 'for-him' and 'for-her' instead of 'boys' and 'girls' if they appear in route definitions or titles"
+          "description": "Remove the OurStoryStrip component import and its usage from the page layout. Ensure the spacing between remaining sections (HomeCarousel, NewArrivalsSection, HomeCategoryCarouselsSection, and product grid) remains consistent without introducing gaps."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add simultaneous swipe-in entrance animation to product category circles on For Him and For Her pages",
+      "summary": "Ensure all product category pages include functional filter bar and category navigation",
       "acceptanceCriteria": [
-        "On page load, all category circles animate in simultaneously from different screen edges (top, bottom, left, right)",
-        "Circles converge to their final positions in a smooth transition",
-        "Animation triggers each time the For Him or For Her home page is navigated to",
-        "No layout shift or overflow occurs during the animation"
+        "Every product category page shows the ProductFilterBar with working filter controls",
+        "A horizontal category navigation bar is visible on every product category page",
+        "Selecting a filter updates the displayed product grid accordingly",
+        "Clicking a category in the navigation bar routes to that category page"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/BoysHomePage.tsx",
+          "path": "frontend/src/pages/categories/CategoryPageTemplate.tsx",
           "operation": "modify",
-          "description": "Add CSS-based swipe-in animation to the category circles using Tailwind animation utilities or CSS keyframes. Each circle should animate from a different edge (top, bottom, left, right) simultaneously on page load. Use CSS transforms and transitions with staggered animation delays based on position index to create the converging effect. Ensure overflow is hidden during animation and layout stability is maintained."
+          "description": "Verify that CategoryPageTemplate includes both ProductFilterBar and HeaderCategoryNav components. If missing, add ProductFilterBar above the product grid with metal type, price range, occasion, and sort order filters wired to the useProductFilters hook. Add HeaderCategoryNav at the top of the page to display category navigation. Ensure filters and navigation work correctly with the existing product query and filtering logic."
         },
         {
-          "path": "frontend/src/pages/GirlsHomePage.tsx",
+          "path": "frontend/src/pages/categories/AnkletsPage.tsx",
           "operation": "modify",
-          "description": "Add CSS-based swipe-in animation to the category circles using Tailwind animation utilities or CSS keyframes. Each circle should animate from a different edge (top, bottom, left, right) simultaneously on page load. Use CSS transforms and transitions with staggered animation delays based on position index to create the converging effect. Ensure overflow is hidden during animation and layout stability is maintained."
+          "description": "Verify that AnkletsPage properly renders CategoryPageTemplate with the filter bar and navigation. If CategoryPageTemplate doesn't include these components, ensure they are added here or fix the template usage."
         },
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/pages/categories/BridalJewelleryPage.tsx",
           "operation": "modify",
-          "description": "Add reusable keyframe definitions for swipe-in animations from all four directions (slideInFromTop, slideInFromBottom, slideInFromLeft, slideInFromRight) using CSS @keyframes with transform properties. These animations will be applied to category circles on the For Him and For Her pages."
+          "description": "Verify that BridalJewelleryPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug to enable filtering."
+        },
+        {
+          "path": "frontend/src/pages/categories/EarringsPage.tsx",
+          "operation": "modify",
+          "description": "Verify that EarringsPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug to enable filtering."
+        },
+        {
+          "path": "frontend/src/pages/categories/LabGrownDiamondsJewelleryPage.tsx",
+          "operation": "modify",
+          "description": "Verify that LabGrownDiamondsJewelleryPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug to enable filtering."
+        },
+        {
+          "path": "frontend/src/pages/categories/NecklacePage.tsx",
+          "operation": "modify",
+          "description": "Verify that NecklacePage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug to enable filtering."
+        },
+        {
+          "path": "frontend/src/pages/categories/RingsPage.tsx",
+          "operation": "modify",
+          "description": "Verify that RingsPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug to enable filtering."
+        },
+        {
+          "path": "frontend/src/pages/categories/boys/BoysBraceletPage.tsx",
+          "operation": "modify",
+          "description": "Verify that BoysBraceletPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug and gender filter to enable filtering."
+        },
+        {
+          "path": "frontend/src/pages/categories/boys/BoysChainsPage.tsx",
+          "operation": "modify",
+          "description": "Verify that BoysChainsPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug and gender filter to enable filtering."
+        },
+        {
+          "path": "frontend/src/pages/categories/boys/BoysLabDiamondsPage.tsx",
+          "operation": "modify",
+          "description": "Verify that BoysLabDiamondsPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug and gender filter to enable filtering."
+        },
+        {
+          "path": "frontend/src/pages/categories/boys/BoysRingsPage.tsx",
+          "operation": "modify",
+          "description": "Verify that BoysRingsPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug and gender filter to enable filtering."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Update footer background colour to off-white in FooterSystem.tsx",
+      "summary": "Add horizontally scrollable category product rows below each carousel on homepage",
       "acceptanceCriteria": [
-        "The site footer background is visibly off-white rather than its previous colour",
-        "Footer text remains legible against the off-white background"
+        "A horizontally scrollable product row appears below each category carousel section on the homepage",
+        "Exactly 3 square product cards are visible at a time without needing to scroll",
+        "No scrollbar is visible on the row (scrollbar hidden via CSS)",
+        "Each card displays the product image cropped to a square aspect ratio, product name, and price in INR",
+        "Only products belonging to the relevant category are shown in each row",
+        "Clicking a product card navigates to that product's detail page",
+        "The rows scroll smoothly by touch/swipe or mouse drag"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/footer/FooterSystem.tsx",
-          "operation": "modify",
-          "description": "Change the footer background color to off-white using Tailwind class `bg-stone-50` or `bg-neutral-50` (or equivalent custom color like #f5f5f0). Verify text contrast remains accessible."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Move the product category section from global header to For Her page only",
-      "acceptanceCriteria": [
-        "The product category section (formerly below the header) no longer appears globally on all pages",
-        "The product category section is visible on the For Her (GirlsHomePage)",
-        "The For Him (BoysHomePage) and other pages do not show this category section"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/Layout.tsx",
-          "operation": "modify",
-          "description": "Remove the HeaderCategoryNav component from the global Layout so it no longer appears below the header on all pages"
+          "path": "frontend/src/components/CategoryProductRow.tsx",
+          "operation": "create",
+          "description": "Create a new component that displays a horizontally scrollable row of product cards for a specific category. Accept categorySlug as a prop and query products filtered by that category using existing product hooks. Display exactly 3 square product cards visible at once using CSS grid with snap scrolling. Each card should show: product image in 1:1 aspect ratio (using object-fit: cover), product name (truncated if needed), and price formatted in INR using the pricing utility. Hide the scrollbar using CSS (scrollbar-width: none and ::-webkit-scrollbar). Enable smooth horizontal scrolling via overflow-x: scroll and scroll-snap-type. Make each card clickable to navigate to /product/[productId] using TanStack Router Link. Apply responsive touch/swipe support for mobile devices."
         },
         {
-          "path": "frontend/src/pages/GirlsHomePage.tsx",
+          "path": "frontend/src/components/HomeCategoryCarouselsSection.tsx",
           "operation": "modify",
-          "description": "Import and render the HeaderCategoryNav component within the GirlsHomePage layout, positioning it appropriately below the hero header and above the category circles section"
+          "description": "Below each CategoryImageCarousel pair (carousel index 1 and 2), add the new CategoryProductRow component. Pass the appropriate categorySlug prop matching the category being displayed. Ensure the product row is positioned directly below the category description with appropriate spacing (e.g., mt-4 or mt-6). Maintain the existing vertical layout of category sections while adding the product rows seamlessly."
+        },
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "modify",
+          "description": "Verify that HomePage includes HomeCategoryCarouselsSection and that it renders correctly with the new category product rows below each carousel section. Ensure the overall page layout accommodates the new rows without breaking existing spacing or scroll behavior."
         }
       ]
     }

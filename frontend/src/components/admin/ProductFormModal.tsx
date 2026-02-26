@@ -8,7 +8,7 @@ import { Switch } from '../ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useAddProduct, useUpdateProduct } from '../../hooks/useQueries';
 import { toast } from 'sonner';
-import { ExternalBlob, type Product, type ProductCreate, Gender } from '../../backend';
+import { ExternalBlob, type Product, type ProductCreate, type ProductUpdate, Gender } from '../../backend';
 import { Upload, Image as ImageIcon, Video, X } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { optimizeImage, optimizeVideo } from '../../utils/mediaOptimization';
@@ -204,24 +204,37 @@ export default function ProductFormModal({ open, onClose, product }: ProductForm
         ? { __kind__: 'boys' as const, boys: null }
         : { __kind__: 'girls' as const, girls: null };
 
-      const productData: ProductCreate = {
-        id: product?.id || `product_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        name: name.trim(),
-        description: description.trim(),
-        priceInCents: BigInt(priceInCents),
-        inStock,
-        category: category || 'uncategorized',
-        media: {
-          video: videoBlob,
-          images: imageBlobs,
-        },
-        gender: genderValue as any,
-      };
-
       if (product) {
-        await updateProduct.mutateAsync(productData);
+        // For updates, use ProductUpdate with the existing product ID
+        const updates: ProductUpdate = {
+          name: name.trim(),
+          description: description.trim(),
+          priceInCents: BigInt(priceInCents),
+          inStock,
+          category: category || 'uncategorized',
+          media: {
+            video: videoBlob,
+            images: imageBlobs,
+          },
+          gender: genderValue as any,
+        };
+        await updateProduct.mutateAsync({ productId: product.id, updates });
         toast.success('Product updated successfully');
       } else {
+        // For new products, use ProductCreate
+        const productData: ProductCreate = {
+          id: `product_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          name: name.trim(),
+          description: description.trim(),
+          priceInCents: BigInt(priceInCents),
+          inStock,
+          category: category || 'uncategorized',
+          media: {
+            video: videoBlob,
+            images: imageBlobs,
+          },
+          gender: genderValue as any,
+        };
         await addProduct.mutateAsync(productData);
         toast.success('Product added successfully');
       }

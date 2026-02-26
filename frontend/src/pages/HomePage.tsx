@@ -7,6 +7,7 @@ import { useCart } from '../hooks/useCart';
 import { toast } from 'sonner';
 import HomeCarousel from '../components/HomeCarousel';
 import HomeCategoryCarouselsSection from '../components/HomeCategoryCarouselsSection';
+import NewArrivalsSection from '../components/NewArrivalsSection';
 
 function formatINR(priceInCents: bigint): string {
   const amount = Number(priceInCents) / 100;
@@ -39,6 +40,9 @@ export default function HomePage() {
       <div className="w-full">
         <HomeCarousel />
       </div>
+
+      {/* New Arrivals Section */}
+      <NewArrivalsSection />
 
       {/* Category Carousels Section */}
       <HomeCategoryCarouselsSection />

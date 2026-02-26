@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Rename gender labels, add swipe-in animations to category circles, update footer colour, and relocate the header category section to the For Her page only.
+**Goal:** Remove the Our Story strip from the homepage, ensure product category pages have filters and category navigation, and add horizontally scrollable product card rows below each category carousel on the homepage.
 
 **Planned changes:**
-- Rename all "Boys" labels/tabs to "For Him" and all "Girls" labels/tabs to "For Her" throughout the frontend (tabs, headings, route labels, hardcoded strings)
-- Add simultaneous swipe-in entrance animation to product category circles on both the For Him and For Her home pages — each circle animates in from a different edge (top, bottom, left, right) converging into final grid positions on page load
-- Update the footer background colour to off-white (e.g., `bg-stone-50` / `#f5f5f0`)
-- Move the product category section that currently renders globally below the header so it only appears on the For Her (GirlsHomePage), removing it from all other pages
+- Remove the `OurStoryStrip` component from `HomePage.tsx` with no leftover gap
+- Verify that all product category pages include `ProductFilterBar` (metal type, price range, occasion, sort order) and a category navigation bar (`HeaderCategoryNav`); add either if missing
+- Below each category carousel section on the homepage, add a horizontally scrollable row of small square product cards showing products from the relevant category — 3 cards visible at once, no visible scrollbar, each card showing product image, name, and price in INR; clicking navigates to the product detail page
 
-**User-visible outcome:** Gender tabs and page headings now read "For Him" and "For Her"; category circles animate in from all directions on load; the footer appears in off-white; and the top category section is exclusive to the For Her page.
+**User-visible outcome:** The homepage no longer shows the Our Story strip, and each category carousel is followed by a swipeable row of 3 square product cards. Product category pages consistently display filter controls and category navigation for browsing and filtering items.

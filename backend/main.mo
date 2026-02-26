@@ -2,6 +2,7 @@ import Text "mo:core/Text";
 import Map "mo:core/Map";
 import Nat "mo:core/Nat";
 import Array "mo:core/Array";
+import Int "mo:core/Int";
 import Iter "mo:core/Iter";
 import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
@@ -24,6 +25,8 @@ actor {
 
   // Media Constants
   let maxImagesPerProduct = 5;
+  let newArrivalsFetchAmount = 20;
+  let newArrivalsDisplayAmount = 10;
 
   public type Gender = {
     #boys;
@@ -44,6 +47,7 @@ actor {
     category : Text;
     media : ProductMedia;
     gender : Gender;
+    createdAt : Time.Time;
   };
 
   public type ProductCreate = {
@@ -55,6 +59,16 @@ actor {
     category : Text;
     media : ProductMedia;
     gender : Gender;
+  };
+
+  public type ProductUpdate = {
+    name : ?Text;
+    description : ?Text;
+    priceInCents : ?Nat;
+    inStock : ?Bool;
+    category : ?Text;
+    media : ?ProductMedia;
+    gender : ?Gender;
   };
 
   public type CategoryCarousels = {
@@ -231,6 +245,27 @@ actor {
       case ("rings") { ringsSlides };
       case (_) { Runtime.trap("Invalid category") };
     };
+  };
+
+  // ---------- NEW ARRIVALS SECTION ----------
+  // Public endpoint: new arrivals are displayed on the homepage for all visitors.
+  // No authorization check needed.
+  public query func getNewArrivals() : async [Product] {
+    // Sort by newest first (most recent products have highest timestamp)
+    let sortedProducts = products.toArray().sort(
+      func(a, b) {
+        let (_, productA) = a;
+        let (_, productB) = b;
+        Int.compare(productB.createdAt, productA.createdAt);
+      }
+    );
+
+    // Get up to newArrivalsDisplayAmount products
+    let limit = Nat.min(sortedProducts.size(), newArrivalsDisplayAmount);
+    let limitedProducts = sortedProducts.sliceToArray(0, limit);
+    limitedProducts.map<(Text, Product), Product>(
+      func((_, product)) { product }
+    );
   };
 
   // ---------- Banner Message Management (Admin Only) ----------
@@ -682,28 +717,34 @@ actor {
       category = product.category;
       media = product.media;
       gender = product.gender;
+      createdAt = Time.now();
     };
     products.add(product.id, productEntity);
   };
 
-  public shared ({ caller }) func updateProduct(product : ProductCreate) : async () {
+  public shared ({ caller }) func updateProduct(productId : Text, updates : ProductUpdate) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can update products");
     };
-    if (product.media.images.size() > maxImagesPerProduct) {
-      Runtime.trap("Cannot add more than " # maxImagesPerProduct.toText() # " images per product");
+
+    switch (products.get(productId)) {
+      case (null) { Runtime.trap("Product not found") };
+      case (?existingProduct) {
+        let updatedProduct : Product = {
+          id = productId; // ID does not change
+          name = switch (updates.name) { case (null) { existingProduct.name }; case (?name) { name } };
+          description = switch (updates.description) { case (null) { existingProduct.description }; case (?desc) { desc } };
+          priceInCents = switch (updates.priceInCents) { case (null) { existingProduct.priceInCents }; case (?price) { price } };
+          inStock = switch (updates.inStock) { case (null) { existingProduct.inStock }; case (?stock) { stock } };
+          category = switch (updates.category) { case (null) { existingProduct.category }; case (?cat) { cat } };
+          media = switch (updates.media) { case (null) { existingProduct.media }; case (?media) { media } };
+          gender = switch (updates.gender) { case (null) { existingProduct.gender }; case (?gender) { gender } };
+          createdAt = existingProduct.createdAt; // Preserve original creation time
+        };
+
+        products.add(productId, updatedProduct);
+      };
     };
-    let productEntity : Product = {
-      id = product.id;
-      name = product.name;
-      description = product.description;
-      priceInCents = product.priceInCents;
-      inStock = product.inStock;
-      category = product.category;
-      media = product.media;
-      gender = product.gender;
-    };
-    products.add(product.id, productEntity);
   };
 
   public shared ({ caller }) func deleteProduct(productId : Text) : async () {

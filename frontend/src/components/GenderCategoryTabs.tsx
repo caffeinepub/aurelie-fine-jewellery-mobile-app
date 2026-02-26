@@ -18,7 +18,7 @@ export default function GenderCategoryTabs() {
         <div className="flex items-center justify-center gap-0">
           <button
             onClick={() => navigate({ to: '/boys' })}
-            className={`relative px-10 py-3 font-serif text-sm tracking-widest uppercase transition-all duration-200 ${
+            className={`relative px-10 py-3 font-serif text-sm tracking-widest uppercase transition-all duration-200 gender-label-glow ${
               isBoysActive
                 ? 'text-bottle-green-dark border-b-2 border-gold-medium font-semibold'
                 : 'text-bottle-green-medium hover:text-bottle-green-dark hover:border-b-2 hover:border-gold-medium/50'
@@ -29,7 +29,7 @@ export default function GenderCategoryTabs() {
           <div className="w-px h-5 bg-gold-medium/30 mx-2" />
           <button
             onClick={() => navigate({ to: '/girls' })}
-            className={`relative px-10 py-3 font-serif text-sm tracking-widest uppercase transition-all duration-200 ${
+            className={`relative px-10 py-3 font-serif text-sm tracking-widest uppercase transition-all duration-200 gender-label-glow ${
               isGirlsActive
                 ? 'text-bottle-green-dark border-b-2 border-gold-medium font-semibold'
                 : 'text-bottle-green-medium hover:text-bottle-green-dark hover:border-b-2 hover:border-gold-medium/50'

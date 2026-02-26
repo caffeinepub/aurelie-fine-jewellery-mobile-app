@@ -1,40 +1,35 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "E-commerce app with Boys/Girls (For Him/For Her) product sections, category circles with swipe-in animations, footer color updates, and admin panel.",
-  "architectural_notes": [],
+  "summary": "E-commerce project with homepage featuring product category carousels, animated product cards, masonry grid, live filters, and search bar. Admin features and product pages with filters/navigation are in scope.",
+  "architectural_notes": [
+    "Homepage includes product category carousels with associated horizontally scrollable product rows (3 cards visible, no scrollbar)",
+    "Product pages require filters and navigation components"
+  ],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-rename-all-instances-of-the-boys-label-tab-to-for-him-and-the-girls-label-tab-to-for-her-across-the-entire-frontend-including-gendercategorytabs-navigation-route-labels-page-headings-and-any-hardcoded-strings",
-      "title": "Rename all instances of the 'Boys' label/tab to 'For Him' and the 'Girls' label/tab to 'For Her' across the entire frontend, including GenderCategoryTabs, navigation, route labels, page headings, and any hardcoded strings.",
+      "id": "feature-remove-the-our-story-strip-component-ourstorystrip-from-the-homepage-homepage-tsx-delete-all-references-to-it-in-the-page-layout",
+      "title": "Remove the 'Our Story' strip component (OurStoryStrip) from the homepage (HomePage.tsx). Delete all references to it in the page layout.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-a-simultaneous-swipe-in-entrance-animation-to-the-product-category-circles-on-both-the-for-him-boyshomepage-and-for-her-girlshomepage-pages-when-the-page-loads-each-circle-should-animate-in-from-a-different-edge-top-bottom-left-right-all-at-the-same-time-converging-into-their-final-grid-positions",
-      "title": "Add a simultaneous swipe-in entrance animation to the product category circles on both the For Him (BoysHomePage) and For Her (GirlsHomePage) pages. When the page loads, each circle should animate in from a different edge (top, bottom, left, right) all at the same time, converging into their final grid positions.",
+      "id": "feature-ensure-all-product-category-pages-categorypagetemplate-and-all-category-specific-pages-include-a-functional-filter-bar-productfilterbar-with-metal-type-price-range-occasion-and-sort-order-filters-and-a-category-navigation-bar-headercategorynav-for-switching-between-categories-if-either-is-missing-add-it",
+      "title": "Ensure all product category pages (CategoryPageTemplate and all category-specific pages) include a functional filter bar (ProductFilterBar) with metal type, price range, occasion, and sort order filters, and a category navigation bar (HeaderCategoryNav) for switching between categories. If either is missing, add it.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-update-the-footer-background-colour-in-footersystem-tsx-to-off-white-e-g-f5f5f0-or-tailwind-equivalent-such-as-bg-stone-50-or-bg-neutral-50",
-      "title": "Update the footer background colour in FooterSystem.tsx to off-white (e.g., #f5f5f0 or Tailwind equivalent such as `bg-stone-50` or `bg-neutral-50`).",
+      "id": "feature-on-the-homepage-below-each-product-category-carousel-section-rendered-by-homecategorycarouselssection-or-equivalent-add-a-horizontally-scrollable-row-of-small-square-product-cards-each-row-must-show-products-belonging-to-the-relevant-category-exactly-3-square-cards-should-be-visible-on-screen-at-a-time-the-scrollbar-must-be-hidden-no-visible-scrollbar-each-card-should-display-the-product-image-name-and-price",
+      "title": "On the homepage, below each product category carousel section (rendered by HomeCategoryCarouselsSection or equivalent), add a horizontally scrollable row of small square product cards. Each row must show products belonging to the relevant category. Exactly 3 square cards should be visible on screen at a time. The scrollbar must be hidden (no visible scrollbar). Each card should display the product image, name, and price.",
       "reqIds": [
         "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-move-the-original-product-category-section-that-currently-appears-just-below-the-header-headercategorynav-so-that-it-only-renders-on-the-for-her-girlshomepage-it-should-no-longer-appear-globally-below-the-header-on-all-pages",
-      "title": "Move the original product category section that currently appears just below the header (HeaderCategoryNav) so that it only renders on the For Her (GirlsHomePage). It should no longer appear globally below the header on all pages.",
-      "reqIds": [
-        "REQ-4"
       ],
       "version": 1
     }
@@ -42,25 +37,19 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Product category circles swipe-in animation from all directions on For Him/For Her page load",
+      "summary": "Remove the 'Our Story' strip from the homepage",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Update footer colour to off-white",
+      "summary": "Verify/add filters and navigation on product pages",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-3",
-      "summary": "Move original product category section (below header) to For Her (Girls) home page",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Rename 'Boys' tab/label to 'For Him' and 'Girls' to 'For Her'",
+      "summary": "Below each product category carousel on homepage, add horizontally scrollable row of small square product cards (no scrollbar), 3 cards visible at a time, showing relevant category products",
       "reqIds": [],
       "status": "pending"
     }

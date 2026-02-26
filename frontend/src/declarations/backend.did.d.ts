@@ -84,6 +84,7 @@ export interface Product {
   'media' : ProductMedia,
   'inStock' : boolean,
   'name' : string,
+  'createdAt' : Time,
   'description' : string,
   'gender' : Gender,
   'category' : string,
@@ -102,6 +103,15 @@ export interface ProductCreate {
 export interface ProductMedia {
   'video' : [] | [ExternalBlob],
   'images' : Array<ExternalBlob>,
+}
+export interface ProductUpdate {
+  'media' : [] | [ProductMedia],
+  'inStock' : [] | [boolean],
+  'name' : [] | [string],
+  'description' : [] | [string],
+  'gender' : [] | [Gender],
+  'category' : [] | [string],
+  'priceInCents' : [] | [bigint],
 }
 export interface ShippingAddress {
   'name' : string,
@@ -141,6 +151,7 @@ export type StripeSessionStatus = {
     'completed' : { 'userPrincipal' : [] | [string], 'response' : string }
   } |
   { 'failed' : { 'error' : string } };
+export type Time = bigint;
 export interface TransformationInput {
   'context' : Uint8Array,
   'response' : http_request_result,
@@ -226,6 +237,7 @@ export interface _SERVICE {
   'getCustomerOrders' : ActorMethod<[], Array<Order>>,
   'getInquiries' : ActorMethod<[], Array<CustomerInquiry>>,
   'getInquiry' : ActorMethod<[string], CustomerInquiry>,
+  'getNewArrivals' : ActorMethod<[], Array<Product>>,
   'getOrder' : ActorMethod<[string], Order>,
   'getOrders' : ActorMethod<[], Array<Order>>,
   'getProduct' : ActorMethod<[string], Product>,
@@ -272,7 +284,7 @@ export interface _SERVICE {
     undefined
   >,
   'updateOrderStatus' : ActorMethod<[string, OrderStatus], undefined>,
-  'updateProduct' : ActorMethod<[ProductCreate], undefined>,
+  'updateProduct' : ActorMethod<[string, ProductUpdate], undefined>,
   'updateSiteContent' : ActorMethod<[SiteContent], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;

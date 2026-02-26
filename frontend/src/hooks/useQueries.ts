@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
 import { useInternetIdentity } from './useInternetIdentity';
-import type { Product, Order, CustomerInquiry, OrderStatus, SiteContent, CancelReason, OrderCreate, UserProfile, CarouselSlide, ProductCreate, Category, CategoryCreate } from '../backend';
+import type { Product, Order, CustomerInquiry, OrderStatus, SiteContent, CancelReason, OrderCreate, UserProfile, CarouselSlide, ProductCreate, ProductUpdate, Category, CategoryCreate } from '../backend';
 
 // User Profile Queries
 export function useGetCallerUserProfile() {
@@ -247,6 +247,20 @@ export function useGetProduct(productId: string) {
   });
 }
 
+// New Arrivals Query
+export function useGetNewArrivals() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Product[]>({
+    queryKey: ['newArrivals'],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getNewArrivals();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
 export function useAddProduct() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
@@ -258,6 +272,7 @@ export function useAddProduct() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['newArrivals'] });
     },
   });
 }
@@ -267,9 +282,9 @@ export function useUpdateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (product: ProductCreate) => {
+    mutationFn: async ({ productId, updates }: { productId: string; updates: ProductUpdate }) => {
       if (!actor) throw new Error('Actor not available');
-      await actor.updateProduct(product);
+      await actor.updateProduct(productId, updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
@@ -288,6 +303,7 @@ export function useDeleteProduct() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['newArrivals'] });
     },
   });
 }

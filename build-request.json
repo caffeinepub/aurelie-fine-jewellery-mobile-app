@@ -1,93 +1,81 @@
 {
   "kind": "build_request",
-  "title": "Category circles swipe-in animation, footer colour, label renames, and category section relocation",
+  "title": "Remove Our Story strip, verify product page filters/nav, add category product rows on homepage",
   "projectName": "Aurelie Fine Jewellery",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Rename all instances of the 'Boys' label/tab to 'For Him' and the 'Girls' label/tab to 'For Her' across the entire frontend, including GenderCategoryTabs, navigation, route labels, page headings, and any hardcoded strings.",
+      "text": "Remove the 'Our Story' strip component (OurStoryStrip) from the homepage (HomePage.tsx). Delete all references to it in the page layout.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-12"
+          "msg-4",
+          "msg-5"
         ],
         "quotes": [
-          "change the label of Boys to For Him and for girls to For Her"
+          "Remove the our story strip"
         ]
       },
       "acceptanceCriteria": [
-        "The gender tab bar shows 'For Him' and 'For Her' instead of 'Boys' and 'Girls'",
-        "All headings and labels on BoysHomePage and GirlsHomePage reflect the new names",
-        "No visible 'Boys' or 'Girls' text remains in customer-facing UI"
+        "The OurStoryStrip component is no longer rendered on the homepage",
+        "No visual gap or empty space is left where the strip used to be",
+        "The rest of the homepage layout remains unaffected"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add a simultaneous swipe-in entrance animation to the product category circles on both the For Him (BoysHomePage) and For Her (GirlsHomePage) pages. When the page loads, each circle should animate in from a different edge (top, bottom, left, right) all at the same time, converging into their final grid positions.",
+      "text": "Ensure all product category pages (CategoryPageTemplate and all category-specific pages) include a functional filter bar (ProductFilterBar) with metal type, price range, occasion, and sort order filters, and a category navigation bar (HeaderCategoryNav) for switching between categories. If either is missing, add it.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-12"
+          "msg-4",
+          "msg-5"
         ],
         "quotes": [
-          "the circles should slide in from all the direction simultaneously",
-          "they currently appear, just need swipe in animation"
+          "Is the filter and navigation added in product pages?"
         ]
       },
       "acceptanceCriteria": [
-        "On page load, all category circles animate in simultaneously from different screen edges (top, bottom, left, right)",
-        "Circles converge to their final positions in a smooth transition",
-        "Animation triggers each time the For Him or For Her home page is navigated to",
-        "No layout shift or overflow occurs during the animation"
+        "Every product category page shows the ProductFilterBar with working filter controls",
+        "A horizontal category navigation bar is visible on every product category page",
+        "Selecting a filter updates the displayed product grid accordingly",
+        "Clicking a category in the navigation bar routes to that category page"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Update the footer background colour in FooterSystem.tsx to off-white (e.g., #f5f5f0 or Tailwind equivalent such as `bg-stone-50` or `bg-neutral-50`).",
+      "text": "On the homepage, below each product category carousel section (rendered by HomeCategoryCarouselsSection or equivalent), add a horizontally scrollable row of small square product cards. Each row must show products belonging to the relevant category. Exactly 3 square cards should be visible on screen at a time. The scrollbar must be hidden (no visible scrollbar). Each card should display the product image, name, and price.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-12"
+          "msg-5",
+          "msg-6"
         ],
         "quotes": [
-          "the footer colour needs to be updated to Off-white"
+          "below each product category carousel, let the product related to relevant carousel be displayed in small scrollable horizontal squares without a scroll bar. Like 3 square should be seen on screen at once."
         ]
       },
       "acceptanceCriteria": [
-        "The site footer background is visibly off-white rather than its previous colour",
-        "Footer text remains legible against the off-white background"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Move the original product category section that currently appears just below the header (HeaderCategoryNav) so that it only renders on the For Her (GirlsHomePage). It should no longer appear globally below the header on all pages.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-12"
-        ],
-        "quotes": [
-          "the original product category which is still just below the header, move them to girls home page"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The product category section (formerly below the header) no longer appears globally on all pages",
-        "The product category section is visible on the For Her (GirlsHomePage)",
-        "The For Him (BoysHomePage) and other pages do not show this category section"
+        "A horizontally scrollable product row appears below each category carousel section on the homepage",
+        "Exactly 3 square product cards are visible at a time without needing to scroll",
+        "No scrollbar is visible on the row (scrollbar hidden via CSS)",
+        "Each card displays the product image cropped to a square aspect ratio, product name, and price in INR",
+        "Only products belonging to the relevant category are shown in each row",
+        "Clicking a product card navigates to that product's detail page",
+        "The rows scroll smoothly by touch/swipe or mouse drag"
       ]
     }
   ],
   "constraints": [
-    "Do not change backend data models or storage",
-    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui",
-    "Swipe-in animation must be CSS/JS only — no new animation libraries required unless already present in the project"
+    "Do not modify any files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui",
+    "Backend schema must not change — no new backend endpoints are required; use existing product query hooks"
   ],
   "nonGoals": [
-    "Redesigning the category circles or changing their images",
-    "Adding new product categories",
-    "Changes to the admin panel labels or backend gender field values",
-    "Any backend migration"
+    "Admin editing of the Our Story strip (removed entirely)",
+    "Adding new backend data models or migrations",
+    "Infinite scroll or pagination for the category product rows",
+    "Adding full product filtering to the homepage category rows"
   ],
   "imageRequirements": {
     "required": [],
