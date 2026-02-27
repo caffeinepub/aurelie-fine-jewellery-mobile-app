@@ -1,8 +1,9 @@
-import { useRef } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { useGetNewArrivals } from '../hooks/useQueries';
+import { Clock } from 'lucide-react';
+import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
+import { useGetProducts } from '../hooks/useQueries';
 import { Skeleton } from './ui/skeleton';
-import { ChevronRight, Sparkles } from 'lucide-react';
+import type { Product } from '../backend';
 
 function formatINR(priceInCents: bigint): string {
   const amount = Number(priceInCents) / 100;
@@ -14,49 +15,47 @@ function formatINR(priceInCents: bigint): string {
   }).format(amount);
 }
 
-export default function NewArrivalsSection() {
-  const { data: products = [], isLoading } = useGetNewArrivals();
+export default function RecentlyViewedSection() {
   const navigate = useNavigate();
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const { viewedIds } = useRecentlyViewed();
+  const { data: allProducts, isLoading } = useGetProducts();
 
-  if (!isLoading && products.length === 0) return null;
+  if (!isLoading && viewedIds.length === 0) return null;
+
+  // Build ordered list of recently viewed products
+  const recentProducts: Product[] = viewedIds
+    .map((id) => allProducts?.find((p) => p.id === id))
+    .filter((p): p is Product => p !== undefined);
+
+  if (!isLoading && recentProducts.length === 0) return null;
 
   return (
-    <section className="py-12 bg-beige-champagne">
+    <section className="py-12 bg-beige-light">
       <div className="container mx-auto px-4">
         {/* Section heading */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <Sparkles className="h-5 w-5 text-gold-medium" />
-            <div>
-              <h2 className="font-serif text-2xl md:text-3xl font-bold text-bottle-green-dark">
-                New Arrivals
-              </h2>
-              <div className="h-0.5 w-16 mt-1 bg-gradient-to-r from-gold-medium to-transparent" />
-            </div>
+        <div className="flex items-center gap-3 mb-8">
+          <Clock className="h-5 w-5 text-gold-medium" />
+          <div>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-bottle-green-dark">
+              Recently Viewed
+            </h2>
+            <div className="h-0.5 w-16 mt-1 bg-gradient-to-r from-gold-medium to-transparent" />
           </div>
-          <button
-            onClick={() => navigate({ to: '/' })}
-            className="flex items-center gap-1 text-xs tracking-widest uppercase text-gold-dark hover:text-gold-medium transition-colors font-medium"
-          >
-            View All <ChevronRight className="h-3 w-3" />
-          </button>
         </div>
 
         {/* Horizontal scroll row */}
         <div
-          ref={scrollRef}
           className="flex gap-5 overflow-x-auto hide-scrollbar pb-4"
         >
           {isLoading
-            ? Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="shrink-0 w-48 md:w-56">
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="shrink-0 w-44 md:w-52">
                   <Skeleton className="w-full aspect-[3/4] rounded-lg mb-3" />
                   <Skeleton className="h-4 w-3/4 mb-2" />
                   <Skeleton className="h-3 w-1/2" />
                 </div>
               ))
-            : products.map((product) => {
+            : recentProducts.map((product) => {
                 const imageUrl = product.media.images.length > 0
                   ? product.media.images[0].getDirectURL()
                   : null;
@@ -64,11 +63,13 @@ export default function NewArrivalsSection() {
                 return (
                   <div
                     key={product.id}
-                    className="shrink-0 w-48 md:w-56 cursor-pointer group product-card-shimmer rounded-lg"
-                    onClick={() => navigate({ to: `/product/${product.id}` })}
+                    className="shrink-0 w-44 md:w-52 cursor-pointer group product-card-shimmer rounded-lg"
+                    onClick={() =>
+                      navigate({ to: '/product/$productId', params: { productId: product.id } })
+                    }
                   >
                     {/* Image */}
-                    <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-beige-light mb-3">
+                    <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-beige-champagne mb-3">
                       {imageUrl ? (
                         <img
                           src={imageUrl}
@@ -81,12 +82,6 @@ export default function NewArrivalsSection() {
                           <span className="text-muted-foreground text-xs">No image</span>
                         </div>
                       )}
-                      {/* New badge */}
-                      <div className="absolute top-2 left-2">
-                        <span className="bg-gold-medium text-white text-[10px] px-2 py-0.5 rounded-full font-semibold tracking-wide">
-                          NEW
-                        </span>
-                      </div>
                     </div>
 
                     {/* Info */}

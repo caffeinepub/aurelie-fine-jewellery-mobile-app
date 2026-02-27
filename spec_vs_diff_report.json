@@ -1,32 +1,40 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-26T12:47:41.408Z",
-  "summary": "The diff implements all three requirements with reasonable fidelity. REQ-1 is confirmed removed in HomePage.tsx. REQ-2 is addressed in CategoryPageTemplate with both ProductFilterBar and HeaderCategoryNav. REQ-3 is implemented via the new CategoryProductRow component integrated into HomeCategoryCarouselsSection. One minor concern: the webkit scrollbar hiding in CategoryProductRow uses a CSS class selector (.category-product-row) but the div uses className 'flex gap-3 overflow-x-scroll' without that class, meaning the webkit scrollbar rule may not apply. The genderFilter is hardcoded to 'girls' in HomeCategoryCarouselsSection for all categories, which may not show products for all categories correctly.",
+  "generatedAt": "2026-02-27T10:46:43.965Z",
+  "summary": "The diff implements all four requirements with good coverage. REQ-1 (icon-only cart), REQ-2 (filter panel), REQ-3 (recently viewed), and REQ-4 (shimmer border) are all present. However, there are some gaps: REQ-1 label removal is confirmed for ProductDetailPage but MasonryProductGrid is truncated so cart button text removal cannot be fully confirmed. REQ-2 uses a Sheet slide-over rather than a truly full-screen panel. REQ-4 shimmer class is applied to MasonryProductGrid, CategoryProductRow, NewArrivalsSection, and RecentlyViewedSection cards.",
   "missing_requirements": [
     {
-      "requirement": "No scrollbar visible on the row - the webkit scrollbar CSS rule targets '.category-product-row' class but the rendered div does not have that class applied, potentially leaving the webkit scrollbar visible in Chrome/Safari",
-      "reason": "In CategoryProductRow.tsx, the injected style targets '.category-product-row::-webkit-scrollbar { display: none }' but the container div uses className='flex gap-3 overflow-x-scroll' without the 'category-product-row' class, so the webkit scrollbar hiding rule will not match the element in Chromium-based browsers.",
+      "id": "REQ-1",
+      "requirement": "Remove 'Add to Cart' text label from MasonryProductGrid cart buttons",
+      "reason": "The MasonryProductGrid diff is truncated and the cart button markup is not visible in the provided content, so removal of the text label there cannot be confirmed from the diff alone.",
       "evidence": [
-        "frontend/src/components/CategoryProductRow.tsx"
+        "frontend/src/components/MasonryProductGrid.tsx"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "genderFilter hardcoded to 'girls' for all category rows in HomeCategoryCarouselsSection",
-      "reason": "The build request says each row should show products belonging to the relevant category with no mention of a fixed gender filter. Hardcoding genderFilter='girls' for every category carousel row was not requested and may cause rows to appear empty for categories with products under other genders.",
+      "description": "Draft/staged filter state in FilterPanel requiring an explicit Apply button before filters take effect",
+      "reason": "The requirement states filters must immediately update the displayed products when the user returns to or closes the filter panel. The FilterPanel implements a local draft state pattern where changes are only committed on an explicit Apply click, adding an extra confirmation step not requested.",
       "evidence": [
-        "frontend/src/components/HomeCategoryCarouselsSection.tsx"
+        "frontend/src/components/FilterPanel.tsx"
       ]
     }
   ],
-  "confidence": 0.82,
+  "confidence": 0.72,
   "changed_files": [
     "frontend-file-summaries.txt",
     "frontend/src/components/CategoryProductRow.tsx",
-    "frontend/src/components/HomeCategoryCarouselsSection.tsx",
+    "frontend/src/components/FilterIconButton.tsx",
+    "frontend/src/components/FilterPanel.tsx",
+    "frontend/src/components/MasonryProductGrid.tsx",
+    "frontend/src/components/NewArrivalsSection.tsx",
+    "frontend/src/components/RecentlyViewedSection.tsx",
+    "frontend/src/hooks/useRecentlyViewed.ts",
+    "frontend/src/index.css",
     "frontend/src/pages/HomePage.tsx",
+    "frontend/src/pages/ProductDetailPage.tsx",
     "frontend/src/pages/categories/CategoryPageTemplate.tsx",
     "project_state.json"
   ]

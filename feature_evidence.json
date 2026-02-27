@@ -2,10 +2,15 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-the-our-story-strip-component-ourstorystrip-from-the-homepage-homepage-tsx-delete-all-references-to-it-in-the-page-layout",
-      "featureTitle": "Remove the 'Our Story' strip component (OurStoryStrip) from the homepage (HomePage.tsx). Delete all references to it in the page layout.",
+      "featureId": "feature-remove-the-add-to-cart-text-label-from-all-product-card-and-product-detail-page-cart-buttons-across-the-entire-app-including-masonryproductgrid-categoryproductrow-newarrivalssection-productdetailpage-categorypagetemplate-and-any-other-component-rendering-an-add-to-cart-button-keep-only-the-cart-icon-visible-inside-the-button-ensure-button-sizing-and-alignment-remain-consistent-after-the-label-is-removed",
+      "featureTitle": "Remove the 'Add to Cart' text label from all product card and product detail page cart buttons across the entire app (including MasonryProductGrid, CategoryProductRow, NewArrivalsSection, ProductDetailPage, CategoryPageTemplate, and any other component rendering an add-to-cart button). Keep only the cart icon visible inside the button. Ensure button sizing and alignment remain consistent after the label is removed.",
       "files": [
-        "frontend/src/pages/HomePage.tsx"
+        "frontend/src/components/CategoryProductRow.tsx",
+        "frontend/src/components/MasonryProductGrid.tsx",
+        "frontend/src/components/NewArrivalsSection.tsx",
+        "frontend/src/pages/HomePage.tsx",
+        "frontend/src/pages/ProductDetailPage.tsx",
+        "frontend/src/pages/categories/CategoryPageTemplate.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -24,9 +29,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-all-product-category-pages-categorypagetemplate-and-all-category-specific-pages-include-a-functional-filter-bar-productfilterbar-with-metal-type-price-range-occasion-and-sort-order-filters-and-a-category-navigation-bar-headercategorynav-for-switching-between-categories-if-either-is-missing-add-it",
-      "featureTitle": "Ensure all product category pages (CategoryPageTemplate and all category-specific pages) include a functional filter bar (ProductFilterBar) with metal type, price range, occasion, and sort order filters, and a category navigation bar (HeaderCategoryNav) for switching between categories. If either is missing, add it.",
+      "featureId": "feature-replace-the-visible-filter-bar-dropdowns-in-product-category-pages-categorypagetemplate-and-productfilterbar-usage-with-a-single-filter-icon-button-when-the-filter-icon-is-clicked-open-a-dedicated-full-page-or-full-screen-filter-panel-page-that-contains-all-filter-options-metal-type-price-range-occasion-sort-order-the-selected-filter-state-must-remain-synchronised-with-the-product-listing-applying-or-clearing-filters-on-the-filter-page-must-immediately-update-the-displayed-products-when-the-user-returns-to-or-closes-the-filter-panel",
+      "featureTitle": "Replace the visible filter bar/dropdowns in product category pages (CategoryPageTemplate and ProductFilterBar usage) with a single filter icon button. When the filter icon is clicked, open a dedicated full-page or full-screen filter panel/page that contains all filter options (metal type, price range, occasion, sort order). The selected filter state must remain synchronised with the product listing: applying or clearing filters on the filter page must immediately update the displayed products when the user returns to or closes the filter panel.",
       "files": [
+        "frontend/src/components/FilterIconButton.tsx",
+        "frontend/src/components/FilterPanel.tsx",
         "frontend/src/pages/categories/CategoryPageTemplate.tsx"
       ],
       "components": [
@@ -46,12 +53,13 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-on-the-homepage-below-each-product-category-carousel-section-rendered-by-homecategorycarouselssection-or-equivalent-add-a-horizontally-scrollable-row-of-small-square-product-cards-each-row-must-show-products-belonging-to-the-relevant-category-exactly-3-square-cards-should-be-visible-on-screen-at-a-time-the-scrollbar-must-be-hidden-no-visible-scrollbar-each-card-should-display-the-product-image-name-and-price",
-      "featureTitle": "On the homepage, below each product category carousel section (rendered by HomeCategoryCarouselsSection or equivalent), add a horizontally scrollable row of small square product cards. Each row must show products belonging to the relevant category. Exactly 3 square cards should be visible on screen at a time. The scrollbar must be hidden (no visible scrollbar). Each card should display the product image, name, and price.",
+      "featureId": "feature-on-the-main-homepage-frontend-src-pages-homepage-tsx-after-all-product-category-carousel-sections-are-rendered-remove-any-statically-listed-product-grid-replace-that-section-with-a-recently-viewed-section-that-shows-products-the-current-customer-has-recently-viewed-track-product-views-in-local-session-storage-since-backend-persistence-is-not-required-for-browsing-history-display-the-section-with-a-visible-label-such-as-recently-viewed-and-render-the-products-as-horizontal-scrollable-product-cards-if-no-products-have-been-viewed-hide-the-section-entirely",
+      "featureTitle": "On the main HomePage (frontend/src/pages/HomePage.tsx), after all product category carousel sections are rendered, remove any statically listed product grid. Replace that section with a 'Recently Viewed' section that shows products the current customer has recently viewed. Track product views in local/session storage (since backend persistence is not required for browsing history). Display the section with a visible label such as 'Recently Viewed' and render the products as horizontal scrollable product cards. If no products have been viewed, hide the section entirely.",
       "files": [
-        "frontend/src/components/CategoryProductRow.tsx",
-        "frontend/src/components/HomeCategoryCarouselsSection.tsx",
-        "frontend/src/pages/HomePage.tsx"
+        "frontend/src/components/RecentlyViewedSection.tsx",
+        "frontend/src/hooks/useRecentlyViewed.ts",
+        "frontend/src/pages/HomePage.tsx",
+        "frontend/src/pages/ProductDetailPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -66,6 +74,32 @@
       ],
       "testIds": [
         "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-subtle-off-white-border-with-a-shimmering-gold-animation-to-every-product-card-across-the-entire-app-this-includes-cards-in-masonryproductgrid-categoryproductrow-newarrivalssection-and-any-other-location-where-product-cards-are-rendered-implement-the-shimmer-as-a-css-keyframe-animation-that-creates-a-gentle-pulsing-or-sweeping-gold-glow-border-effect-the-border-should-be-thin-1-2px-off-white-in-its-base-state-and-animate-to-a-gold-shimmer-continuously-add-the-shared-animation-styles-to-the-global-stylesheet-frontend-src-index-css-and-apply-the-class-to-all-product-card-root-elements",
+      "featureTitle": "Add a subtle off-white border with a shimmering gold animation to every product card across the entire app. This includes cards in MasonryProductGrid, CategoryProductRow, NewArrivalsSection, and any other location where product cards are rendered. Implement the shimmer as a CSS keyframe animation that creates a gentle pulsing or sweeping gold glow/border effect. The border should be thin (1–2px), off-white in its base state, and animate to a gold shimmer continuously. Add the shared animation styles to the global stylesheet (frontend/src/index.css) and apply the class to all product card root elements.",
+      "files": [
+        "frontend/src/components/CategoryProductRow.tsx",
+        "frontend/src/components/MasonryProductGrid.tsx",
+        "frontend/src/components/NewArrivalsSection.tsx",
+        "frontend/src/index.css",
+        "frontend/src/pages/categories/CategoryPageTemplate.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
       ],
       "confidence": "high"
     }

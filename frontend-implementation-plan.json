@@ -1,118 +1,154 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Remove Our Story strip, verify product page filters/nav, add category product rows on homepage",
+  "title": "Product card UI updates: icon-only cart, filter page, recently viewed, shimmering gold border",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Remove the OurStoryStrip component from the homepage",
+      "summary": "Remove 'Add to Cart' text label from all product card and product detail page cart buttons, keeping only the cart icon visible with consistent sizing and alignment",
       "acceptanceCriteria": [
-        "The OurStoryStrip component is no longer rendered on the homepage",
-        "No visual gap or empty space is left where the strip used to be",
-        "The rest of the homepage layout remains unaffected"
+        "No 'Add to Cart' text appears on any product card throughout the app",
+        "Cart icon remains visible and functional on all product cards and detail pages",
+        "Button click still triggers add-to-cart behaviour",
+        "Button layout is not broken after label removal"
       ],
       "file_operations": [
         {
+          "path": "frontend/src/components/MasonryProductGrid.tsx",
+          "operation": "modify",
+          "description": "Remove the 'Add to Cart' text from the add-to-cart button, keeping only the ShoppingCart icon. Ensure button sizing remains consistent by adjusting padding/width as needed. The button should remain functional and visually balanced without the text label."
+        },
+        {
+          "path": "frontend/src/components/CategoryProductRow.tsx",
+          "operation": "modify",
+          "description": "Remove the 'Add to Cart' text label from cart buttons on product cards in the category row. Keep only the cart icon visible and ensure proper button alignment and sizing after label removal."
+        },
+        {
+          "path": "frontend/src/components/NewArrivalsSection.tsx",
+          "operation": "modify",
+          "description": "Remove the 'Add to Cart' text from product card buttons in the new arrivals section. Retain only the ShoppingCart icon and verify button layout consistency."
+        },
+        {
+          "path": "frontend/src/pages/ProductDetailPage.tsx",
+          "operation": "modify",
+          "description": "Remove the 'Add to Cart' text label from the add-to-cart button on the product detail page. Keep only the cart icon visible. Ensure the button remains properly sized and aligned with the 'Buy Now' button."
+        },
+        {
+          "path": "frontend/src/pages/categories/CategoryPageTemplate.tsx",
+          "operation": "modify",
+          "description": "Remove the 'Add to Cart' text from cart buttons on product cards displayed in the category page masonry grid. Keep only the cart icon and maintain consistent button styling."
+        },
+        {
           "path": "frontend/src/pages/HomePage.tsx",
           "operation": "modify",
-          "description": "Remove the OurStoryStrip component import and its usage from the page layout. Ensure the spacing between remaining sections (HomeCarousel, NewArrivalsSection, HomeCategoryCarouselsSection, and product grid) remains consistent without introducing gaps."
+          "description": "Remove the 'Add to Cart' text label from any product cards rendered in the full product grid section on the homepage. Keep only the cart icon visible on all cart buttons."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Ensure all product category pages include functional filter bar and category navigation",
+      "summary": "Replace visible filter bar with a single filter icon button that opens a dedicated full-page filter panel containing all filter options, synchronized with product listing",
       "acceptanceCriteria": [
-        "Every product category page shows the ProductFilterBar with working filter controls",
-        "A horizontal category navigation bar is visible on every product category page",
-        "Selecting a filter updates the displayed product grid accordingly",
-        "Clicking a category in the navigation bar routes to that category page"
+        "Only a filter icon button is shown in the navigation/header area of category/product listing pages — no inline dropdowns are visible by default",
+        "Clicking the filter icon opens a full-screen or overlay filter page/panel",
+        "All existing filter options (metal type, price range, occasion, sort order) are available inside the filter panel",
+        "Active filter count badge is shown on the filter icon when filters are applied",
+        "Product listing updates to reflect selected filters when filters are applied",
+        "A clear-all or reset option is available inside the filter panel",
+        "Filter panel can be closed/dismissed to return to the product listing"
       ],
       "file_operations": [
         {
+          "path": "frontend/src/components/FilterIconButton.tsx",
+          "operation": "create",
+          "description": "Create a new filter icon button component that displays a filter icon (e.g., SlidersHorizontal from lucide-react). Include a badge showing the active filter count when filters are applied. The button should trigger opening the filter panel. Position this button appropriately for use in category page headers."
+        },
+        {
+          "path": "frontend/src/components/FilterPanel.tsx",
+          "operation": "create",
+          "description": "Create a new full-screen or overlay filter panel component that contains all filter controls: metal type, price range, occasion, and sort order. Include a header with a close button, the filter controls (reuse or extract logic from ProductFilterBar), an 'Apply Filters' button, and a 'Clear All' button. The panel should accept filter state and callbacks as props and emit filter changes when the user applies them. Use a sheet/drawer component from shadcn/ui for the overlay."
+        },
+        {
           "path": "frontend/src/pages/categories/CategoryPageTemplate.tsx",
           "operation": "modify",
-          "description": "Verify that CategoryPageTemplate includes both ProductFilterBar and HeaderCategoryNav components. If missing, add ProductFilterBar above the product grid with metal type, price range, occasion, and sort order filters wired to the useProductFilters hook. Add HeaderCategoryNav at the top of the page to display category navigation. Ensure filters and navigation work correctly with the existing product query and filtering logic."
+          "description": "Replace the inline ProductFilterBar with the new FilterIconButton. Add state management for the filter panel open/closed state. When the filter icon is clicked, open the FilterPanel overlay. Pass current filter state and callbacks to the FilterPanel so changes are synchronized with the product listing. Ensure the product grid updates when filters are applied or cleared."
         },
         {
-          "path": "frontend/src/pages/categories/AnkletsPage.tsx",
+          "path": "frontend/src/components/ProductFilterBar.tsx",
           "operation": "modify",
-          "description": "Verify that AnkletsPage properly renders CategoryPageTemplate with the filter bar and navigation. If CategoryPageTemplate doesn't include these components, ensure they are added here or fix the template usage."
-        },
-        {
-          "path": "frontend/src/pages/categories/BridalJewelleryPage.tsx",
-          "operation": "modify",
-          "description": "Verify that BridalJewelleryPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug to enable filtering."
-        },
-        {
-          "path": "frontend/src/pages/categories/EarringsPage.tsx",
-          "operation": "modify",
-          "description": "Verify that EarringsPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug to enable filtering."
-        },
-        {
-          "path": "frontend/src/pages/categories/LabGrownDiamondsJewelleryPage.tsx",
-          "operation": "modify",
-          "description": "Verify that LabGrownDiamondsJewelleryPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug to enable filtering."
-        },
-        {
-          "path": "frontend/src/pages/categories/NecklacePage.tsx",
-          "operation": "modify",
-          "description": "Verify that NecklacePage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug to enable filtering."
-        },
-        {
-          "path": "frontend/src/pages/categories/RingsPage.tsx",
-          "operation": "modify",
-          "description": "Verify that RingsPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug to enable filtering."
-        },
-        {
-          "path": "frontend/src/pages/categories/boys/BoysBraceletPage.tsx",
-          "operation": "modify",
-          "description": "Verify that BoysBraceletPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug and gender filter to enable filtering."
-        },
-        {
-          "path": "frontend/src/pages/categories/boys/BoysChainsPage.tsx",
-          "operation": "modify",
-          "description": "Verify that BoysChainsPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug and gender filter to enable filtering."
-        },
-        {
-          "path": "frontend/src/pages/categories/boys/BoysLabDiamondsPage.tsx",
-          "operation": "modify",
-          "description": "Verify that BoysLabDiamondsPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug and gender filter to enable filtering."
-        },
-        {
-          "path": "frontend/src/pages/categories/boys/BoysRingsPage.tsx",
-          "operation": "modify",
-          "description": "Verify that BoysRingsPage properly renders CategoryPageTemplate with the filter bar and navigation. Ensure the page passes the correct category slug and gender filter to enable filtering."
+          "description": "Refactor ProductFilterBar to extract reusable filter control components (dropdowns/inputs for metal type, price range, occasion, sort order) that can be used inside FilterPanel. Alternatively, keep this component but ensure it can be embedded within the new FilterPanel without the old toolbar layout."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Add horizontally scrollable category product rows below each carousel on homepage",
+      "summary": "Replace static product grid on HomePage with a 'Recently Viewed' section showing products the customer has recently viewed, tracked in local storage, displayed as horizontal scrollable cards",
       "acceptanceCriteria": [
-        "A horizontally scrollable product row appears below each category carousel section on the homepage",
-        "Exactly 3 square product cards are visible at a time without needing to scroll",
-        "No scrollbar is visible on the row (scrollbar hidden via CSS)",
-        "Each card displays the product image cropped to a square aspect ratio, product name, and price in INR",
-        "Only products belonging to the relevant category are shown in each row",
-        "Clicking a product card navigates to that product's detail page",
-        "The rows scroll smoothly by touch/swipe or mouse drag"
+        "The static product grid/listing after category carousels on the HomePage is removed",
+        "A 'Recently Viewed' section with a visible heading label appears after the carousels",
+        "Products the user has clicked on or navigated to are tracked and shown in this section",
+        "Products are displayed in a horizontally scrollable card row",
+        "If no products have been viewed, the section is not rendered",
+        "The most recently viewed product appears first"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/CategoryProductRow.tsx",
+          "path": "frontend/src/hooks/useRecentlyViewed.ts",
           "operation": "create",
-          "description": "Create a new component that displays a horizontally scrollable row of product cards for a specific category. Accept categorySlug as a prop and query products filtered by that category using existing product hooks. Display exactly 3 square product cards visible at once using CSS grid with snap scrolling. Each card should show: product image in 1:1 aspect ratio (using object-fit: cover), product name (truncated if needed), and price formatted in INR using the pricing utility. Hide the scrollbar using CSS (scrollbar-width: none and ::-webkit-scrollbar). Enable smooth horizontal scrolling via overflow-x: scroll and scroll-snap-type. Make each card clickable to navigate to /product/[productId] using TanStack Router Link. Apply responsive touch/swipe support for mobile devices."
+          "description": "Create a hook to manage recently viewed products using localStorage or sessionStorage. Provide functions to add a product ID to the recently viewed list (with a max limit, e.g., 10 items), retrieve the list of recently viewed product IDs in reverse chronological order, and clear the list. Store product IDs as an array and ensure the most recently viewed item is first."
         },
         {
-          "path": "frontend/src/components/HomeCategoryCarouselsSection.tsx",
-          "operation": "modify",
-          "description": "Below each CategoryImageCarousel pair (carousel index 1 and 2), add the new CategoryProductRow component. Pass the appropriate categorySlug prop matching the category being displayed. Ensure the product row is positioned directly below the category description with appropriate spacing (e.g., mt-4 or mt-6). Maintain the existing vertical layout of category sections while adding the product rows seamlessly."
+          "path": "frontend/src/components/RecentlyViewedSection.tsx",
+          "operation": "create",
+          "description": "Create a new RecentlyViewedSection component that uses useRecentlyViewed to fetch the list of recently viewed product IDs. Query the backend to get product details for those IDs (or filter from the full product list). Display the products in a horizontally scrollable row of product cards, similar to CategoryProductRow or NewArrivalsSection. Include a visible heading like 'Recently Viewed'. If no products have been viewed, return null to hide the section."
         },
         {
           "path": "frontend/src/pages/HomePage.tsx",
           "operation": "modify",
-          "description": "Verify that HomePage includes HomeCategoryCarouselsSection and that it renders correctly with the new category product rows below each carousel section. Ensure the overall page layout accommodates the new rows without breaking existing spacing or scroll behavior."
+          "description": "Remove the static product grid section that appears after the category carousels. Replace it with the new RecentlyViewedSection component. Ensure the section is positioned after all category carousel sections and before the footer."
+        },
+        {
+          "path": "frontend/src/pages/ProductDetailPage.tsx",
+          "operation": "modify",
+          "description": "Import and use the useRecentlyViewed hook. When the product detail page loads (e.g., in a useEffect), add the current product ID to the recently viewed list. This ensures that viewing a product detail page tracks the product for the Recently Viewed section."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Add a subtle off-white border with a shimmering gold animation to every product card across the entire app using CSS keyframes",
+      "acceptanceCriteria": [
+        "Every product card in the app has a thin off-white border visible at rest",
+        "The border animates with a shimmering gold effect continuously",
+        "The animation is present on cards in MasonryProductGrid, CategoryProductRow, NewArrivalsSection, and all other card components",
+        "The shimmer animation is defined as a CSS keyframe in the global stylesheet and reused via a shared class",
+        "The animation is subtle and does not interfere with card readability or hover interactions"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add a CSS keyframe animation named 'shimmer-gold-border' that creates a gentle pulsing or sweeping gold glow effect. Use OKLCH-based gold color tokens from the Tailwind config (e.g., var(--gold)). Define a reusable CSS class '.product-card-shimmer' that applies a thin (1-2px) off-white border and the shimmer animation. The animation should be continuous, subtle, and use appropriate timing (e.g., 3-4s duration with ease-in-out)."
+        },
+        {
+          "path": "frontend/src/components/MasonryProductGrid.tsx",
+          "operation": "modify",
+          "description": "Add the 'product-card-shimmer' class to the root element of each product card rendered in the masonry grid. Ensure the shimmer animation does not conflict with existing hover effects or card interactions."
+        },
+        {
+          "path": "frontend/src/components/CategoryProductRow.tsx",
+          "operation": "modify",
+          "description": "Add the 'product-card-shimmer' class to the root element of each product card in the category row. Verify that the border and animation display correctly on the horizontally scrollable cards."
+        },
+        {
+          "path": "frontend/src/components/NewArrivalsSection.tsx",
+          "operation": "modify",
+          "description": "Add the 'product-card-shimmer' class to each product card in the new arrivals section. Ensure the shimmer effect is visible and consistent with other product cards."
+        },
+        {
+          "path": "frontend/src/pages/categories/CategoryPageTemplate.tsx",
+          "operation": "modify",
+          "description": "If the CategoryPageTemplate renders product cards directly (not via MasonryProductGrid), add the 'product-card-shimmer' class to those cards as well. Otherwise, verify that cards rendered via MasonryProductGrid inherit the shimmer class."
         }
       ]
     }

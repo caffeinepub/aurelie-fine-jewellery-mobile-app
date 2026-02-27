@@ -3,11 +3,12 @@ import { useGetProduct } from '../hooks/useQueries';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { ShoppingCart, ArrowLeft, Plus, Minus } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '../hooks/useCart';
 import { toast } from 'sonner';
 import ProductMediaCarousel from '../components/ProductMediaCarousel';
 import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
+import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 
 function formatINR(priceInCents: bigint): string {
   const amount = Number(priceInCents) / 100;
@@ -25,6 +26,14 @@ export default function ProductDetailPage() {
   const { data: product, isLoading } = useGetProduct(productId);
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const { addProduct } = useRecentlyViewed();
+
+  // Track this product as recently viewed
+  useEffect(() => {
+    if (productId) {
+      addProduct(productId);
+    }
+  }, [productId, addProduct]);
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -159,8 +168,7 @@ export default function ProductDetailPage() {
                   className="w-full bg-gold-medium hover:bg-gold-dark text-white customer-cta-btn"
                   size="lg"
                 >
-                  <ShoppingCart className="h-5 w-5 mr-2" />
-                  Add to Cart
+                  <ShoppingCart className="h-5 w-5" />
                 </Button>
                 <Button
                   onClick={handleBuyNow}

@@ -1,81 +1,105 @@
 {
   "kind": "build_request",
-  "title": "Remove Our Story strip, verify product page filters/nav, add category product rows on homepage",
+  "title": "Product card UI updates: icon-only cart, filter page, recently viewed, shimmering gold border",
   "projectName": "Aurelie Fine Jewellery",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove the 'Our Story' strip component (OurStoryStrip) from the homepage (HomePage.tsx). Delete all references to it in the page layout.",
+      "text": "Remove the 'Add to Cart' text label from all product card and product detail page cart buttons across the entire app (including MasonryProductGrid, CategoryProductRow, NewArrivalsSection, ProductDetailPage, CategoryPageTemplate, and any other component rendering an add-to-cart button). Keep only the cart icon visible inside the button. Ensure button sizing and alignment remain consistent after the label is removed.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4",
-          "msg-5"
+          "msg-13"
         ],
         "quotes": [
-          "Remove the our story strip"
+          "Remove the Add to Cart label across all product pages/cards; keep only the cart icon."
         ]
       },
       "acceptanceCriteria": [
-        "The OurStoryStrip component is no longer rendered on the homepage",
-        "No visual gap or empty space is left where the strip used to be",
-        "The rest of the homepage layout remains unaffected"
+        "No 'Add to Cart' text appears on any product card throughout the app",
+        "Cart icon remains visible and functional on all product cards and detail pages",
+        "Button click still triggers add-to-cart behaviour",
+        "Button layout is not broken after label removal"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Ensure all product category pages (CategoryPageTemplate and all category-specific pages) include a functional filter bar (ProductFilterBar) with metal type, price range, occasion, and sort order filters, and a category navigation bar (HeaderCategoryNav) for switching between categories. If either is missing, add it.",
+      "text": "Replace the visible filter bar/dropdowns in product category pages (CategoryPageTemplate and ProductFilterBar usage) with a single filter icon button. When the filter icon is clicked, open a dedicated full-page or full-screen filter panel/page that contains all filter options (metal type, price range, occasion, sort order). The selected filter state must remain synchronised with the product listing: applying or clearing filters on the filter page must immediately update the displayed products when the user returns to or closes the filter panel.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4",
-          "msg-5"
+          "msg-13"
         ],
         "quotes": [
-          "Is the filter and navigation added in product pages?"
+          "Filter and Navigation: Show only a filter icon; clicking it opens a dedicated filter page/panel with all filters, fully synchronized with the product listing."
         ]
       },
       "acceptanceCriteria": [
-        "Every product category page shows the ProductFilterBar with working filter controls",
-        "A horizontal category navigation bar is visible on every product category page",
-        "Selecting a filter updates the displayed product grid accordingly",
-        "Clicking a category in the navigation bar routes to that category page"
+        "Only a filter icon button is shown in the navigation/header area of category/product listing pages — no inline dropdowns are visible by default",
+        "Clicking the filter icon opens a full-screen or overlay filter page/panel",
+        "All existing filter options (metal type, price range, occasion, sort order) are available inside the filter panel",
+        "Active filter count badge is shown on the filter icon when filters are applied",
+        "Product listing updates to reflect selected filters when filters are applied",
+        "A clear-all or reset option is available inside the filter panel",
+        "Filter panel can be closed/dismissed to return to the product listing"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "On the homepage, below each product category carousel section (rendered by HomeCategoryCarouselsSection or equivalent), add a horizontally scrollable row of small square product cards. Each row must show products belonging to the relevant category. Exactly 3 square cards should be visible on screen at a time. The scrollbar must be hidden (no visible scrollbar). Each card should display the product image, name, and price.",
+      "text": "On the main HomePage (frontend/src/pages/HomePage.tsx), after all product category carousel sections are rendered, remove any statically listed product grid. Replace that section with a 'Recently Viewed' section that shows products the current customer has recently viewed. Track product views in local/session storage (since backend persistence is not required for browsing history). Display the section with a visible label such as 'Recently Viewed' and render the products as horizontal scrollable product cards. If no products have been viewed, hide the section entirely.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5",
-          "msg-6"
+          "msg-13"
         ],
         "quotes": [
-          "below each product category carousel, let the product related to relevant carousel be displayed in small scrollable horizontal squares without a scroll bar. Like 3 square should be seen on screen at once."
+          "Home Page – Product Listing: After all product category carousels, replace any static listed products with a Recently Viewed section showing products recently seen by customers, with an appropriate label."
         ]
       },
       "acceptanceCriteria": [
-        "A horizontally scrollable product row appears below each category carousel section on the homepage",
-        "Exactly 3 square product cards are visible at a time without needing to scroll",
-        "No scrollbar is visible on the row (scrollbar hidden via CSS)",
-        "Each card displays the product image cropped to a square aspect ratio, product name, and price in INR",
-        "Only products belonging to the relevant category are shown in each row",
-        "Clicking a product card navigates to that product's detail page",
-        "The rows scroll smoothly by touch/swipe or mouse drag"
+        "The static product grid/listing after category carousels on the HomePage is removed",
+        "A 'Recently Viewed' section with a visible heading label appears after the carousels",
+        "Products the user has clicked on or navigated to are tracked and shown in this section",
+        "Products are displayed in a horizontally scrollable card row",
+        "If no products have been viewed, the section is not rendered",
+        "The most recently viewed product appears first"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Add a subtle off-white border with a shimmering gold animation to every product card across the entire app. This includes cards in MasonryProductGrid, CategoryProductRow, NewArrivalsSection, and any other location where product cards are rendered. Implement the shimmer as a CSS keyframe animation that creates a gentle pulsing or sweeping gold glow/border effect. The border should be thin (1–2px), off-white in its base state, and animate to a gold shimmer continuously. Add the shared animation styles to the global stylesheet (frontend/src/index.css) and apply the class to all product card root elements.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-15",
+          "msg-13"
+        ],
+        "quotes": [
+          "all the product cards across the app will have small off-white border with shimmering gold animation",
+          "Every product card across the entire app will have a subtle off-white border with a shimmering gold animation - not just New Launches."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Every product card in the app has a thin off-white border visible at rest",
+        "The border animates with a shimmering gold effect continuously",
+        "The animation is present on cards in MasonryProductGrid, CategoryProductRow, NewArrivalsSection, and all other card components",
+        "The shimmer animation is defined as a CSS keyframe in the global stylesheet and reused via a shared class",
+        "The animation is subtle and does not interfere with card readability or hover interactions"
       ]
     }
   ],
   "constraints": [
-    "Do not modify any files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui",
-    "Backend schema must not change — no new backend endpoints are required; use existing product query hooks"
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui",
+    "Do not change the backend schema or Motoko actor",
+    "Recently Viewed tracking must use client-side storage only (localStorage or sessionStorage) — no backend changes required",
+    "The shimmering gold border animation must use existing brand gold color tokens from the Tailwind config and index.css"
   ],
   "nonGoals": [
-    "Admin editing of the Our Story strip (removed entirely)",
-    "Adding new backend data models or migrations",
-    "Infinite scroll or pagination for the category product rows",
-    "Adding full product filtering to the homepage category rows"
+    "QR code feature — explicitly removed from scope by the user",
+    "Backend persistence for recently viewed products",
+    "Any changes to authentication or checkout flow",
+    "Adding new product categories or backend data"
   ],
   "imageRequirements": {
     "required": [],

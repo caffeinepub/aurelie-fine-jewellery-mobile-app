@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useGetProducts } from '../../hooks/useQueries';
 import { Loader2 } from 'lucide-react';
@@ -7,7 +8,8 @@ import { useCart } from '../../hooks/useCart';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
 import CustomerPageStyleScope from '../../components/CustomerPageStyleScope';
 import MasonryProductGrid from '../../components/MasonryProductGrid';
-import ProductFilterBar from '../../components/ProductFilterBar';
+import FilterIconButton from '../../components/FilterIconButton';
+import FilterPanel from '../../components/FilterPanel';
 import HeaderCategoryNav from '../../components/HeaderCategoryNav';
 import { useProductFilters } from '../../hooks/useProductFilters';
 import type { Product } from '../../backend';
@@ -29,6 +31,7 @@ export default function CategoryPageTemplate({
   const { data: products, isLoading } = useGetProducts();
   const { addItem } = useCart();
   const { identity } = useInternetIdentity();
+  const [filterPanelOpen, setFilterPanelOpen] = useState(false);
 
   const isAuthenticated = !!identity;
 
@@ -81,30 +84,58 @@ export default function CategoryPageTemplate({
 
         {/* Category Header */}
         <div className="offwhite-surface py-12 md:py-16">
-          <div className="container px-4 text-center">
-            <h1 className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-4">
-              {categoryTitle}
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {categoryDescription}
-            </p>
+          <div className="container px-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="text-center flex-1">
+                <h1 className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-4">
+                  {categoryTitle}
+                </h1>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  {categoryDescription}
+                </p>
+              </div>
+              {/* Filter Icon Button */}
+              {!isLoading && categoryProducts.length > 0 && (
+                <div className="shrink-0 pt-2">
+                  <FilterIconButton
+                    activeFilterCount={activeFilterCount}
+                    onClick={() => setFilterPanelOpen(true)}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Active filter summary */}
+            {activeFilterCount > 0 && (
+              <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <span>
+                  Showing {filteredProducts.length} of {categoryProducts.length} products
+                </span>
+                <button
+                  onClick={clearFilters}
+                  className="text-gold-dark hover:text-gold-medium underline text-xs"
+                >
+                  Clear filters
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Filter Bar */}
-        {!isLoading && categoryProducts.length > 0 && (
-          <ProductFilterBar
-            filters={filters}
-            activeFilterCount={activeFilterCount}
-            onMetalTypeChange={setMetalType}
-            onPriceRangeChange={setPriceRange}
-            onOccasionChange={setOccasion}
-            onSortOrderChange={setSortOrder}
-            onClearFilters={clearFilters}
-            totalProducts={categoryProducts.length}
-            filteredCount={filteredProducts.length}
-          />
-        )}
+        {/* Filter Panel (Sheet overlay) */}
+        <FilterPanel
+          open={filterPanelOpen}
+          onOpenChange={setFilterPanelOpen}
+          filters={filters}
+          activeFilterCount={activeFilterCount}
+          totalProducts={categoryProducts.length}
+          filteredCount={filteredProducts.length}
+          onMetalTypeChange={setMetalType}
+          onPriceRangeChange={setPriceRange}
+          onOccasionChange={setOccasion}
+          onSortOrderChange={setSortOrder}
+          onClearFilters={clearFilters}
+        />
 
         {/* Products Masonry Grid */}
         <div className="offwhite-surface py-8 md:py-12">

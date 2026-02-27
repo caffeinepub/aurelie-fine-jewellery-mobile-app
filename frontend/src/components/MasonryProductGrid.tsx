@@ -108,10 +108,10 @@ export default function MasonryProductGrid({ products, onAddToCart, onBuyNow }: 
             key={product.id}
             ref={(el) => { cardRefs.current[index] = el; }}
             data-index={index}
-            className={`masonry-card mb-6 card-entrance ${direction} ${isVisible ? 'arrived' : ''}`}
+            className={`masonry-card mb-6 card-entrance ${direction} ${isVisible ? 'arrived' : ''} product-card-shimmer`}
             style={{ breakInside: 'avoid' }}
           >
-            <Card className="group overflow-hidden gold-border offwhite-surface hover:shadow-gold transition-all duration-300">
+            <Card className="group overflow-hidden offwhite-surface hover:shadow-gold transition-all duration-300 border-0">
               <div
                 className={`relative ${aspectClass} overflow-hidden cursor-pointer offwhite-surface`}
                 onClick={() => navigate({ to: `/product/${product.id}` })}
@@ -167,8 +167,7 @@ export default function MasonryProductGrid({ products, onAddToCart, onBuyNow }: 
                     className="flex-1 customer-cta-btn text-xs"
                     size="sm"
                   >
-                    <ShoppingCart className="h-3 w-3 mr-1" />
-                    Add to Cart
+                    <ShoppingCart className="h-3 w-3" />
                   </Button>
                   <Button
                     onClick={() => onBuyNow(product)}

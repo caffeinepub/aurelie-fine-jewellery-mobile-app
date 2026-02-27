@@ -415,3 +415,50 @@
     transform: none;
   }
 }
+
+/* ============================================================
+   Product Card Shimmer Gold Border
+   Subtle off-white border with a continuously sweeping
+   shimmering gold glow animation on every product card.
+   ============================================================ */
+
+@keyframes shimmer-gold-border {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px oklch(95% 0.02 60 / 0.9),
+      0 0 4px 1px oklch(65% 0.15 80 / 0.15),
+      0 0 8px 2px oklch(75% 0.12 80 / 0.08);
+  }
+  25% {
+    box-shadow:
+      0 0 0 1px oklch(95% 0.02 60 / 0.9),
+      0 0 6px 2px oklch(65% 0.15 80 / 0.35),
+      0 0 14px 4px oklch(80% 0.10 80 / 0.20);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px oklch(95% 0.02 60 / 0.95),
+      0 0 8px 3px oklch(65% 0.15 80 / 0.50),
+      0 0 18px 6px oklch(75% 0.12 80 / 0.25),
+      0 0 28px 8px oklch(80% 0.10 80 / 0.12);
+  }
+  75% {
+    box-shadow:
+      0 0 0 1px oklch(95% 0.02 60 / 0.9),
+      0 0 6px 2px oklch(65% 0.15 80 / 0.35),
+      0 0 14px 4px oklch(80% 0.10 80 / 0.20);
+  }
+}
+
+.product-card-shimmer {
+  border: 1px solid oklch(95% 0.02 60 / 0.85);
+  border-radius: 0.5rem;
+  animation: shimmer-gold-border 3.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card-shimmer {
+    animation: none;
+    box-shadow: 0 0 0 1px oklch(95% 0.02 60 / 0.9), 0 0 6px 2px oklch(65% 0.15 80 / 0.25);
+  }
+}

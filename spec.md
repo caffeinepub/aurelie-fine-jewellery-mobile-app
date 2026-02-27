@@ -1,11 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Remove the Our Story strip from the homepage, ensure product category pages have filters and category navigation, and add horizontally scrollable product card rows below each category carousel on the homepage.
+**Goal:** Polish product card UI and category page UX across the Aurelie Fine Jewellery app with four targeted improvements: icon-only cart buttons, a full-screen filter panel, a recently viewed section on the home page, and a shimmering gold border on all product cards.
 
 **Planned changes:**
-- Remove the `OurStoryStrip` component from `HomePage.tsx` with no leftover gap
-- Verify that all product category pages include `ProductFilterBar` (metal type, price range, occasion, sort order) and a category navigation bar (`HeaderCategoryNav`); add either if missing
-- Below each category carousel section on the homepage, add a horizontally scrollable row of small square product cards showing products from the relevant category — 3 cards visible at once, no visible scrollbar, each card showing product image, name, and price in INR; clicking navigates to the product detail page
+- Remove the "Add to Cart" text label from all product card and product detail page cart buttons app-wide, leaving only the cart icon visible
+- Replace the inline filter bar/dropdowns on category pages with a single filter icon button that opens a full-screen filter panel containing all filter options (metal type, price range, occasion, sort order), with an active filter count badge
+- Remove the static product grid at the bottom of the HomePage and replace it with a "Recently Viewed" horizontally scrollable card section tracked via localStorage; hide the section when no products have been viewed
+- Add a thin off-white border with a continuously animating shimmering gold CSS keyframe effect to every product card across the app, defined in the global stylesheet
 
-**User-visible outcome:** The homepage no longer shows the Our Story strip, and each category carousel is followed by a swipeable row of 3 square product cards. Product category pages consistently display filter controls and category navigation for browsing and filtering items.
+**User-visible outcome:** Product cards throughout the app display a clean icon-only cart button and a subtle shimmering gold border. Category pages show a minimal filter icon that opens a full-screen filter panel. The home page shows a "Recently Viewed" section that dynamically reflects the user's browsing history.

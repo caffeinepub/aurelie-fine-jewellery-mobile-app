@@ -76,14 +76,14 @@ export default function CategoryProductRow({ categorySlug, genderFilter }: Categ
           <button
             key={product.id}
             onClick={() => navigate({ to: '/product/$productId', params: { productId: product.id } })}
-            className="shrink-0 text-left group focus:outline-none"
+            className="shrink-0 text-left group focus:outline-none product-card-shimmer"
             style={{
               width: 'calc((100% - 1.5rem) / 3)',
               scrollSnapAlign: 'start',
             }}
           >
             {/* Square image */}
-            <div className="aspect-square w-full rounded-xl overflow-hidden border border-gold-medium/20 bg-beige-light group-hover:border-gold-medium/60 transition-all duration-200 group-hover:shadow-gold">
+            <div className="aspect-square w-full rounded-xl overflow-hidden bg-beige-light group-hover:shadow-gold transition-all duration-200">
               {imageUrl ? (
                 <img
                   src={imageUrl}

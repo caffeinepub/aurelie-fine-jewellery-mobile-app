@@ -1,60 +1,86 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-26T12:47:41.414Z",
+  "generatedAt": "2026-02-27T10:46:43.969Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 4,
+    "implemented": 4,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Remove the 'Our Story' strip component (OurStoryStrip) from the homepage (HomePage.tsx). Delete all references to it in the page layout.",
+        "summary": "Remove the 'Add to Cart' text label from all product card and product detail page cart buttons across the entire app (including MasonryProductGrid, CategoryProductRow, NewArrivalsSection, ProductDetailPage, CategoryPageTemplate, and any other component rendering an add-to-cart button). Keep only the cart icon visible inside the button. Ensure button sizing and alignment remain consistent after the label is removed.",
         "status": "implemented",
         "plannedFiles": [
+          "frontend/src/components/MasonryProductGrid.tsx",
+          "frontend/src/components/CategoryProductRow.tsx",
+          "frontend/src/components/NewArrivalsSection.tsx",
+          "frontend/src/pages/ProductDetailPage.tsx",
+          "frontend/src/pages/categories/CategoryPageTemplate.tsx",
           "frontend/src/pages/HomePage.tsx"
         ],
         "matchedFiles": [
+          "frontend/src/components/MasonryProductGrid.tsx",
+          "frontend/src/components/CategoryProductRow.tsx",
+          "frontend/src/components/NewArrivalsSection.tsx",
+          "frontend/src/pages/ProductDetailPage.tsx",
+          "frontend/src/pages/categories/CategoryPageTemplate.tsx",
           "frontend/src/pages/HomePage.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Ensure all product category pages (CategoryPageTemplate and all category-specific pages) include a functional filter bar (ProductFilterBar) with metal type, price range, occasion, and sort order filters, and a category navigation bar (HeaderCategoryNav) for switching between categories. If either is missing, add it.",
+        "summary": "Replace the visible filter bar/dropdowns in product category pages (CategoryPageTemplate and ProductFilterBar usage) with a single filter icon button. When the filter icon is clicked, open a dedicated full-page or full-screen filter panel/page that contains all filter options (metal type, price range, occasion, sort order). The selected filter state must remain synchronised with the product listing: applying or clearing filters on the filter page must immediately update the displayed products when the user returns to or closes the filter panel.",
         "status": "implemented",
         "plannedFiles": [
+          "frontend/src/components/FilterIconButton.tsx",
+          "frontend/src/components/FilterPanel.tsx",
           "frontend/src/pages/categories/CategoryPageTemplate.tsx",
-          "frontend/src/pages/categories/AnkletsPage.tsx",
-          "frontend/src/pages/categories/BridalJewelleryPage.tsx",
-          "frontend/src/pages/categories/EarringsPage.tsx",
-          "frontend/src/pages/categories/LabGrownDiamondsJewelleryPage.tsx",
-          "frontend/src/pages/categories/NecklacePage.tsx",
-          "frontend/src/pages/categories/RingsPage.tsx",
-          "frontend/src/pages/categories/boys/BoysBraceletPage.tsx",
-          "frontend/src/pages/categories/boys/BoysChainsPage.tsx",
-          "frontend/src/pages/categories/boys/BoysLabDiamondsPage.tsx",
-          "frontend/src/pages/categories/boys/BoysRingsPage.tsx"
+          "frontend/src/components/ProductFilterBar.tsx"
         ],
         "matchedFiles": [
+          "frontend/src/components/FilterIconButton.tsx",
+          "frontend/src/components/FilterPanel.tsx",
           "frontend/src/pages/categories/CategoryPageTemplate.tsx"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "On the homepage, below each product category carousel section (rendered by HomeCategoryCarouselsSection or equivalent), add a horizontally scrollable row of small square product cards. Each row must show products belonging to the relevant category. Exactly 3 square cards should be visible on screen at a time. The scrollbar must be hidden (no visible scrollbar). Each card should display the product image, name, and price.",
+        "summary": "On the main HomePage (frontend/src/pages/HomePage.tsx), after all product category carousel sections are rendered, remove any statically listed product grid. Replace that section with a 'Recently Viewed' section that shows products the current customer has recently viewed. Track product views in local/session storage (since backend persistence is not required for browsing history). Display the section with a visible label such as 'Recently Viewed' and render the products as horizontal scrollable product cards. If no products have been viewed, hide the section entirely.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/CategoryProductRow.tsx",
-          "frontend/src/components/HomeCategoryCarouselsSection.tsx",
-          "frontend/src/pages/HomePage.tsx"
+          "frontend/src/hooks/useRecentlyViewed.ts",
+          "frontend/src/components/RecentlyViewedSection.tsx",
+          "frontend/src/pages/HomePage.tsx",
+          "frontend/src/pages/ProductDetailPage.tsx"
         ],
         "matchedFiles": [
+          "frontend/src/hooks/useRecentlyViewed.ts",
+          "frontend/src/components/RecentlyViewedSection.tsx",
+          "frontend/src/pages/HomePage.tsx",
+          "frontend/src/pages/ProductDetailPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Add a subtle off-white border with a shimmering gold animation to every product card across the entire app. This includes cards in MasonryProductGrid, CategoryProductRow, NewArrivalsSection, and any other location where product cards are rendered. Implement the shimmer as a CSS keyframe animation that creates a gentle pulsing or sweeping gold glow/border effect. The border should be thin (1–2px), off-white in its base state, and animate to a gold shimmer continuously. Add the shared animation styles to the global stylesheet (frontend/src/index.css) and apply the class to all product card root elements.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/index.css",
+          "frontend/src/components/MasonryProductGrid.tsx",
           "frontend/src/components/CategoryProductRow.tsx",
-          "frontend/src/components/HomeCategoryCarouselsSection.tsx",
-          "frontend/src/pages/HomePage.tsx"
+          "frontend/src/components/NewArrivalsSection.tsx",
+          "frontend/src/pages/categories/CategoryPageTemplate.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/index.css",
+          "frontend/src/components/MasonryProductGrid.tsx",
+          "frontend/src/components/CategoryProductRow.tsx",
+          "frontend/src/components/NewArrivalsSection.tsx",
+          "frontend/src/pages/categories/CategoryPageTemplate.tsx"
         ]
       }
     ]
@@ -65,8 +91,15 @@
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/src/components/CategoryProductRow.tsx",
-    "frontend/src/components/HomeCategoryCarouselsSection.tsx",
+    "frontend/src/components/FilterIconButton.tsx",
+    "frontend/src/components/FilterPanel.tsx",
+    "frontend/src/components/MasonryProductGrid.tsx",
+    "frontend/src/components/NewArrivalsSection.tsx",
+    "frontend/src/components/RecentlyViewedSection.tsx",
+    "frontend/src/hooks/useRecentlyViewed.ts",
+    "frontend/src/index.css",
     "frontend/src/pages/HomePage.tsx",
+    "frontend/src/pages/ProductDetailPage.tsx",
     "frontend/src/pages/categories/CategoryPageTemplate.tsx",
     "project_state.json",
     "scratch/component-selection.json",
