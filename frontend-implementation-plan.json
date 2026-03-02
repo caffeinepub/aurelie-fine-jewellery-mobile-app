@@ -1,154 +1,38 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Product card UI updates: icon-only cart, filter page, recently viewed, shimmering gold border",
+  "title": "Fix For Her page: category circle image sync and body background color",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Remove 'Add to Cart' text label from all product card and product detail page cart buttons, keeping only the cart icon visible with consistent sizing and alignment",
+      "summary": "Fix the sliding product category circles on the For Her page (GirlsHomePage) to fetch and display uploaded category header images from the backend, matching the pattern used in BoysHomePage",
       "acceptanceCriteria": [
-        "No 'Add to Cart' text appears on any product card throughout the app",
-        "Cart icon remains visible and functional on all product cards and detail pages",
-        "Button click still triggers add-to-cart behaviour",
-        "Button layout is not broken after label removal"
+        "When an image is uploaded for a girls category via the admin panel, the corresponding circle on the For Her page displays that image.",
+        "The circle uses the same data-fetching approach as BoysHomePage (fetching category header nav data from the backend).",
+        "If no image has been uploaded for a category, the circle falls back to the emoji/icon as before.",
+        "Image updates in the admin panel are reflected on the For Her page without requiring a full page reload (React Query cache invalidation)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/MasonryProductGrid.tsx",
+          "path": "frontend/src/pages/GirlsHomePage.tsx",
           "operation": "modify",
-          "description": "Remove the 'Add to Cart' text from the add-to-cart button, keeping only the ShoppingCart icon. Ensure button sizing remains consistent by adjusting padding/width as needed. The button should remain functional and visually balanced without the text label."
-        },
-        {
-          "path": "frontend/src/components/CategoryProductRow.tsx",
-          "operation": "modify",
-          "description": "Remove the 'Add to Cart' text label from cart buttons on product cards in the category row. Keep only the cart icon visible and ensure proper button alignment and sizing after label removal."
-        },
-        {
-          "path": "frontend/src/components/NewArrivalsSection.tsx",
-          "operation": "modify",
-          "description": "Remove the 'Add to Cart' text from product card buttons in the new arrivals section. Retain only the ShoppingCart icon and verify button layout consistency."
-        },
-        {
-          "path": "frontend/src/pages/ProductDetailPage.tsx",
-          "operation": "modify",
-          "description": "Remove the 'Add to Cart' text label from the add-to-cart button on the product detail page. Keep only the cart icon visible. Ensure the button remains properly sized and aligned with the 'Buy Now' button."
-        },
-        {
-          "path": "frontend/src/pages/categories/CategoryPageTemplate.tsx",
-          "operation": "modify",
-          "description": "Remove the 'Add to Cart' text from cart buttons on product cards displayed in the category page masonry grid. Keep only the cart icon and maintain consistent button styling."
-        },
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Remove the 'Add to Cart' text label from any product cards rendered in the full product grid section on the homepage. Keep only the cart icon visible on all cart buttons."
+          "description": "Replace the static emoji-based category rendering with a data-driven approach that fetches category headers from the backend using the useCategoryHeaders hook (same pattern as BoysHomePage). For each category in PRODUCT_CATEGORIES filtered to girls, fetch the corresponding CategoryHeader using the category slug. Render the uploaded image using getDirectURL() when available, falling back to the emoji icon when no image has been uploaded. Ensure proper loading states and error handling. The component should use React Query to enable automatic cache invalidation when headers are updated in the admin panel."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Replace visible filter bar with a single filter icon button that opens a dedicated full-page filter panel containing all filter options, synchronized with product listing",
+      "summary": "Fix the body background color of the For Her page (GirlsHomePage) to match the background color used on all other customer-facing pages",
       "acceptanceCriteria": [
-        "Only a filter icon button is shown in the navigation/header area of category/product listing pages — no inline dropdowns are visible by default",
-        "Clicking the filter icon opens a full-screen or overlay filter page/panel",
-        "All existing filter options (metal type, price range, occasion, sort order) are available inside the filter panel",
-        "Active filter count badge is shown on the filter icon when filters are applied",
-        "Product listing updates to reflect selected filters when filters are applied",
-        "A clear-all or reset option is available inside the filter panel",
-        "Filter panel can be closed/dismissed to return to the product listing"
+        "The For Her page body background color matches the background color of other customer-facing pages (e.g., HomePage, BoysHomePage).",
+        "The header and footer background colors on the For Her page are unchanged.",
+        "No off-white or differing background tint is visible in the page body area on the For Her page."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/FilterIconButton.tsx",
-          "operation": "create",
-          "description": "Create a new filter icon button component that displays a filter icon (e.g., SlidersHorizontal from lucide-react). Include a badge showing the active filter count when filters are applied. The button should trigger opening the filter panel. Position this button appropriately for use in category page headers."
-        },
-        {
-          "path": "frontend/src/components/FilterPanel.tsx",
-          "operation": "create",
-          "description": "Create a new full-screen or overlay filter panel component that contains all filter controls: metal type, price range, occasion, and sort order. Include a header with a close button, the filter controls (reuse or extract logic from ProductFilterBar), an 'Apply Filters' button, and a 'Clear All' button. The panel should accept filter state and callbacks as props and emit filter changes when the user applies them. Use a sheet/drawer component from shadcn/ui for the overlay."
-        },
-        {
-          "path": "frontend/src/pages/categories/CategoryPageTemplate.tsx",
+          "path": "frontend/src/pages/GirlsHomePage.tsx",
           "operation": "modify",
-          "description": "Replace the inline ProductFilterBar with the new FilterIconButton. Add state management for the filter panel open/closed state. When the filter icon is clicked, open the FilterPanel overlay. Pass current filter state and callbacks to the FilterPanel so changes are synchronized with the product listing. Ensure the product grid updates when filters are applied or cleared."
-        },
-        {
-          "path": "frontend/src/components/ProductFilterBar.tsx",
-          "operation": "modify",
-          "description": "Refactor ProductFilterBar to extract reusable filter control components (dropdowns/inputs for metal type, price range, occasion, sort order) that can be used inside FilterPanel. Alternatively, keep this component but ensure it can be embedded within the new FilterPanel without the old toolbar layout."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Replace static product grid on HomePage with a 'Recently Viewed' section showing products the customer has recently viewed, tracked in local storage, displayed as horizontal scrollable cards",
-      "acceptanceCriteria": [
-        "The static product grid/listing after category carousels on the HomePage is removed",
-        "A 'Recently Viewed' section with a visible heading label appears after the carousels",
-        "Products the user has clicked on or navigated to are tracked and shown in this section",
-        "Products are displayed in a horizontally scrollable card row",
-        "If no products have been viewed, the section is not rendered",
-        "The most recently viewed product appears first"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useRecentlyViewed.ts",
-          "operation": "create",
-          "description": "Create a hook to manage recently viewed products using localStorage or sessionStorage. Provide functions to add a product ID to the recently viewed list (with a max limit, e.g., 10 items), retrieve the list of recently viewed product IDs in reverse chronological order, and clear the list. Store product IDs as an array and ensure the most recently viewed item is first."
-        },
-        {
-          "path": "frontend/src/components/RecentlyViewedSection.tsx",
-          "operation": "create",
-          "description": "Create a new RecentlyViewedSection component that uses useRecentlyViewed to fetch the list of recently viewed product IDs. Query the backend to get product details for those IDs (or filter from the full product list). Display the products in a horizontally scrollable row of product cards, similar to CategoryProductRow or NewArrivalsSection. Include a visible heading like 'Recently Viewed'. If no products have been viewed, return null to hide the section."
-        },
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Remove the static product grid section that appears after the category carousels. Replace it with the new RecentlyViewedSection component. Ensure the section is positioned after all category carousel sections and before the footer."
-        },
-        {
-          "path": "frontend/src/pages/ProductDetailPage.tsx",
-          "operation": "modify",
-          "description": "Import and use the useRecentlyViewed hook. When the product detail page loads (e.g., in a useEffect), add the current product ID to the recently viewed list. This ensures that viewing a product detail page tracks the product for the Recently Viewed section."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Add a subtle off-white border with a shimmering gold animation to every product card across the entire app using CSS keyframes",
-      "acceptanceCriteria": [
-        "Every product card in the app has a thin off-white border visible at rest",
-        "The border animates with a shimmering gold effect continuously",
-        "The animation is present on cards in MasonryProductGrid, CategoryProductRow, NewArrivalsSection, and all other card components",
-        "The shimmer animation is defined as a CSS keyframe in the global stylesheet and reused via a shared class",
-        "The animation is subtle and does not interfere with card readability or hover interactions"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add a CSS keyframe animation named 'shimmer-gold-border' that creates a gentle pulsing or sweeping gold glow effect. Use OKLCH-based gold color tokens from the Tailwind config (e.g., var(--gold)). Define a reusable CSS class '.product-card-shimmer' that applies a thin (1-2px) off-white border and the shimmer animation. The animation should be continuous, subtle, and use appropriate timing (e.g., 3-4s duration with ease-in-out)."
-        },
-        {
-          "path": "frontend/src/components/MasonryProductGrid.tsx",
-          "operation": "modify",
-          "description": "Add the 'product-card-shimmer' class to the root element of each product card rendered in the masonry grid. Ensure the shimmer animation does not conflict with existing hover effects or card interactions."
-        },
-        {
-          "path": "frontend/src/components/CategoryProductRow.tsx",
-          "operation": "modify",
-          "description": "Add the 'product-card-shimmer' class to the root element of each product card in the category row. Verify that the border and animation display correctly on the horizontally scrollable cards."
-        },
-        {
-          "path": "frontend/src/components/NewArrivalsSection.tsx",
-          "operation": "modify",
-          "description": "Add the 'product-card-shimmer' class to each product card in the new arrivals section. Ensure the shimmer effect is visible and consistent with other product cards."
-        },
-        {
-          "path": "frontend/src/pages/categories/CategoryPageTemplate.tsx",
-          "operation": "modify",
-          "description": "If the CategoryPageTemplate renders product cards directly (not via MasonryProductGrid), add the 'product-card-shimmer' class to those cards as well. Otherwise, verify that cards rendered via MasonryProductGrid inherit the shimmer class."
+          "description": "Update the component's root element background styling to match the standard customer-facing page background. Remove any custom background color classes (such as bg-gray-50, bg-white, or similar off-white tints) from the main container div and ensure it inherits the default body background defined in global styles. Only the page body section should be affected—do not modify any styling applied to the Layout component (header/footer)."
         }
       ]
     }

@@ -1,47 +1,51 @@
-import { lazy, Suspense, useState, useEffect } from 'react';
-import { RouterProvider, createRouter, createRoute, createRootRoute } from '@tanstack/react-router';
+import React, { Suspense, lazy } from 'react';
+import {
+  createRouter,
+  createRoute,
+  createRootRoute,
+  RouterProvider,
+} from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
-import { Toaster } from './components/ui/sonner';
+import { Toaster } from '@/components/ui/sonner';
 import Layout from './components/Layout';
 import RouteLoadingFallback from './components/RouteLoadingFallback';
-import ProfileSetupModal from './components/ProfileSetupModal';
-import SplashScreen from './components/SplashScreen';
-import { useInternetIdentity } from './hooks/useInternetIdentity';
-import { useGetCallerUserProfile } from './hooks/useQueries';
 
-// Lazy load pages
+// Lazy-loaded pages
 const HomePage = lazy(() => import('./pages/HomePage'));
 const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage'));
 const CartPage = lazy(() => import('./pages/CartPage'));
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
-const PaymentSuccessPage = lazy(() => import('./pages/PaymentSuccessPage'));
-const PaymentFailurePage = lazy(() => import('./pages/PaymentFailurePage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
-const CustomerDashboardPage = lazy(() => import('./pages/CustomerDashboardPage'));
+const ContactDetailsPage = lazy(() => import('./pages/ContactDetailsPage'));
 const OrdersPage = lazy(() => import('./pages/OrdersPage'));
+const CustomerDashboardPage = lazy(() => import('./pages/CustomerDashboardPage'));
 const ProfileDetailsPage = lazy(() => import('./pages/ProfileDetailsPage'));
 const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage'));
+const AdminProductsPage = lazy(() => import('./pages/admin/AdminProductsPage'));
 const AdminOrdersPage = lazy(() => import('./pages/admin/AdminOrdersPage'));
-const CategoryEditPage = lazy(() => import('./pages/admin/CategoryEditPage'));
-const ProductCategoryPage = lazy(() => import('./pages/ProductCategoryPage'));
+const AdminInquiriesPage = lazy(() => import('./pages/admin/AdminInquiriesPage'));
+const AdminSiteContentPage = lazy(() => import('./pages/admin/AdminSiteContentPage'));
+const AdminCarouselPage = lazy(() => import('./pages/admin/AdminCarouselPage'));
+const AdminBannerPage = lazy(() => import('./pages/admin/AdminBannerPage'));
+const AdminCategoriesPage = lazy(() => import('./pages/admin/AdminCategoriesPage'));
+const PaymentSuccessPage = lazy(() => import('./pages/PaymentSuccessPage'));
+const PaymentFailurePage = lazy(() => import('./pages/PaymentFailurePage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const ShippingPolicyPage = lazy(() => import('./pages/ShippingPolicyPage'));
 const TermsConditionsPage = lazy(() => import('./pages/TermsConditionsPage'));
-
-// Gender home pages
-const BoysHomePage = lazy(() => import('./pages/BoysHomePage'));
 const GirlsHomePage = lazy(() => import('./pages/GirlsHomePage'));
+const BoysHomePage = lazy(() => import('./pages/BoysHomePage'));
 
-// Girls category pages
-const BridalJewelleryPage = lazy(() => import('./pages/categories/BridalJewelleryPage'));
+// Category pages - Girls
 const RingsPage = lazy(() => import('./pages/categories/RingsPage'));
 const EarringsPage = lazy(() => import('./pages/categories/EarringsPage'));
 const NecklacePage = lazy(() => import('./pages/categories/NecklacePage'));
 const AnkletsPage = lazy(() => import('./pages/categories/AnkletsPage'));
+const BridalJewelleryPage = lazy(() => import('./pages/categories/BridalJewelleryPage'));
 const LabGrownDiamondsJewelleryPage = lazy(() => import('./pages/categories/LabGrownDiamondsJewelleryPage'));
 
-// Boys category pages
+// Category pages - Boys
 const BoysChainsPage = lazy(() => import('./pages/categories/boys/BoysChainsPage'));
 const BoysBraceletPage = lazy(() => import('./pages/categories/boys/BoysBraceletPage'));
 const BoysRingsPage = lazy(() => import('./pages/categories/boys/BoysRingsPage'));
@@ -51,34 +55,12 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5,
-      refetchOnWindowFocus: false,
+      retry: 1,
     },
   },
 });
 
-function ProfileSetupWrapper() {
-  const { identity } = useInternetIdentity();
-  const { data: userProfile, isLoading: profileLoading, isFetched } = useGetCallerUserProfile();
-  const [showProfileSetup, setShowProfileSetup] = useState(false);
-
-  const isAuthenticated = !!identity;
-
-  useEffect(() => {
-    if (isAuthenticated && !profileLoading && isFetched && userProfile === null) {
-      setShowProfileSetup(true);
-    } else {
-      setShowProfileSetup(false);
-    }
-  }, [isAuthenticated, profileLoading, isFetched, userProfile]);
-
-  return (
-    <ProfileSetupModal
-      open={showProfileSetup}
-      onComplete={() => setShowProfileSetup(false)}
-    />
-  );
-}
-
+// Root route uses Layout directly as component (Layout renders <Outlet /> internally)
 const rootRoute = createRootRoute({
   component: Layout,
 });
@@ -89,6 +71,26 @@ const indexRoute = createRoute({
   component: () => (
     <Suspense fallback={<RouteLoadingFallback />}>
       <HomePage />
+    </Suspense>
+  ),
+});
+
+const girlsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/girls',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <GirlsHomePage />
+    </Suspense>
+  ),
+});
+
+const boysRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/boys',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <BoysHomePage />
     </Suspense>
   ),
 });
@@ -123,26 +125,6 @@ const checkoutRoute = createRoute({
   ),
 });
 
-const paymentSuccessRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/payment-success',
-  component: () => (
-    <Suspense fallback={<RouteLoadingFallback />}>
-      <PaymentSuccessPage />
-    </Suspense>
-  ),
-});
-
-const paymentFailureRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/payment-failure',
-  component: () => (
-    <Suspense fallback={<RouteLoadingFallback />}>
-      <PaymentFailurePage />
-    </Suspense>
-  ),
-});
-
 const contactRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/contact',
@@ -153,12 +135,12 @@ const contactRoute = createRoute({
   ),
 });
 
-const dashboardRoute = createRoute({
+const contactDetailsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/dashboard',
+  path: '/contact-details',
   component: () => (
     <Suspense fallback={<RouteLoadingFallback />}>
-      <CustomerDashboardPage />
+      <ContactDetailsPage />
     </Suspense>
   ),
 });
@@ -169,6 +151,16 @@ const ordersRoute = createRoute({
   component: () => (
     <Suspense fallback={<RouteLoadingFallback />}>
       <OrdersPage />
+    </Suspense>
+  ),
+});
+
+const dashboardRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/dashboard',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <CustomerDashboardPage />
     </Suspense>
   ),
 });
@@ -193,6 +185,16 @@ const adminRoute = createRoute({
   ),
 });
 
+const adminProductsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/products',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <AdminProductsPage />
+    </Suspense>
+  ),
+});
+
 const adminOrdersRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/admin/orders',
@@ -203,82 +205,72 @@ const adminOrdersRoute = createRoute({
   ),
 });
 
-const categoryEditRoute = createRoute({
+const adminInquiriesRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/admin/categories/$categorySlug/edit',
+  path: '/admin/inquiries',
   component: () => (
     <Suspense fallback={<RouteLoadingFallback />}>
-      <CategoryEditPage />
+      <AdminInquiriesPage />
     </Suspense>
   ),
 });
 
-const productCategoryRoute = createRoute({
+const adminSiteContentRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/category/$categorySlug',
+  path: '/admin/site-content',
   component: () => (
     <Suspense fallback={<RouteLoadingFallback />}>
-      <ProductCategoryPage />
+      <AdminSiteContentPage />
     </Suspense>
   ),
 });
 
-const bridalJewelleryRoute = createRoute({
+const adminCarouselRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/category/bridal-jewellery',
+  path: '/admin/carousel',
   component: () => (
     <Suspense fallback={<RouteLoadingFallback />}>
-      <BridalJewelleryPage />
+      <AdminCarouselPage />
     </Suspense>
   ),
 });
 
-const ringsRoute = createRoute({
+const adminBannerRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/category/rings',
+  path: '/admin/banner',
   component: () => (
     <Suspense fallback={<RouteLoadingFallback />}>
-      <RingsPage />
+      <AdminBannerPage />
     </Suspense>
   ),
 });
 
-const earringsRoute = createRoute({
+const adminCategoriesRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/category/earrings',
+  path: '/admin/categories',
   component: () => (
     <Suspense fallback={<RouteLoadingFallback />}>
-      <EarringsPage />
+      <AdminCategoriesPage />
     </Suspense>
   ),
 });
 
-const necklaceRoute = createRoute({
+const paymentSuccessRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/category/necklace',
+  path: '/payment-success',
   component: () => (
     <Suspense fallback={<RouteLoadingFallback />}>
-      <NecklacePage />
+      <PaymentSuccessPage />
     </Suspense>
   ),
 });
 
-const ankletsRoute = createRoute({
+const paymentFailureRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/category/anklets',
+  path: '/payment-failure',
   component: () => (
     <Suspense fallback={<RouteLoadingFallback />}>
-      <AnkletsPage />
-    </Suspense>
-  ),
-});
-
-const labGrownDiamondsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/category/lab-diamonds-jewellery',
-  component: () => (
-    <Suspense fallback={<RouteLoadingFallback />}>
-      <LabGrownDiamondsJewelleryPage />
+      <PaymentFailurePage />
     </Suspense>
   ),
 });
@@ -313,28 +305,68 @@ const termsConditionsRoute = createRoute({
   ),
 });
 
-// Gender home pages
-const boysHomeRoute = createRoute({
+// Girls category routes
+const ringsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/boys',
+  path: '/rings',
   component: () => (
     <Suspense fallback={<RouteLoadingFallback />}>
-      <BoysHomePage />
+      <RingsPage />
     </Suspense>
   ),
 });
 
-const girlsHomeRoute = createRoute({
+const earringsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/girls',
+  path: '/earrings',
   component: () => (
     <Suspense fallback={<RouteLoadingFallback />}>
-      <GirlsHomePage />
+      <EarringsPage />
     </Suspense>
   ),
 });
 
-// Boys sub-category routes
+const necklaceRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/necklace',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <NecklacePage />
+    </Suspense>
+  ),
+});
+
+const ankletsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/anklets',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <AnkletsPage />
+    </Suspense>
+  ),
+});
+
+const bridalJewelleryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bridal-jewellery',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <BridalJewelleryPage />
+    </Suspense>
+  ),
+});
+
+const labGrownDiamondsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/lab-diamonds-jewellery',
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <LabGrownDiamondsJewelleryPage />
+    </Suspense>
+  ),
+});
+
+// Boys category routes
 const boysChainsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/boys/chains',
@@ -377,32 +409,35 @@ const boysLabDiamondsRoute = createRoute({
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
+  girlsRoute,
+  boysRoute,
   productDetailRoute,
   cartRoute,
   checkoutRoute,
-  paymentSuccessRoute,
-  paymentFailureRoute,
   contactRoute,
-  dashboardRoute,
+  contactDetailsRoute,
   ordersRoute,
+  dashboardRoute,
   profileRoute,
   adminRoute,
+  adminProductsRoute,
   adminOrdersRoute,
-  categoryEditRoute,
-  productCategoryRoute,
-  bridalJewelleryRoute,
+  adminInquiriesRoute,
+  adminSiteContentRoute,
+  adminCarouselRoute,
+  adminBannerRoute,
+  adminCategoriesRoute,
+  paymentSuccessRoute,
+  paymentFailureRoute,
+  privacyPolicyRoute,
+  shippingPolicyRoute,
+  termsConditionsRoute,
   ringsRoute,
   earringsRoute,
   necklaceRoute,
   ankletsRoute,
+  bridalJewelleryRoute,
   labGrownDiamondsRoute,
-  privacyPolicyRoute,
-  shippingPolicyRoute,
-  termsConditionsRoute,
-  // Gender home pages
-  boysHomeRoute,
-  girlsHomeRoute,
-  // Boys sub-category routes
   boysChainsRoute,
   boysBraceletRoute,
   boysRingsRoute,
@@ -418,31 +453,11 @@ declare module '@tanstack/react-router' {
 }
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(true);
-
-  useEffect(() => {
-    // Check if splash has been shown in this session
-    const splashShown = sessionStorage.getItem('splashShown');
-    if (splashShown) {
-      setShowSplash(false);
-    }
-  }, []);
-
-  const handleSplashComplete = () => {
-    sessionStorage.setItem('splashShown', 'true');
-    setShowSplash(false);
-  };
-
-  if (showSplash) {
-    return <SplashScreen onComplete={handleSplashComplete} />;
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <RouterProvider router={router} />
-        <Toaster />
-        <ProfileSetupWrapper />
+        <Toaster richColors position="top-right" />
       </ThemeProvider>
     </QueryClientProvider>
   );

@@ -1,130 +1,161 @@
-import { useGetSiteContent } from '../../hooks/useQueries';
+import React from 'react';
 import { Link } from '@tanstack/react-router';
-import { SiFacebook, SiInstagram, SiX } from 'react-icons/si';
+import { SiInstagram, SiFacebook, SiX } from 'react-icons/si';
+import { Heart } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { useActor } from '../../hooks/useActor';
 
 export default function FooterSystem() {
-  const { data: siteContent } = useGetSiteContent();
+  const { actor, isFetching: actorFetching } = useActor();
 
-  const currentYear = new Date().getFullYear();
-  const appIdentifier = encodeURIComponent(
-    typeof window !== 'undefined' ? window.location.hostname : 'aurelie-jewellery'
-  );
+  const { data: siteContent } = useQuery({
+    queryKey: ['siteContent'],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getSiteContent();
+    },
+    enabled: !!actor && !actorFetching,
+  });
+
+  const appId = typeof window !== 'undefined' ? window.location.hostname : 'aurelie-fine-jewellery';
 
   return (
-    <footer className="w-full bg-[#f5f5f0] border-t border-gold-medium/20" data-footer-scope>
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {/* Left Column: Logo */}
-          <div className="flex flex-col items-start">
+    <footer style={{ backgroundColor: '#f5f5f0' }} className="border-t border-gold/20 mt-auto">
+      <div className="max-w-7xl mx-auto px-4 py-10">
+        {/* Top section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          {/* Brand */}
+          <div>
             <img
-              src="/assets/generated/aurelie-lockup-transparent.dim_1000x320.png"
+              src="/assets/generated/aurelie-wordmark-goldshine-transparent.dim_1600x500.png"
               alt="Aurelie Fine Jewellery"
-              className="h-16 object-contain mb-4"
+              className="h-10 mb-3 object-contain"
             />
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {siteContent?.aboutUs?.slice(0, 120) ||
+                'Exquisite handcrafted jewellery inspired by timeless elegance.'}
+              {siteContent?.aboutUs && siteContent.aboutUs.length > 120 ? '…' : ''}
+            </p>
           </div>
 
-          {/* Right Column: Contact & Policies */}
-          <div className="space-y-6">
-            {/* Contact Info */}
-            <div className="space-y-2">
-              <h3 className="font-serif text-lg font-semibold text-bottle-green-dark">Contact Us</h3>
-              <div className="space-y-1 text-sm text-bottle-green-dark">
-                <p>{siteContent?.contactEmail || 'contact@aurelie.com'}</p>
-                <p>{siteContent?.phoneNumber || '+65 1234 5678'}</p>
-                <p>{siteContent?.address || 'Orchard Road, Singapore'}</p>
-              </div>
-            </div>
-
-            {/* Policy Links */}
-            <div className="space-y-2">
-              <h3 className="font-serif text-lg font-semibold text-bottle-green-dark">Policies</h3>
-              <div className="flex flex-wrap gap-4 text-sm">
+          {/* Quick Links */}
+          <div>
+            <h4 className="font-semibold text-foreground mb-3 text-sm uppercase tracking-wider">
+              Quick Links
+            </h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/" className="text-muted-foreground hover:text-gold transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-muted-foreground hover:text-gold transition-colors">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contact-details"
+                  className="text-muted-foreground hover:text-gold transition-colors"
+                >
+                  Contact Details
+                </Link>
+              </li>
+              <li>
                 <Link
                   to="/privacy-policy"
-                  className="text-bottle-green-dark hover:text-gold-medium transition-colors underline-offset-2 hover:underline"
+                  className="text-muted-foreground hover:text-gold transition-colors"
                 >
                   Privacy Policy
                 </Link>
-                <Link
-                  to="/shipping-policy"
-                  className="text-bottle-green-dark hover:text-gold-medium transition-colors underline-offset-2 hover:underline"
-                >
-                  Shipping Policy
-                </Link>
+              </li>
+              <li>
                 <Link
                   to="/terms-conditions"
-                  className="text-bottle-green-dark hover:text-gold-medium transition-colors underline-offset-2 hover:underline"
+                  className="text-muted-foreground hover:text-gold transition-colors"
                 >
                   Terms &amp; Conditions
                 </Link>
-              </div>
-            </div>
+              </li>
+              <li>
+                <Link
+                  to="/shipping-policy"
+                  className="text-muted-foreground hover:text-gold transition-colors"
+                >
+                  Shipping Policy
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-            {/* Social Media */}
-            <div className="space-y-2">
-              <h3 className="font-serif text-lg font-semibold text-bottle-green-dark">Follow Us</h3>
-              <div className="flex items-center gap-4">
-                {siteContent?.instagramUrl && (
-                  <a
-                    href={siteContent.instagramUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-bottle-green-dark hover:text-gold-medium transition-colors"
-                    aria-label="Instagram"
-                  >
-                    <SiInstagram className="h-5 w-5" />
-                  </a>
-                )}
-                {siteContent?.facebookUrl && (
-                  <a
-                    href={siteContent.facebookUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-bottle-green-dark hover:text-gold-medium transition-colors"
-                    aria-label="Facebook"
-                  >
-                    <SiFacebook className="h-5 w-5" />
-                  </a>
-                )}
-                {siteContent?.xUrl && (
-                  <a
-                    href={siteContent.xUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-bottle-green-dark hover:text-gold-medium transition-colors"
-                    aria-label="X (Twitter)"
-                  >
-                    <SiX className="h-5 w-5" />
-                  </a>
-                )}
-              </div>
+          {/* Contact & Social */}
+          <div>
+            <h4 className="font-semibold text-foreground mb-3 text-sm uppercase tracking-wider">
+              Connect
+            </h4>
+            <div className="space-y-2 text-sm text-muted-foreground mb-4">
+              {siteContent?.phoneNumber && <p>{siteContent.phoneNumber}</p>}
+              {siteContent?.contactEmail && (
+                <a
+                  href={`mailto:${siteContent.contactEmail}`}
+                  className="block hover:text-gold transition-colors"
+                >
+                  {siteContent.contactEmail}
+                </a>
+              )}
+              {siteContent?.address && <p>{siteContent.address}</p>}
+            </div>
+            <div className="flex gap-3">
+              {siteContent?.instagramUrl && (
+                <a
+                  href={siteContent.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-gold/10 rounded-full hover:bg-gold/20 transition-colors"
+                >
+                  <SiInstagram className="w-4 h-4 text-gold" />
+                </a>
+              )}
+              {siteContent?.facebookUrl && (
+                <a
+                  href={siteContent.facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-gold/10 rounded-full hover:bg-gold/20 transition-colors"
+                >
+                  <SiFacebook className="w-4 h-4 text-gold" />
+                </a>
+              )}
+              {siteContent?.xUrl && (
+                <a
+                  href={siteContent.xUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-gold/10 rounded-full hover:bg-gold/20 transition-colors"
+                >
+                  <SiX className="w-4 h-4 text-gold" />
+                </a>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Footer Content */}
-        {siteContent?.footerContent && (
-          <div className="mt-8 pt-6 border-t border-gold-medium/20">
-            <p className="text-sm text-bottle-green-medium text-center">
-              {siteContent.footerContent}
-            </p>
-          </div>
-        )}
-
-        {/* Bottom Bar */}
-        <div className="mt-8 pt-6 border-t border-gold-medium/20 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-bottle-green-medium">
-            &copy; {currentYear} {siteContent?.officialName || 'Aurelie Fine Jewellery'}. All rights reserved.
+        {/* Divider */}
+        <div className="border-t border-gold/20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
+          <p>
+            © {new Date().getFullYear()}{' '}
+            {siteContent?.officialName || 'Aurelie Fine Jewellery'}. All rights reserved.
           </p>
-          <p className="text-xs text-bottle-green-medium flex items-center gap-1">
+          <p className="flex items-center gap-1">
             Built with{' '}
-            <span className="text-gold-medium">♥</span>{' '}
+            <Heart className="w-3 h-3 text-gold fill-gold" />{' '}
             using{' '}
             <a
-              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${appIdentifier}`}
+              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(appId)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gold-medium hover:text-gold-dark transition-colors font-medium"
+              className="hover:text-gold transition-colors underline"
             >
               caffeine.ai
             </a>

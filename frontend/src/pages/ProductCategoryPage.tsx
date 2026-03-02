@@ -10,7 +10,8 @@ import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
 import { getCategoryBySlug, isValidCategorySlug } from '../utils/productCategories';
 
 export default function ProductCategoryPage() {
-  const { categorySlug } = useParams({ strict: false });
+  const params = useParams({ strict: false }) as Record<string, string | undefined>;
+  const categorySlug = params['categorySlug'];
   const navigate = useNavigate();
   const { data: products, isLoading } = useGetProducts();
   const { addItem } = useCart();
@@ -36,7 +37,7 @@ export default function ProductCategoryPage() {
   }
 
   const category = getCategoryBySlug(categorySlug);
-  
+
   // Filter products by category
   const categoryProducts = products?.filter(
     (product) => product.category.toLowerCase() === categorySlug.toLowerCase()

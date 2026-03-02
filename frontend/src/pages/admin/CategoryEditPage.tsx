@@ -13,7 +13,8 @@ import CategoryImagesManager from '../../components/admin/CategoryImagesManager'
 import { ExternalBlob } from '../../backend';
 
 export default function CategoryEditPage() {
-  const { categorySlug } = useParams({ from: '/admin/categories/$categorySlug/edit' });
+  const params = useParams({ strict: false }) as Record<string, string | undefined>;
+  const categorySlug = params['categorySlug'] ?? '';
   const navigate = useNavigate();
   const { data: isAdmin, isLoading: adminLoading } = useIsCallerAdmin();
   const { data: category, isLoading: categoryLoading } = useGetCategory(categorySlug);

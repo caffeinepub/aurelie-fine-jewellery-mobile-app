@@ -1,41 +1,52 @@
-import { useIsCallerAdmin, useGetProducts, useGetOrders, useGetInquiries, useGetAllCategories } from '../hooks/useQueries';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Skeleton } from '../components/ui/skeleton';
-import { ScrollArea } from '../components/ui/scroll-area';
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Settings, Image, Edit, MessageCircle } from 'lucide-react';
+import React from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import ProductManagement from '../components/admin/ProductManagement';
-import OrderManagement from '../components/admin/OrderManagement';
-import InquiryManagement from '../components/admin/InquiryManagement';
-import SiteContentManagement from '../components/admin/SiteContentManagement';
-import CarouselManagement from '../components/admin/CarouselManagement';
-import CategoryCarouselManagement from '../components/admin/CategoryCarouselManagement';
-import HeaderCategoryNavManagement from '../components/admin/HeaderCategoryNavManagement';
-import BoysHeaderCategoryNavManagement from '../components/admin/BoysHeaderCategoryNavManagement';
-import BannerManagement from '../components/admin/BannerManagement';
-import { useAdminUiBodyAttribute } from '../hooks/useAdminUiBodyAttribute';
-import { PRODUCT_CATEGORIES, BOYS_CATEGORIES } from '../utils/productCategories';
+import { useInternetIdentity } from '../hooks/useInternetIdentity';
+import { useQuery } from '@tanstack/react-query';
+import { useActor } from '../hooks/useActor';
+import {
+  Package,
+  ShoppingCart,
+  MessageSquare,
+  FileText,
+  Image,
+  Megaphone,
+  Tag,
+  ArrowRight,
+  Shield,
+} from 'lucide-react';
 
 export default function AdminDashboardPage() {
-  useAdminUiBodyAttribute();
   const navigate = useNavigate();
+  const { identity } = useInternetIdentity();
+  const { actor, isFetching: actorFetching } = useActor();
 
-  const { data: isAdmin, isLoading: adminLoading } = useIsCallerAdmin();
-  const { data: products } = useGetProducts();
-  const { data: orders } = useGetOrders();
-  const { data: inquiries } = useGetInquiries();
-  const { data: categories } = useGetAllCategories();
+  const { data: isAdmin, isLoading: adminLoading } = useQuery({
+    queryKey: ['isAdmin'],
+    queryFn: async () => {
+      if (!actor) return false;
+      return actor.isCallerAdmin();
+    },
+    enabled: !!actor && !actorFetching,
+  });
 
-  if (adminLoading) {
+  if (!identity) {
     return (
-      <div className="container px-4 py-8">
-        <Skeleton className="h-12 w-64 mb-8" />
-        <div className="grid gap-4 md:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-32" />
-          ))}
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <Shield className="w-16 h-16 text-gold mx-auto mb-4" />
+          <h2 className="text-2xl font-serif text-foreground mb-2">Authentication Required</h2>
+          <p className="text-muted-foreground">Please log in to access the admin panel.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (adminLoading || actorFetching) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Verifying access...</p>
         </div>
       </div>
     );
@@ -43,214 +54,106 @@ export default function AdminDashboardPage() {
 
   if (!isAdmin) {
     return (
-      <div className="container px-4 py-8">
-        <div className="text-center py-12">
-          <LayoutDashboard className="h-16 w-16 mx-auto mb-4 text-gold-medium" />
-          <h2 className="text-2xl font-semibold mb-2 gold-text">Access Denied</h2>
-          <p className="gold-text opacity-80">You don't have permission to access the admin dashboard.</p>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <Shield className="w-16 h-16 text-destructive mx-auto mb-4" />
+          <h2 className="text-2xl font-serif text-foreground mb-2">Access Denied</h2>
+          <p className="text-muted-foreground">You do not have admin privileges.</p>
         </div>
       </div>
     );
   }
 
-  const pendingOrders = orders?.filter((o) => o.status.__kind__ === 'pending').length || 0;
-  const unansweredInquiries = inquiries?.filter((i) => !i.response).length || 0;
-  const inStockProducts = products?.filter((p) => p.inStock).length || 0;
+  const adminSections = [
+    {
+      label: 'Products',
+      description: 'Manage product inventory, add, edit, or remove products',
+      icon: Package,
+      route: '/admin/products',
+      color: 'text-gold',
+    },
+    {
+      label: 'Orders',
+      description: 'View and manage customer orders, update order status',
+      icon: ShoppingCart,
+      route: '/admin/orders',
+      color: 'text-gold',
+    },
+    {
+      label: 'Inquiries',
+      description: 'View and respond to customer inquiries and messages',
+      icon: MessageSquare,
+      route: '/admin/inquiries',
+      color: 'text-gold',
+    },
+    {
+      label: 'Site Content',
+      description: 'Edit contact details, policies, social links, and about us',
+      icon: FileText,
+      route: '/admin/site-content',
+      color: 'text-gold',
+    },
+    {
+      label: 'Carousel',
+      description: 'Manage homepage carousel slides, images, and links',
+      icon: Image,
+      route: '/admin/carousel',
+      color: 'text-gold',
+    },
+    {
+      label: 'Banner',
+      description: 'Manage marquee banner messages shown across the site',
+      icon: Megaphone,
+      route: '/admin/banner',
+      color: 'text-gold',
+    },
+    {
+      label: 'Categories',
+      description: 'Edit category images, names, and navigation settings',
+      icon: Tag,
+      route: '/admin/categories',
+      color: 'text-gold',
+    },
+  ];
 
   return (
-    <div className="container px-4 py-8">
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl font-semibold tracking-tight mb-2 text-bottle-green-dark">Admin Dashboard</h1>
-        <p className="text-bottle-green-medium">Manage your jewellery business</p>
-      </div>
-
-      {/* Stats Overview */}
-      <div className="grid gap-4 md:grid-cols-3 mb-8">
-        <Card className="gold-border admin-surface backdrop-blur">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium admin-label-text">Total Products</CardTitle>
-            <Package className="h-4 w-4 text-gold-medium" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-bottle-green-dark">{products?.length || 0}</div>
-            <p className="text-xs text-bottle-green-medium mt-1">
-              {inStockProducts} in stock
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="gold-border admin-surface backdrop-blur">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium admin-label-text">Total Orders</CardTitle>
-            <ShoppingBag className="h-4 w-4 text-gold-medium" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-bottle-green-dark">{orders?.length || 0}</div>
-            {pendingOrders > 0 && (
-              <p className="text-xs text-bottle-green-medium mt-1">
-                {pendingOrders} pending
-              </p>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="gold-border admin-surface backdrop-blur">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium admin-label-text">Inquiries</CardTitle>
-            <MessageSquare className="h-4 w-4 text-gold-medium" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-bottle-green-dark">{inquiries?.length || 0}</div>
-            {unansweredInquiries > 0 && (
-              <p className="text-xs text-bottle-green-medium mt-1">
-                {unansweredInquiries} unanswered
-              </p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Management Tabs */}
-      <Tabs defaultValue="products" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6 admin-surface border border-gold-medium/30">
-          <TabsTrigger value="products" className="text-bottle-green-dark data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
-            <Package className="h-4 w-4 mr-2" />
-            Products
-          </TabsTrigger>
-          <TabsTrigger value="orders" className="text-bottle-green-dark data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
-            <ShoppingBag className="h-4 w-4 mr-2" />
-            Orders
-          </TabsTrigger>
-          <TabsTrigger value="inquiries" className="text-bottle-green-dark data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
-            <MessageSquare className="h-4 w-4 mr-2" />
-            Inquiries
-          </TabsTrigger>
-          <TabsTrigger value="banner" className="text-bottle-green-dark data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
-            <MessageCircle className="h-4 w-4 mr-2" />
-            Banner
-          </TabsTrigger>
-          <TabsTrigger value="carousel" className="text-bottle-green-dark data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
-            <Image className="h-4 w-4 mr-2" />
-            Carousel
-          </TabsTrigger>
-          <TabsTrigger value="edit" className="text-bottle-green-dark data-[state=active]:bg-gold-medium data-[state=active]:text-secondary">
-            <Settings className="h-4 w-4 mr-2" />
-            Edit
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="products">
-          <ProductManagement />
-        </TabsContent>
-
-        <TabsContent value="orders">
-          <div className="mb-4">
-            <Button
-              onClick={() => navigate({ to: '/admin/orders' })}
-              className="bg-gold-medium hover:bg-gold-dark text-navy-dark"
-            >
-              <ShoppingBag className="h-4 w-4 mr-2" />
-              Open Full Orders Management
-            </Button>
+    <div className="min-h-screen bg-background py-12 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Shield className="w-8 h-8 text-gold" />
+            <h1 className="text-4xl font-serif text-foreground">Admin Dashboard</h1>
           </div>
-          <OrderManagement />
-        </TabsContent>
+          <p className="text-muted-foreground text-lg">
+            Select a section below to manage your store
+          </p>
+          <div className="w-24 h-0.5 bg-gold mx-auto mt-4" />
+        </div>
 
-        <TabsContent value="inquiries">
-          <InquiryManagement />
-        </TabsContent>
-
-        <TabsContent value="banner">
-          <BannerManagement />
-        </TabsContent>
-
-        <TabsContent value="carousel">
-          <ScrollArea className="h-[calc(100vh-300px)]">
-            <div className="pr-4">
-              <div className="mb-6">
-                <h2 className="font-serif text-2xl font-semibold tracking-tight mb-2 text-bottle-green-dark">Carousel Management</h2>
-                <p className="text-sm text-bottle-green-medium">
-                  Manage homepage and category carousels. Each carousel supports up to 5 images with automatic optimization.
-                </p>
-              </div>
-
-              <CarouselManagement />
-
-              <div className="mt-8 mb-4">
-                <h3 className="font-serif text-xl font-semibold tracking-tight text-bottle-green-dark">Girls Category Carousels</h3>
-                <p className="text-sm text-bottle-green-medium mt-1">
-                  Each category has two independent carousels that display at the top of the category page.
-                </p>
-              </div>
-
-              {PRODUCT_CATEGORIES.map((category) => (
-                <div key={category.slug} className="mb-8">
-                  <h4 className="font-serif text-lg font-semibold tracking-tight text-bottle-green-dark mb-4">
-                    {category.title}
-                  </h4>
-                  <CategoryCarouselManagement
-                    categorySlug={category.slug}
-                    carouselIndex={1}
-                    title={`${category.title} - Carousel 1`}
-                  />
-                  <CategoryCarouselManagement
-                    categorySlug={category.slug}
-                    carouselIndex={2}
-                    title={`${category.title} - Carousel 2`}
-                  />
+        {/* Navigation Buttons Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {adminSections.map((section) => {
+            const Icon = section.icon;
+            return (
+              <button
+                key={section.route}
+                onClick={() => navigate({ to: section.route })}
+                className="group flex flex-col items-start p-6 bg-card border border-gold/30 rounded-lg hover:border-gold hover:shadow-lg hover:shadow-gold/10 transition-all duration-200 text-left"
+              >
+                <div className="flex items-center justify-between w-full mb-3">
+                  <div className="p-2 bg-gold/10 rounded-md">
+                    <Icon className={`w-6 h-6 ${section.color}`} />
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-gold group-hover:translate-x-1 transition-all duration-200" />
                 </div>
-              ))}
-            </div>
-          </ScrollArea>
-        </TabsContent>
-
-        <TabsContent value="edit">
-          <div className="space-y-6">
-            {/* Girls Header Category Navigation Management */}
-            <div>
-              <h3 className="font-serif text-lg font-semibold text-bottle-green-dark mb-3">Girls Category Navigation</h3>
-              <HeaderCategoryNavManagement />
-            </div>
-
-            {/* Boys Header Category Navigation Management */}
-            <div>
-              <h3 className="font-serif text-lg font-semibold text-bottle-green-dark mb-3">Boys Category Navigation</h3>
-              <BoysHeaderCategoryNavManagement />
-            </div>
-
-            {/* Category Management Section */}
-            <Card className="gold-border admin-surface">
-              <CardHeader>
-                <CardTitle className="text-bottle-green-dark flex items-center gap-2">
-                  <Edit className="h-5 w-5" />
-                  Girls Category Management
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-bottle-green-medium mb-4">
-                  Edit category details, descriptions, and manage category images
-                </p>
-                <div className="grid gap-2">
-                  {PRODUCT_CATEGORIES.map((category) => (
-                    <Button
-                      key={category.slug}
-                      variant="outline"
-                      onClick={() => navigate({ to: `/admin/categories/${category.slug}/edit` })}
-                      className="justify-start border-gold-medium/30 hover:bg-gold-medium/10"
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit {category.title}
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Site Content Management */}
-            <SiteContentManagement />
-          </div>
-        </TabsContent>
-      </Tabs>
+                <h3 className="text-lg font-semibold text-foreground mb-1">{section.label}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{section.description}</p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

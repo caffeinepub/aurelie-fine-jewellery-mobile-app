@@ -2,15 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-the-add-to-cart-text-label-from-all-product-card-and-product-detail-page-cart-buttons-across-the-entire-app-including-masonryproductgrid-categoryproductrow-newarrivalssection-productdetailpage-categorypagetemplate-and-any-other-component-rendering-an-add-to-cart-button-keep-only-the-cart-icon-visible-inside-the-button-ensure-button-sizing-and-alignment-remain-consistent-after-the-label-is-removed",
-      "featureTitle": "Remove the 'Add to Cart' text label from all product card and product detail page cart buttons across the entire app (including MasonryProductGrid, CategoryProductRow, NewArrivalsSection, ProductDetailPage, CategoryPageTemplate, and any other component rendering an add-to-cart button). Keep only the cart icon visible inside the button. Ensure button sizing and alignment remain consistent after the label is removed.",
+      "featureId": "feature-fix-the-sliding-product-category-circles-on-the-for-her-page-girlshomepage-so-that-when-an-image-is-uploaded-via-the-admin-panel-headercategorynavmanagement-the-circle-displays-the-uploaded-image-instead-of-falling-back-to-the-emoji-icon-the-component-should-fetch-category-header-data-from-the-backend-same-pattern-as-boyshomepage-uses-for-boys-headers-and-render-the-uploaded-image-when-available-showing-the-icon-only-as-a-true-fallback-when-no-image-has-been-uploaded",
+      "featureTitle": "Fix the sliding product category circles on the For Her page (GirlsHomePage) so that when an image is uploaded via the admin panel (HeaderCategoryNavManagement), the circle displays the uploaded image instead of falling back to the emoji/icon. The component should fetch category header data from the backend (same pattern as BoysHomePage uses for boys headers) and render the uploaded image when available, showing the icon only as a true fallback when no image has been uploaded.",
       "files": [
-        "frontend/src/components/CategoryProductRow.tsx",
-        "frontend/src/components/MasonryProductGrid.tsx",
-        "frontend/src/components/NewArrivalsSection.tsx",
-        "frontend/src/pages/HomePage.tsx",
-        "frontend/src/pages/ProductDetailPage.tsx",
-        "frontend/src/pages/categories/CategoryPageTemplate.tsx"
+        "frontend/src/pages/GirlsHomePage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -29,12 +24,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-replace-the-visible-filter-bar-dropdowns-in-product-category-pages-categorypagetemplate-and-productfilterbar-usage-with-a-single-filter-icon-button-when-the-filter-icon-is-clicked-open-a-dedicated-full-page-or-full-screen-filter-panel-page-that-contains-all-filter-options-metal-type-price-range-occasion-sort-order-the-selected-filter-state-must-remain-synchronised-with-the-product-listing-applying-or-clearing-filters-on-the-filter-page-must-immediately-update-the-displayed-products-when-the-user-returns-to-or-closes-the-filter-panel",
-      "featureTitle": "Replace the visible filter bar/dropdowns in product category pages (CategoryPageTemplate and ProductFilterBar usage) with a single filter icon button. When the filter icon is clicked, open a dedicated full-page or full-screen filter panel/page that contains all filter options (metal type, price range, occasion, sort order). The selected filter state must remain synchronised with the product listing: applying or clearing filters on the filter page must immediately update the displayed products when the user returns to or closes the filter panel.",
+      "featureId": "feature-fix-the-body-background-color-of-the-for-her-page-girlshomepage-to-match-the-background-color-used-on-all-other-customer-facing-pages-only-the-page-body-background-should-be-changed-the-header-and-footer-styling-must-remain-unaffected",
+      "featureTitle": "Fix the body background color of the For Her page (GirlsHomePage) to match the background color used on all other customer-facing pages. Only the page body background should be changed — the header and footer styling must remain unaffected.",
       "files": [
-        "frontend/src/components/FilterIconButton.tsx",
-        "frontend/src/components/FilterPanel.tsx",
-        "frontend/src/pages/categories/CategoryPageTemplate.tsx"
+        "frontend/src/pages/GirlsHomePage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -49,57 +42,6 @@
       ],
       "testIds": [
         "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-on-the-main-homepage-frontend-src-pages-homepage-tsx-after-all-product-category-carousel-sections-are-rendered-remove-any-statically-listed-product-grid-replace-that-section-with-a-recently-viewed-section-that-shows-products-the-current-customer-has-recently-viewed-track-product-views-in-local-session-storage-since-backend-persistence-is-not-required-for-browsing-history-display-the-section-with-a-visible-label-such-as-recently-viewed-and-render-the-products-as-horizontal-scrollable-product-cards-if-no-products-have-been-viewed-hide-the-section-entirely",
-      "featureTitle": "On the main HomePage (frontend/src/pages/HomePage.tsx), after all product category carousel sections are rendered, remove any statically listed product grid. Replace that section with a 'Recently Viewed' section that shows products the current customer has recently viewed. Track product views in local/session storage (since backend persistence is not required for browsing history). Display the section with a visible label such as 'Recently Viewed' and render the products as horizontal scrollable product cards. If no products have been viewed, hide the section entirely.",
-      "files": [
-        "frontend/src/components/RecentlyViewedSection.tsx",
-        "frontend/src/hooks/useRecentlyViewed.ts",
-        "frontend/src/pages/HomePage.tsx",
-        "frontend/src/pages/ProductDetailPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-subtle-off-white-border-with-a-shimmering-gold-animation-to-every-product-card-across-the-entire-app-this-includes-cards-in-masonryproductgrid-categoryproductrow-newarrivalssection-and-any-other-location-where-product-cards-are-rendered-implement-the-shimmer-as-a-css-keyframe-animation-that-creates-a-gentle-pulsing-or-sweeping-gold-glow-border-effect-the-border-should-be-thin-1-2px-off-white-in-its-base-state-and-animate-to-a-gold-shimmer-continuously-add-the-shared-animation-styles-to-the-global-stylesheet-frontend-src-index-css-and-apply-the-class-to-all-product-card-root-elements",
-      "featureTitle": "Add a subtle off-white border with a shimmering gold animation to every product card across the entire app. This includes cards in MasonryProductGrid, CategoryProductRow, NewArrivalsSection, and any other location where product cards are rendered. Implement the shimmer as a CSS keyframe animation that creates a gentle pulsing or sweeping gold glow/border effect. The border should be thin (1–2px), off-white in its base state, and animate to a gold shimmer continuously. Add the shared animation styles to the global stylesheet (frontend/src/index.css) and apply the class to all product card root elements.",
-      "files": [
-        "frontend/src/components/CategoryProductRow.tsx",
-        "frontend/src/components/MasonryProductGrid.tsx",
-        "frontend/src/components/NewArrivalsSection.tsx",
-        "frontend/src/index.css",
-        "frontend/src/pages/categories/CategoryPageTemplate.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
       ],
       "confidence": "high"
     }

@@ -1,41 +1,23 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-27T10:46:43.965Z",
-  "summary": "The diff implements all four requirements with good coverage. REQ-1 (icon-only cart), REQ-2 (filter panel), REQ-3 (recently viewed), and REQ-4 (shimmer border) are all present. However, there are some gaps: REQ-1 label removal is confirmed for ProductDetailPage but MasonryProductGrid is truncated so cart button text removal cannot be fully confirmed. REQ-2 uses a Sheet slide-over rather than a truly full-screen panel. REQ-4 shimmer class is applied to MasonryProductGrid, CategoryProductRow, NewArrivalsSection, and RecentlyViewedSection cards.",
+  "generatedAt": "2026-03-02T03:06:42.516Z",
+  "summary": "REQ-1 is fully implemented: GirlsHomePage now fetches category header data via useGetAllCategoryHeaders, builds a headersMap, and renders the uploaded image when available with emoji fallback. REQ-2 is NOT implemented: the outer div still uses 'min-h-screen' with no explicit background color class to match other pages, meaning the body background color fix is missing.",
   "missing_requirements": [
     {
-      "id": "REQ-1",
-      "requirement": "Remove 'Add to Cart' text label from MasonryProductGrid cart buttons",
-      "reason": "The MasonryProductGrid diff is truncated and the cart button markup is not visible in the provided content, so removal of the text label there cannot be confirmed from the diff alone.",
+      "id": "REQ-2",
+      "requirement": "Fix the body background color of the For Her page (GirlsHomePage) to match the background color used on all other customer-facing pages.",
+      "reason": "The modified GirlsHomePage.tsx only uses 'min-h-screen' on the outer div with no background color class added. No background color change is present in the diff that would make it match HomePage or BoysHomePage. The known issue 'body background color is off-white instead of matching other pages' is not addressed.",
       "evidence": [
-        "frontend/src/components/MasonryProductGrid.tsx"
+        "frontend/src/pages/GirlsHomePage.tsx"
       ]
     }
   ],
-  "hallucinated_features": [
-    {
-      "description": "Draft/staged filter state in FilterPanel requiring an explicit Apply button before filters take effect",
-      "reason": "The requirement states filters must immediately update the displayed products when the user returns to or closes the filter panel. The FilterPanel implements a local draft state pattern where changes are only committed on an explicit Apply click, adding an extra confirmation step not requested.",
-      "evidence": [
-        "frontend/src/components/FilterPanel.tsx"
-      ]
-    }
-  ],
-  "confidence": 0.72,
+  "hallucinated_features": [],
+  "confidence": 0.88,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/components/CategoryProductRow.tsx",
-    "frontend/src/components/FilterIconButton.tsx",
-    "frontend/src/components/FilterPanel.tsx",
-    "frontend/src/components/MasonryProductGrid.tsx",
-    "frontend/src/components/NewArrivalsSection.tsx",
-    "frontend/src/components/RecentlyViewedSection.tsx",
-    "frontend/src/hooks/useRecentlyViewed.ts",
-    "frontend/src/index.css",
-    "frontend/src/pages/HomePage.tsx",
-    "frontend/src/pages/ProductDetailPage.tsx",
-    "frontend/src/pages/categories/CategoryPageTemplate.tsx",
+    "frontend/src/pages/GirlsHomePage.tsx",
     "project_state.json"
   ]
 }
