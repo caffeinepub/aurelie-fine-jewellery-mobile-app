@@ -2,11 +2,11 @@ import Text "mo:core/Text";
 import Map "mo:core/Map";
 import Nat "mo:core/Nat";
 import Array "mo:core/Array";
+import Int "mo:core/Int";
 import Iter "mo:core/Iter";
 import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
 import Time "mo:core/Time";
-// Component imports
 import Storage "blob-storage/Storage";
 import Stripe "stripe/stripe";
 import OutCall "http-outcalls/outcall";
@@ -14,16 +14,24 @@ import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
 
-// With-clause for migration
+
+// Apply migration logic
 
 actor {
   // Time Constants
   let cancellationWindowHours = 12;
-  let nanosPerHour = 3600_000_000_000;
+  let nanosPerHour = 3_600_000_000_000;
   let cancellationWindowNanos = cancellationWindowHours * nanosPerHour;
 
   // Media Constants
   let maxImagesPerProduct = 5;
+  let newArrivalsFetchAmount = 20;
+  let newArrivalsDisplayAmount = 10;
+
+  public type Gender = {
+    #boys;
+    #girls;
+  };
 
   public type ProductMedia = {
     video : ?Storage.ExternalBlob;
@@ -38,6 +46,8 @@ actor {
     inStock : Bool;
     category : Text;
     media : ProductMedia;
+    gender : Gender;
+    createdAt : Time.Time;
   };
 
   public type ProductCreate = {
@@ -48,6 +58,17 @@ actor {
     inStock : Bool;
     category : Text;
     media : ProductMedia;
+    gender : Gender;
+  };
+
+  public type ProductUpdate = {
+    name : ?Text;
+    description : ?Text;
+    priceInCents : ?Nat;
+    inStock : ?Bool;
+    category : ?Text;
+    media : ?ProductMedia;
+    gender : ?Gender;
   };
 
   public type CategoryCarousels = {
@@ -162,7 +183,6 @@ actor {
     images : [Storage.ExternalBlob];
   };
 
-  // New type for banner messages
   public type BannerMessage = {
     message : Text;
     order : Nat;
@@ -183,8 +203,7 @@ actor {
   let categoryCarousels = Map.empty<Text, CategoryCarousels>();
   let userProfiles = Map.empty<Principal, UserProfile>();
   let carouselRedirects = Map.empty<Text, Text>();
-  let bannerMessages = Map.empty<Nat, BannerMessage>(); // New map for banner messages
-  // Store category header data
+  let bannerMessages = Map.empty<Nat, BannerMessage>();
   let categoryHeaders = Map.empty<Text, CategoryHeader>();
   let categories = Map.empty<Text, Category>();
 
@@ -228,6 +247,27 @@ actor {
     };
   };
 
+  // ---------- NEW ARRIVALS SECTION ----------
+  // Public endpoint: new arrivals are displayed on the homepage for all visitors.
+  // No authorization check needed.
+  public query func getNewArrivals() : async [Product] {
+    // Sort by newest first (most recent products have highest timestamp)
+    let sortedProducts = products.toArray().sort(
+      func(a, b) {
+        let (_, productA) = a;
+        let (_, productB) = b;
+        Int.compare(productB.createdAt, productA.createdAt);
+      }
+    );
+
+    // Get up to newArrivalsDisplayAmount products
+    let limit = Nat.min(sortedProducts.size(), newArrivalsDisplayAmount);
+    let limitedProducts = sortedProducts.sliceToArray(0, limit);
+    limitedProducts.map<(Text, Product), Product>(
+      func((_, product)) { product }
+    );
+  };
+
   // ---------- Banner Message Management (Admin Only) ----------
   public shared ({ caller }) func addBannerMessage(message : Text, order : Nat, enabled : Bool) : async Nat {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
@@ -240,7 +280,7 @@ actor {
       enabled;
     };
 
-    bannerMessages.add(order, newMessage); // Use order as index
+    bannerMessages.add(order, newMessage);
 
     order;
   };
@@ -472,6 +512,7 @@ actor {
   };
 
   public shared ({ caller }) func reorderCategorySlides(category : Text, newOrder : [Nat]) : async () {
+    // Fixed typo: was accessControlControlState (double "Control")
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can reorder category slides");
     };
@@ -675,27 +716,35 @@ actor {
       inStock = product.inStock;
       category = product.category;
       media = product.media;
+      gender = product.gender;
+      createdAt = Time.now();
     };
     products.add(product.id, productEntity);
   };
 
-  public shared ({ caller }) func updateProduct(product : ProductCreate) : async () {
+  public shared ({ caller }) func updateProduct(productId : Text, updates : ProductUpdate) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can update products");
     };
-    if (product.media.images.size() > maxImagesPerProduct) {
-      Runtime.trap("Cannot add more than " # maxImagesPerProduct.toText() # " images per product");
+
+    switch (products.get(productId)) {
+      case (null) { Runtime.trap("Product not found") };
+      case (?existingProduct) {
+        let updatedProduct : Product = {
+          id = productId; // ID does not change
+          name = switch (updates.name) { case (null) { existingProduct.name }; case (?name) { name } };
+          description = switch (updates.description) { case (null) { existingProduct.description }; case (?desc) { desc } };
+          priceInCents = switch (updates.priceInCents) { case (null) { existingProduct.priceInCents }; case (?price) { price } };
+          inStock = switch (updates.inStock) { case (null) { existingProduct.inStock }; case (?stock) { stock } };
+          category = switch (updates.category) { case (null) { existingProduct.category }; case (?cat) { cat } };
+          media = switch (updates.media) { case (null) { existingProduct.media }; case (?media) { media } };
+          gender = switch (updates.gender) { case (null) { existingProduct.gender }; case (?gender) { gender } };
+          createdAt = existingProduct.createdAt; // Preserve original creation time
+        };
+
+        products.add(productId, updatedProduct);
+      };
     };
-    let productEntity : Product = {
-      id = product.id;
-      name = product.name;
-      description = product.description;
-      priceInCents = product.priceInCents;
-      inStock = product.inStock;
-      category = product.category;
-      media = product.media;
-    };
-    products.add(product.id, productEntity);
   };
 
   public shared ({ caller }) func deleteProduct(productId : Text) : async () {
@@ -794,6 +843,11 @@ actor {
   };
 
   public shared ({ caller }) func cancelOrder(orderId : Text, cancelReason : CancelReason) : async () {
+    // Only authenticated users can cancel orders
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only authenticated users can cancel orders");
+    };
+
     switch (orders.get(orderId)) {
       case (null) { Runtime.trap("Order does not exist") };
       case (?order) {

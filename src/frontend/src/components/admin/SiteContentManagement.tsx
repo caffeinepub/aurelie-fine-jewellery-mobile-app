@@ -1,34 +1,43 @@
-import { useState, useEffect } from 'react';
-import { useGetSiteContent, useUpdateSiteContent } from '../../hooks/useQueries';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Textarea } from '../ui/textarea';
-import { Save, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
-import type { SiteContent } from '../../backend';
+import { Loader2, Save } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import type { SiteContent } from "../../backend";
+import {
+  useGetSiteContent,
+  useUpdateSiteContent,
+} from "../../hooks/useQueries";
+import { Button } from "../ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
 
 export default function SiteContentManagement() {
   const { data: siteContent, isLoading } = useGetSiteContent();
   const updateSiteContent = useUpdateSiteContent();
 
   const [formData, setFormData] = useState<SiteContent>({
-    contactEmail: '',
-    phoneNumber: '',
-    address: '',
-    officialName: '',
-    aboutUs: '',
-    generalInfo: '',
-    termsOfService: '',
-    privacyPolicy: '',
-    shippingPolicy: '',
-    billingPolicy: '',
-    generalDisclaimer: '',
-    footerContent: '',
-    facebookUrl: '',
-    instagramUrl: '',
-    xUrl: '',
+    contactEmail: "",
+    phoneNumber: "",
+    address: "",
+    officialName: "",
+    aboutUs: "",
+    generalInfo: "",
+    termsOfService: "",
+    privacyPolicy: "",
+    shippingPolicy: "",
+    billingPolicy: "",
+    generalDisclaimer: "",
+    footerContent: "",
+    facebookUrl: "",
+    instagramUrl: "",
+    xUrl: "",
   });
 
   useEffect(() => {
@@ -46,10 +55,10 @@ export default function SiteContentManagement() {
 
     try {
       await updateSiteContent.mutateAsync(formData);
-      toast.success('Site content updated successfully!');
+      toast.success("Site content updated successfully!");
     } catch (error: any) {
-      console.error('Failed to update site content:', error);
-      toast.error(error.message || 'Failed to update site content');
+      console.error("Failed to update site content:", error);
+      toast.error(error.message || "Failed to update site content");
     }
   };
 
@@ -69,9 +78,12 @@ export default function SiteContentManagement() {
   return (
     <Card className="gold-border admin-surface backdrop-blur">
       <CardHeader>
-        <CardTitle className="text-bottle-green-dark">Edit Site Content</CardTitle>
+        <CardTitle className="text-bottle-green-dark">
+          Edit Site Content
+        </CardTitle>
         <CardDescription className="text-bottle-green-medium">
-          Manage contact details, footer information, social media links, and static text content
+          Manage contact details, footer information, social media links, and
+          static text content
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -81,46 +93,54 @@ export default function SiteContentManagement() {
             <h3 className="text-lg font-semibold text-bottle-green-dark border-b border-gold-medium/30 pb-2">
               Contact Information
             </h3>
-            
+
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="contactEmail" className="admin-label-text">Contact Email</Label>
+                <Label htmlFor="contactEmail" className="admin-label-text">
+                  Contact Email
+                </Label>
                 <Input
                   id="contactEmail"
                   type="email"
                   value={formData.contactEmail}
-                  onChange={(e) => handleChange('contactEmail', e.target.value)}
+                  onChange={(e) => handleChange("contactEmail", e.target.value)}
                   className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phoneNumber" className="admin-label-text">Phone Number</Label>
+                <Label htmlFor="phoneNumber" className="admin-label-text">
+                  Phone Number
+                </Label>
                 <Input
                   id="phoneNumber"
                   value={formData.phoneNumber}
-                  onChange={(e) => handleChange('phoneNumber', e.target.value)}
+                  onChange={(e) => handleChange("phoneNumber", e.target.value)}
                   className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address" className="admin-label-text">Address</Label>
+              <Label htmlFor="address" className="admin-label-text">
+                Address
+              </Label>
               <Input
                 id="address"
                 value={formData.address}
-                onChange={(e) => handleChange('address', e.target.value)}
+                onChange={(e) => handleChange("address", e.target.value)}
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="officialName" className="admin-label-text">Official Business Name</Label>
+              <Label htmlFor="officialName" className="admin-label-text">
+                Official Business Name
+              </Label>
               <Input
                 id="officialName"
                 value={formData.officialName}
-                onChange={(e) => handleChange('officialName', e.target.value)}
+                onChange={(e) => handleChange("officialName", e.target.value)}
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
             </div>
@@ -131,38 +151,44 @@ export default function SiteContentManagement() {
             <h3 className="text-lg font-semibold text-bottle-green-dark border-b border-gold-medium/30 pb-2">
               Social Media Links
             </h3>
-            
+
             <div className="space-y-2">
-              <Label htmlFor="instagramUrl" className="admin-label-text">Instagram URL</Label>
+              <Label htmlFor="instagramUrl" className="admin-label-text">
+                Instagram URL
+              </Label>
               <Input
                 id="instagramUrl"
                 type="url"
                 value={formData.instagramUrl}
-                onChange={(e) => handleChange('instagramUrl', e.target.value)}
+                onChange={(e) => handleChange("instagramUrl", e.target.value)}
                 placeholder="https://instagram.com/yourprofile"
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="facebookUrl" className="admin-label-text">Facebook URL</Label>
+              <Label htmlFor="facebookUrl" className="admin-label-text">
+                Facebook URL
+              </Label>
               <Input
                 id="facebookUrl"
                 type="url"
                 value={formData.facebookUrl}
-                onChange={(e) => handleChange('facebookUrl', e.target.value)}
+                onChange={(e) => handleChange("facebookUrl", e.target.value)}
                 placeholder="https://facebook.com/yourpage"
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="xUrl" className="admin-label-text">X (Twitter) URL</Label>
+              <Label htmlFor="xUrl" className="admin-label-text">
+                X (Twitter) URL
+              </Label>
               <Input
                 id="xUrl"
                 type="url"
                 value={formData.xUrl}
-                onChange={(e) => handleChange('xUrl', e.target.value)}
+                onChange={(e) => handleChange("xUrl", e.target.value)}
                 placeholder="https://x.com/yourprofile"
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
@@ -176,22 +202,26 @@ export default function SiteContentManagement() {
             </h3>
 
             <div className="space-y-2">
-              <Label htmlFor="aboutUs" className="admin-label-text">About Us</Label>
+              <Label htmlFor="aboutUs" className="admin-label-text">
+                About Us
+              </Label>
               <Textarea
                 id="aboutUs"
                 value={formData.aboutUs}
-                onChange={(e) => handleChange('aboutUs', e.target.value)}
+                onChange={(e) => handleChange("aboutUs", e.target.value)}
                 rows={3}
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="generalInfo" className="admin-label-text">General Information</Label>
+              <Label htmlFor="generalInfo" className="admin-label-text">
+                General Information
+              </Label>
               <Textarea
                 id="generalInfo"
                 value={formData.generalInfo}
-                onChange={(e) => handleChange('generalInfo', e.target.value)}
+                onChange={(e) => handleChange("generalInfo", e.target.value)}
                 rows={4}
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
@@ -205,55 +235,67 @@ export default function SiteContentManagement() {
             </h3>
 
             <div className="space-y-2">
-              <Label htmlFor="termsOfService" className="admin-label-text">Terms of Service</Label>
+              <Label htmlFor="termsOfService" className="admin-label-text">
+                Terms of Service
+              </Label>
               <Textarea
                 id="termsOfService"
                 value={formData.termsOfService}
-                onChange={(e) => handleChange('termsOfService', e.target.value)}
+                onChange={(e) => handleChange("termsOfService", e.target.value)}
                 rows={4}
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="privacyPolicy" className="admin-label-text">Privacy Policy</Label>
+              <Label htmlFor="privacyPolicy" className="admin-label-text">
+                Privacy Policy
+              </Label>
               <Textarea
                 id="privacyPolicy"
                 value={formData.privacyPolicy}
-                onChange={(e) => handleChange('privacyPolicy', e.target.value)}
+                onChange={(e) => handleChange("privacyPolicy", e.target.value)}
                 rows={4}
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="shippingPolicy" className="admin-label-text">Shipping Policy</Label>
+              <Label htmlFor="shippingPolicy" className="admin-label-text">
+                Shipping Policy
+              </Label>
               <Textarea
                 id="shippingPolicy"
                 value={formData.shippingPolicy}
-                onChange={(e) => handleChange('shippingPolicy', e.target.value)}
+                onChange={(e) => handleChange("shippingPolicy", e.target.value)}
                 rows={3}
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="billingPolicy" className="admin-label-text">Billing Policy</Label>
+              <Label htmlFor="billingPolicy" className="admin-label-text">
+                Billing Policy
+              </Label>
               <Textarea
                 id="billingPolicy"
                 value={formData.billingPolicy}
-                onChange={(e) => handleChange('billingPolicy', e.target.value)}
+                onChange={(e) => handleChange("billingPolicy", e.target.value)}
                 rows={3}
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="generalDisclaimer" className="admin-label-text">General Disclaimer</Label>
+              <Label htmlFor="generalDisclaimer" className="admin-label-text">
+                General Disclaimer
+              </Label>
               <Textarea
                 id="generalDisclaimer"
                 value={formData.generalDisclaimer}
-                onChange={(e) => handleChange('generalDisclaimer', e.target.value)}
+                onChange={(e) =>
+                  handleChange("generalDisclaimer", e.target.value)
+                }
                 rows={3}
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"
               />
@@ -267,11 +309,13 @@ export default function SiteContentManagement() {
             </h3>
 
             <div className="space-y-2">
-              <Label htmlFor="footerContent" className="admin-label-text">Footer Text</Label>
+              <Label htmlFor="footerContent" className="admin-label-text">
+                Footer Text
+              </Label>
               <Textarea
                 id="footerContent"
                 value={formData.footerContent}
-                onChange={(e) => handleChange('footerContent', e.target.value)}
+                onChange={(e) => handleChange("footerContent", e.target.value)}
                 rows={2}
                 placeholder="e.g., Follow us on social media | LinkedIn | Facebook"
                 className="border-gold-medium/30 focus:border-gold-medium text-bottle-green-dark"

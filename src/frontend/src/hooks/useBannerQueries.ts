@@ -1,15 +1,15 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useActor } from './useActor';
-import type { BannerMessage } from '../backend';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { BannerMessage } from "../backend";
+import { useActor } from "./useActor";
 
 // Get all banner messages (admin only)
 export function useGetAllBannerMessages() {
   const { actor, isFetching } = useActor();
 
   return useQuery<BannerMessage[]>({
-    queryKey: ['bannerMessages', 'all'],
+    queryKey: ["bannerMessages", "all"],
     queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.getAllBannerMessages();
     },
     enabled: !!actor && !isFetching,
@@ -21,12 +21,12 @@ export function useGetEnabledBannerMessages() {
   const { actor, isFetching } = useActor();
 
   return useQuery<BannerMessage[]>({
-    queryKey: ['bannerMessages', 'enabled'],
+    queryKey: ["bannerMessages", "enabled"],
     queryFn: async () => {
       if (!actor) return [];
       const allMessages = await actor.getAllBannerMessages();
       return allMessages
-        .filter(msg => msg.enabled)
+        .filter((msg) => msg.enabled)
         .sort((a, b) => Number(a.order) - Number(b.order));
     },
     enabled: !!actor && !isFetching,
@@ -40,12 +40,20 @@ export function useAddBannerMessage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (params: { message: string; order: bigint; enabled: boolean }) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.addBannerMessage(params.message, params.order, params.enabled);
+    mutationFn: async (params: {
+      message: string;
+      order: bigint;
+      enabled: boolean;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      return actor.addBannerMessage(
+        params.message,
+        params.order,
+        params.enabled,
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['bannerMessages'] });
+      queryClient.invalidateQueries({ queryKey: ["bannerMessages"] });
     },
   });
 }
@@ -56,12 +64,20 @@ export function useUpdateBannerMessage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (params: { order: bigint; message: string; enabled: boolean }) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.updateBannerMessage(params.order, params.message, params.enabled);
+    mutationFn: async (params: {
+      order: bigint;
+      message: string;
+      enabled: boolean;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      return actor.updateBannerMessage(
+        params.order,
+        params.message,
+        params.enabled,
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['bannerMessages'] });
+      queryClient.invalidateQueries({ queryKey: ["bannerMessages"] });
     },
   });
 }
@@ -73,11 +89,11 @@ export function useDeleteBannerMessage() {
 
   return useMutation({
     mutationFn: async (order: bigint) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.deleteBannerMessage(order);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['bannerMessages'] });
+      queryClient.invalidateQueries({ queryKey: ["bannerMessages"] });
     },
   });
 }

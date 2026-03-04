@@ -1,15 +1,23 @@
-import { useNavigate } from '@tanstack/react-router';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { CheckCircle2, Package, Home } from 'lucide-react';
-import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
+import { useNavigate } from "@tanstack/react-router";
+import { CheckCircle2, Home, Package } from "lucide-react";
+import CustomerPageStyleScope from "../components/CustomerPageStyleScope";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 
 export default function PaymentSuccessPage() {
   const navigate = useNavigate();
 
   return (
     <CustomerPageStyleScope>
-      <div className="container px-4 py-16 max-w-3xl mx-auto" data-checkout-scope="true">
+      <div
+        className="container px-4 py-16 max-w-3xl mx-auto"
+        data-checkout-scope="true"
+      >
         <Card className="gold-border offwhite-surface backdrop-blur-sm shadow-elegant">
           <CardHeader className="text-center pt-12 pb-6">
             <div className="flex justify-center mb-6">
@@ -29,9 +37,13 @@ export default function PaymentSuccessPage() {
               <div className="flex gap-4">
                 <Package className="h-6 w-6 text-emerald-600 flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-emerald-900 mb-2">What's Next?</h3>
+                  <h3 className="font-semibold text-emerald-900 mb-2">
+                    What's Next?
+                  </h3>
                   <ul className="text-sm text-emerald-800 space-y-2">
-                    <li>• You will receive an order confirmation email shortly</li>
+                    <li>
+                      • You will receive an order confirmation email shortly
+                    </li>
                     <li>• Track your order status in your dashboard</li>
                     <li>• We'll notify you when your order ships</li>
                   </ul>
@@ -41,7 +53,7 @@ export default function PaymentSuccessPage() {
 
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
               <Button
-                onClick={() => navigate({ to: '/dashboard' })}
+                onClick={() => navigate({ to: "/dashboard" })}
                 className="flex-1 h-12"
                 size="lg"
               >
@@ -49,7 +61,7 @@ export default function PaymentSuccessPage() {
                 View Orders
               </Button>
               <Button
-                onClick={() => navigate({ to: '/' })}
+                onClick={() => navigate({ to: "/" })}
                 variant="outline"
                 className="flex-1 h-12"
                 size="lg"

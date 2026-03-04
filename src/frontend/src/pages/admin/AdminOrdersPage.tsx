@@ -1,32 +1,81 @@
-import { useState, useMemo } from 'react';
-import { useIsCallerAdmin, useGetOrders, useUpdateOrderStatus, useGetProducts } from '../../hooks/useQueries';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
-import { Badge } from '../../components/ui/badge';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Skeleton } from '../../components/ui/skeleton';
-import { ScrollArea } from '../../components/ui/scroll-area';
-import { Separator } from '../../components/ui/separator';
-import { Clock, CheckCircle, Truck, Home, XCircle, ShoppingBag, Filter, X, Calendar, MapPin } from 'lucide-react';
-import { toast } from 'sonner';
-import { Order, OrderStatus } from '../../backend';
+import {
+  Calendar,
+  CheckCircle,
+  Clock,
+  Filter,
+  Home,
+  MapPin,
+  ShoppingBag,
+  Truck,
+  X,
+  XCircle,
+} from "lucide-react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+import type { Order, OrderStatus } from "../../backend";
+import { Badge } from "../../components/ui/badge";
+import { Button } from "../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { ScrollArea } from "../../components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import { Separator } from "../../components/ui/separator";
+import { Skeleton } from "../../components/ui/skeleton";
+import {
+  useGetOrders,
+  useGetProducts,
+  useIsCallerAdmin,
+  useUpdateOrderStatus,
+} from "../../hooks/useQueries";
 
 const statusConfig = {
-  pending: { label: 'Pending', icon: Clock, variant: 'secondary' as const },
-  confirmed: { label: 'Confirmed', icon: CheckCircle, variant: 'default' as const },
-  shipped: { label: 'Shipped', icon: Truck, variant: 'default' as const },
-  delivered: { label: 'Delivered', icon: Home, variant: 'outline' as const },
-  cancelled: { label: 'Cancelled', icon: XCircle, variant: 'destructive' as const },
+  pending: { label: "Pending", icon: Clock, variant: "secondary" as const },
+  confirmed: {
+    label: "Confirmed",
+    icon: CheckCircle,
+    variant: "default" as const,
+  },
+  shipped: { label: "Shipped", icon: Truck, variant: "default" as const },
+  delivered: { label: "Delivered", icon: Home, variant: "outline" as const },
+  cancelled: {
+    label: "Cancelled",
+    icon: XCircle,
+    variant: "destructive" as const,
+  },
 };
 
 const MONTHS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
-const YEARS = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
+const YEARS = Array.from(
+  { length: 10 },
+  (_, i) => new Date().getFullYear() - i,
+);
 
 export default function AdminOrdersPage() {
   const { data: isAdmin, isLoading: adminLoading } = useIsCallerAdmin();
@@ -35,16 +84,16 @@ export default function AdminOrdersPage() {
   const updateStatus = useUpdateOrderStatus();
 
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [dateFrom, setDateFrom] = useState('');
-  const [dateTo, setDateTo] = useState('');
-  const [selectedMonth, setSelectedMonth] = useState<string>('');
-  const [selectedYear, setSelectedYear] = useState<string>('');
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState<string>("");
+  const [selectedYear, setSelectedYear] = useState<string>("");
 
   const formatINR = (priceInCents: bigint) => {
     const amount = Number(priceInCents) / 100;
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -52,26 +101,29 @@ export default function AdminOrdersPage() {
 
   const formatDate = (timestamp: bigint) => {
     const date = new Date(Number(timestamp) / 1_000_000);
-    return date.toLocaleString('en-IN', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
+    return date.toLocaleString("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
     });
   };
 
   const getProductName = (productId: string): string => {
     const product = products?.find((p) => p.id === productId);
-    return product?.name || 'Unknown Product';
+    return product?.name || "Unknown Product";
   };
 
   const getStatusInfo = (order: Order) => {
-    if (order.status.__kind__ === 'cancelled') {
+    if (order.status.__kind__ === "cancelled") {
       return statusConfig.cancelled;
     }
-    return statusConfig[order.status.__kind__ as keyof typeof statusConfig] || statusConfig.pending;
+    return (
+      statusConfig[order.status.__kind__ as keyof typeof statusConfig] ||
+      statusConfig.pending
+    );
   };
 
   const getCancellationReason = (order: Order) => {
-    if (order.status.__kind__ === 'cancelled') {
+    if (order.status.__kind__ === "cancelled") {
       return order.status.cancelled.reason;
     }
     return null;
@@ -98,14 +150,18 @@ export default function AdminOrdersPage() {
       // Month/Year filter
       if (selectedMonth && selectedYear) {
         const monthIndex = MONTHS.indexOf(selectedMonth);
-        if (orderDate.getMonth() !== monthIndex || orderDate.getFullYear() !== parseInt(selectedYear)) {
+        if (
+          orderDate.getMonth() !== monthIndex ||
+          orderDate.getFullYear() !== Number.parseInt(selectedYear)
+        ) {
           return false;
         }
       } else if (selectedMonth) {
         const monthIndex = MONTHS.indexOf(selectedMonth);
         if (orderDate.getMonth() !== monthIndex) return false;
       } else if (selectedYear) {
-        if (orderDate.getFullYear() !== parseInt(selectedYear)) return false;
+        if (orderDate.getFullYear() !== Number.parseInt(selectedYear))
+          return false;
       }
 
       return true;
@@ -115,37 +171,37 @@ export default function AdminOrdersPage() {
   const handleStatusChange = async (orderId: string, newStatusKind: string) => {
     try {
       let status: OrderStatus;
-      
+
       switch (newStatusKind) {
-        case 'pending':
-          status = { __kind__: 'pending', pending: null };
+        case "pending":
+          status = { __kind__: "pending", pending: null };
           break;
-        case 'confirmed':
-          status = { __kind__: 'confirmed', confirmed: null };
+        case "confirmed":
+          status = { __kind__: "confirmed", confirmed: null };
           break;
-        case 'shipped':
-          status = { __kind__: 'shipped', shipped: null };
+        case "shipped":
+          status = { __kind__: "shipped", shipped: null };
           break;
-        case 'delivered':
-          status = { __kind__: 'delivered', delivered: null };
+        case "delivered":
+          status = { __kind__: "delivered", delivered: null };
           break;
         default:
-          throw new Error('Invalid status');
+          throw new Error("Invalid status");
       }
 
       await updateStatus.mutateAsync({ orderId, status });
-      toast.success('Order status updated successfully');
+      toast.success("Order status updated successfully");
     } catch (error: any) {
-      console.error('Failed to update order status:', error);
-      toast.error(error.message || 'Failed to update order status');
+      console.error("Failed to update order status:", error);
+      toast.error(error.message || "Failed to update order status");
     }
   };
 
   const clearFilters = () => {
-    setDateFrom('');
-    setDateTo('');
-    setSelectedMonth('');
-    setSelectedYear('');
+    setDateFrom("");
+    setDateTo("");
+    setSelectedMonth("");
+    setSelectedYear("");
   };
 
   const hasActiveFilters = dateFrom || dateTo || selectedMonth || selectedYear;
@@ -168,8 +224,12 @@ export default function AdminOrdersPage() {
       <div className="container px-4 py-8">
         <div className="text-center py-12">
           <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-gold-medium" />
-          <h2 className="text-2xl font-semibold mb-2 gold-text">Access Denied</h2>
-          <p className="gold-text opacity-80">You don't have permission to access this page.</p>
+          <h2 className="text-2xl font-semibold mb-2 gold-text">
+            Access Denied
+          </h2>
+          <p className="gold-text opacity-80">
+            You don't have permission to access this page.
+          </p>
         </div>
       </div>
     );
@@ -181,7 +241,9 @@ export default function AdminOrdersPage() {
         <h1 className="font-serif text-3xl font-semibold tracking-tight mb-2 text-bottle-green-dark">
           Order Management
         </h1>
-        <p className="text-bottle-green-medium">View and manage all customer orders</p>
+        <p className="text-bottle-green-medium">
+          View and manage all customer orders
+        </p>
       </div>
 
       <div className="grid lg:grid-cols-[300px_1fr] gap-6">
@@ -271,10 +333,11 @@ export default function AdminOrdersPage() {
           <Card className="gold-border admin-surface">
             <CardHeader>
               <CardTitle className="text-bottle-green-dark">
-                {filteredOrders.length} {filteredOrders.length === 1 ? 'Order' : 'Orders'}
+                {filteredOrders.length}{" "}
+                {filteredOrders.length === 1 ? "Order" : "Orders"}
               </CardTitle>
               <CardDescription className="text-bottle-green-medium">
-                {hasActiveFilters ? 'Filtered results' : 'All orders'}
+                {hasActiveFilters ? "Filtered results" : "All orders"}
               </CardDescription>
             </CardHeader>
           </Card>
@@ -286,14 +349,14 @@ export default function AdminOrdersPage() {
                   const statusInfo = getStatusInfo(order);
                   const StatusIcon = statusInfo.icon;
                   const cancellationReason = getCancellationReason(order);
-                  const isCancelled = order.status.__kind__ === 'cancelled';
+                  const isCancelled = order.status.__kind__ === "cancelled";
                   const isSelected = selectedOrder?.id === order.id;
 
                   return (
                     <Card
                       key={order.id}
                       className={`gold-border admin-surface cursor-pointer transition-all ${
-                        isSelected ? 'ring-2 ring-gold-medium' : ''
+                        isSelected ? "ring-2 ring-gold-medium" : ""
                       }`}
                       onClick={() => setSelectedOrder(order)}
                     >
@@ -307,7 +370,10 @@ export default function AdminOrdersPage() {
                               {formatDate(order.timestamp)}
                             </p>
                           </div>
-                          <Badge variant={statusInfo.variant} className="gap-1 bg-gold-medium text-secondary">
+                          <Badge
+                            variant={statusInfo.variant}
+                            className="gap-1 bg-gold-medium text-secondary"
+                          >
                             <StatusIcon className="h-3 w-3" />
                             {statusInfo.label}
                           </Badge>
@@ -327,7 +393,9 @@ export default function AdminOrdersPage() {
                             </p>
                           </div>
                           <div>
-                            <p className="text-sm admin-table-text">Total Amount</p>
+                            <p className="text-sm admin-table-text">
+                              Total Amount
+                            </p>
                             <p className="font-semibold text-bottle-green-dark">
                               {formatINR(order.totalPriceInCents)}
                             </p>
@@ -344,41 +412,60 @@ export default function AdminOrdersPage() {
                         <div className="mb-3 p-3 bg-emerald-light/10 rounded-lg border border-gold-medium/20">
                           <div className="flex items-center gap-2 mb-2">
                             <MapPin className="h-4 w-4 text-gold-medium" />
-                            <p className="text-sm font-semibold admin-table-text">Shipping Address</p>
+                            <p className="text-sm font-semibold admin-table-text">
+                              Shipping Address
+                            </p>
                           </div>
                           <div className="grid gap-1 text-sm">
                             <p className="text-bottle-green-dark">
-                              <span className="admin-table-text">Name:</span>{' '}
-                              <span className="font-medium">{order.shippingAddress.name || 'Not provided'}</span>
+                              <span className="admin-table-text">Name:</span>{" "}
+                              <span className="font-medium">
+                                {order.shippingAddress.name || "Not provided"}
+                              </span>
                             </p>
                             <p className="text-bottle-green-dark">
-                              <span className="admin-table-text">Email:</span>{' '}
-                              <span className="font-medium">{order.shippingAddress.email || 'Not provided'}</span>
+                              <span className="admin-table-text">Email:</span>{" "}
+                              <span className="font-medium">
+                                {order.shippingAddress.email || "Not provided"}
+                              </span>
                             </p>
                             <p className="text-bottle-green-dark">
-                              <span className="admin-table-text">Phone:</span>{' '}
-                              <span className="font-medium">{order.shippingAddress.phone || 'Not provided'}</span>
+                              <span className="admin-table-text">Phone:</span>{" "}
+                              <span className="font-medium">
+                                {order.shippingAddress.phone || "Not provided"}
+                              </span>
                             </p>
                             <p className="text-bottle-green-dark">
-                              <span className="admin-table-text">Address:</span>{' '}
-                              <span className="font-medium">{order.shippingAddress.address || 'Not provided'}</span>
+                              <span className="admin-table-text">Address:</span>{" "}
+                              <span className="font-medium">
+                                {order.shippingAddress.address ||
+                                  "Not provided"}
+                              </span>
                             </p>
                           </div>
                         </div>
 
                         {cancellationReason && (
                           <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                            <p className="text-sm font-semibold text-red-800">Cancellation Reason:</p>
-                            <p className="text-sm text-red-700 mt-1">{cancellationReason}</p>
+                            <p className="text-sm font-semibold text-red-800">
+                              Cancellation Reason:
+                            </p>
+                            <p className="text-sm text-red-700 mt-1">
+                              {cancellationReason}
+                            </p>
                           </div>
                         )}
 
                         {!isCancelled && (
                           <div className="flex items-center gap-2">
-                            <Label className="text-sm admin-table-text">Update Status:</Label>
+                            <Label className="text-sm admin-table-text">
+                              Update Status:
+                            </Label>
                             <Select
                               value={order.status.__kind__}
-                              onValueChange={(value) => handleStatusChange(order.id, value)}
+                              onValueChange={(value) =>
+                                handleStatusChange(order.id, value)
+                              }
                               disabled={updateStatus.isPending}
                             >
                               <SelectTrigger className="w-[180px] bg-navy-medium border-gold-medium/30 text-beige-champagne">
@@ -386,9 +473,13 @@ export default function AdminOrdersPage() {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="pending">Pending</SelectItem>
-                                <SelectItem value="confirmed">Confirmed</SelectItem>
+                                <SelectItem value="confirmed">
+                                  Confirmed
+                                </SelectItem>
                                 <SelectItem value="shipped">Shipped</SelectItem>
-                                <SelectItem value="delivered">Delivered</SelectItem>
+                                <SelectItem value="delivered">
+                                  Delivered
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
@@ -401,11 +492,13 @@ export default function AdminOrdersPage() {
                 <Card className="gold-border admin-surface">
                   <CardContent className="py-12 text-center">
                     <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-gold-medium" />
-                    <h3 className="text-xl font-semibold text-bottle-green-dark mb-2">No Orders Found</h3>
+                    <h3 className="text-xl font-semibold text-bottle-green-dark mb-2">
+                      No Orders Found
+                    </h3>
                     <p className="text-bottle-green-medium">
                       {hasActiveFilters
-                        ? 'No orders match your filter criteria. Try adjusting your filters.'
-                        : 'No orders have been placed yet.'}
+                        ? "No orders match your filter criteria. Try adjusting your filters."
+                        : "No orders have been placed yet."}
                     </p>
                   </CardContent>
                 </Card>

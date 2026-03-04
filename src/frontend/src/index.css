@@ -19,16 +19,16 @@
     --muted-foreground: 50% 0.02 280;
     --accent: 92% 0.02 280;
     --accent-foreground: 20% 0.02 280;
-    --destructive: 55% 0.20 25;
+    --destructive: 55% 0.2 25;
     --destructive-foreground: 98% 0.01 120;
     --border: 85% 0.02 280;
     --input: 85% 0.02 280;
     --ring: 35% 0.08 160;
     --chart-1: 60% 0.15 220;
     --chart-2: 65% 0.12 160;
-    --chart-3: 70% 0.10 40;
+    --chart-3: 70% 0.1 40;
     --chart-4: 55% 0.18 280;
-    --chart-5: 50% 0.20 340;
+    --chart-5: 50% 0.2 340;
     --radius: 0.5rem;
 
     /* Aurelie Brand Colors */
@@ -36,7 +36,7 @@
     --bottle-green-medium: 35% 0.08 160;
     --bottle-green-light: 45% 0.06 160;
     --blood-maroon: 30% 0.12 20;
-    --blood-maroon-light: 40% 0.10 20;
+    --blood-maroon-light: 40% 0.1 20;
     --navy-darkest: 20% 0.06 260;
     --navy-dark: 25% 0.06 260;
     --navy-medium: 30% 0.06 260;
@@ -45,7 +45,7 @@
     --gold-dark: 55% 0.15 80;
     --gold-medium: 65% 0.15 80;
     --gold-light: 75% 0.12 80;
-    --gold-shimmer: 80% 0.10 80;
+    --gold-shimmer: 80% 0.1 80;
     --beige-sand: 85% 0.04 60;
     --beige-champagne: 90% 0.03 60;
     --beige-light: 95% 0.02 60;
@@ -69,16 +69,16 @@
     --muted-foreground: 70% 0.02 280;
     --accent: 25% 0.03 280;
     --accent-foreground: 98% 0.01 120;
-    --destructive: 55% 0.20 25;
+    --destructive: 55% 0.2 25;
     --destructive-foreground: 98% 0.01 120;
     --border: 30% 0.03 280;
     --input: 30% 0.03 280;
     --ring: 35% 0.08 160;
     --chart-1: 60% 0.15 220;
     --chart-2: 65% 0.12 160;
-    --chart-3: 70% 0.10 40;
+    --chart-3: 70% 0.1 40;
     --chart-4: 55% 0.18 280;
-    --chart-5: 50% 0.20 340;
+    --chart-5: 50% 0.2 340;
   }
 }
 
@@ -100,231 +100,359 @@
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  .off-white-surface {
+    background-color: oklch(var(--beige-light));
+  }
+
+  .luxury-header {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--beige-light)) 0%,
+      oklch(var(--beige-champagne)) 100%
+    );
+    border-bottom: 1px solid oklch(var(--gold-medium) / 0.2);
+  }
+
+  .luxury-footer {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--beige-champagne)) 0%,
+      oklch(var(--beige-sand)) 100%
+    );
+    border-top: 1px solid oklch(var(--gold-medium) / 0.2);
+  }
+
+  .header-brand-btn {
+    background: transparent !important;
+  }
+
+  .gold-text {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--gold-light)),
+      oklch(var(--gold-medium)),
+      oklch(var(--gold-dark))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
-/* Animated beige background */
-body {
-  background: linear-gradient(
-    135deg,
-    oklch(var(--beige-champagne)),
-    oklch(var(--beige-sand)),
-    oklch(var(--beige-light))
-  );
-  background-size: 400% 400%;
-  animation: gradient-shift 15s ease infinite;
-}
-
-@keyframes gradient-shift {
+/* Splash Screen Animation */
+@keyframes splash-zoom {
   0% {
-    background-position: 0% 50%;
+    transform: scale(0.8);
+    opacity: 0;
   }
   50% {
-    background-position: 100% 50%;
+    transform: scale(1.1);
+    opacity: 1;
   }
   100% {
-    background-position: 0% 50%;
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
-/* Category circle glow effect */
-@keyframes category-glow {
-  0%, 100% {
-    box-shadow: 0 0 8px oklch(var(--gold-medium) / 0.3),
-                0 0 16px oklch(var(--gold-light) / 0.2);
-  }
-  50% {
-    box-shadow: 0 0 12px oklch(var(--gold-medium) / 0.5),
-                0 0 24px oklch(var(--gold-light) / 0.3),
-                0 0 32px oklch(var(--beige-sand) / 0.2);
-  }
+.animate-splash-zoom {
+  animation: splash-zoom 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-.category-circle-glow {
-  animation: category-glow 3s ease-in-out infinite;
-}
-
-/* Gold gradient button */
-.gold-gradient {
-  background: linear-gradient(
-    135deg,
-    oklch(var(--gold-dark)),
-    oklch(var(--gold-medium)),
-    oklch(var(--gold-light))
-  );
-  background-size: 200% 200%;
-  animation: shimmer 3s ease infinite;
-  color: oklch(var(--silver-oxidized));
-  font-weight: 600;
-  letter-spacing: 0.025em;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+/* Category Circle Glow Animation */
+@keyframes category-circle-glow {
+  0%,
   100% {
-    background-position: 0% 50%;
+    box-shadow: 0 0 8px oklch(65% 0.15 80 / 0.3), 0 0 16px
+      oklch(85% 0.04 60 / 0.2);
+  }
+  50% {
+    box-shadow: 0 0 16px oklch(65% 0.15 80 / 0.5), 0 0 24px
+      oklch(85% 0.04 60 / 0.3);
   }
 }
 
-.gold-gradient:hover {
-  animation-duration: 1.5s;
+.animate-category-circle-glow {
+  animation: category-circle-glow 3s ease-in-out infinite;
 }
 
-/* Admin-scoped bottle-green buttons */
-[data-admin-scope] button:not(.gold-gradient):not([class*="destructive"]):not([class*="ghost"]):not([class*="outline"]) {
-  background-color: oklch(var(--bottle-green-medium));
+/* ============================================================
+   Category Circle Swipe-In Animations
+   Circles start off-screen from their assigned edge and
+   simultaneously slide into their final position on page load.
+   ============================================================ */
+
+/* Base state: hidden, positioned off-screen */
+.category-circle-swipe {
+  opacity: 0;
+  transition: transform 0.65s cubic-bezier(0.34, 1.3, 0.64, 1), opacity 0.55s
+    ease-out;
+}
+
+/* Direction-specific starting transforms */
+.category-circle-swipe.from-left {
+  transform: translateX(-120px);
+}
+
+.category-circle-swipe.from-right {
+  transform: translateX(120px);
+}
+
+.category-circle-swipe.from-top {
+  transform: translateY(-120px);
+}
+
+.category-circle-swipe.from-bottom {
+  transform: translateY(120px);
+}
+
+/* Arrived state: visible, in final position */
+.category-circle-swipe.arrived {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* ============================================================
+   Gender Label Glow Animation
+   Elegant, continuously pulsing warm gold glow on the
+   "For Him" and "For Her" tab labels.
+   ============================================================ */
+
+@keyframes gender-label-glow-pulse {
+  0%,
+  100% {
+    text-shadow: 0 0 6px oklch(65% 0.15 80 / 0.0), 0 0 12px
+      oklch(75% 0.12 80 / 0.0), 0 0 20px oklch(55% 0.15 80 / 0.0);
+  }
+  40% {
+    text-shadow: 0 0 6px oklch(65% 0.15 80 / 0.55), 0 0 14px
+      oklch(75% 0.12 80 / 0.35), 0 0 28px oklch(55% 0.15 80 / 0.2);
+  }
+  60% {
+    text-shadow: 0 0 8px oklch(65% 0.15 80 / 0.65), 0 0 18px
+      oklch(75% 0.12 80 / 0.4), 0 0 32px oklch(55% 0.15 80 / 0.25);
+  }
+}
+
+.gender-label-glow {
+  animation: gender-label-glow-pulse 3s ease-in-out infinite;
+}
+
+/* Scoped Button Styles */
+[data-admin-scope="true"]
+  button:not(.header-brand-btn):not([data-no-admin-style]) {
+  background-color: oklch(var(--bottle-green-dark));
   color: oklch(var(--beige-light));
 }
 
-[data-admin-scope] button:not(.gold-gradient):not([class*="destructive"]):not([class*="ghost"]):not([class*="outline"]):hover {
-  background-color: oklch(var(--bottle-green-dark));
+[data-admin-scope="true"]
+  button:not(.header-brand-btn):not([data-no-admin-style]):hover {
+  background-color: oklch(var(--bottle-green-medium));
 }
 
-/* Customer control scoped dark-purple buttons */
-[data-customer-control] button:not(.gold-gradient):not([class*="destructive"]):not([class*="ghost"]):not([class*="outline"]):not(.customer-cta-btn) {
-  background-color: #392A48;
-  color: white;
+[data-customer-control="true"]
+  button:not(.header-brand-btn):not([data-no-customer-style]) {
+  background-color: #392a48;
+  color: oklch(var(--beige-light));
 }
 
-[data-customer-control] button:not(.gold-gradient):not([class*="destructive"]):not([class*="ghost"]):not([class*="outline"]):not(.customer-cta-btn):hover {
-  background-color: #2d2138;
+[data-customer-control="true"]
+  button:not(.header-brand-btn):not([data-no-customer-style]):hover {
+  background-color: #4a3659;
 }
 
-/* Checkout-scoped light-green buttons with dark-purple text */
-[data-checkout-scope] button:not(.gold-gradient):not([class*="destructive"]):not([class*="ghost"]):not([class*="outline"]) {
-  background-color: #C8E6C9;
-  color: #392A48;
-  font-weight: 600;
+[data-checkout-scope="true"]
+  button:not(.header-brand-btn):not([data-no-checkout-style]) {
+  background-color: #90ee90;
+  color: #392a48;
 }
 
-[data-checkout-scope] button:not(.gold-gradient):not([class*="destructive"]):not([class*="ghost"]):not([class*="outline"]):hover {
-  background-color: #A5D6A7;
+[data-checkout-scope="true"]
+  button:not(.header-brand-btn):not([data-no-checkout-style]):hover {
+  background-color: #7dd87d;
 }
 
-/* Customer page scoped off-white surfaces and #392A48 text */
-[data-customer-page] {
-  background-color: #FAF9F6;
-  color: #392A48;
-}
-
-[data-customer-page] .card,
-[data-customer-page] [class*="card"] {
-  background-color: #FAF9F6;
-  color: #392A48;
-}
-
-[data-customer-page] h1,
-[data-customer-page] h2,
-[data-customer-page] h3,
-[data-customer-page] h4,
-[data-customer-page] h5,
-[data-customer-page] h6,
-[data-customer-page] p,
-[data-customer-page] span,
-[data-customer-page] label {
-  color: #392A48;
-}
-
-/* Customer CTA button class for white text on Add to Cart/Buy Now */
 .customer-cta-btn {
   color: white !important;
 }
 
-/* Opt-in gold text class */
-.gold-text {
-  color: oklch(var(--gold-medium));
+/* Customer Page Scoped Styles */
+[data-customer-page="true"] {
+  background-color: oklch(var(--beige-light));
+  color: #392a48;
 }
 
-/* Footer-scoped bottle-green text (excluding logo) */
-[data-footer-scope] h1,
-[data-footer-scope] h2,
-[data-footer-scope] h3,
-[data-footer-scope] h4,
-[data-footer-scope] h5,
-[data-footer-scope] h6,
-[data-footer-scope] p,
-[data-footer-scope] span,
-[data-footer-scope] a,
-[data-footer-scope] div {
+[data-customer-page="true"] .off-white-surface {
+  background-color: oklch(var(--beige-light));
+}
+
+/* Footer Scoped Styles */
+[data-footer-scope="true"] {
   color: oklch(var(--bottle-green-dark));
 }
 
-[data-footer-scope] img {
-  color: initial;
-}
-
-/* Luxury header and footer utilities */
-.luxury-header {
-  background: linear-gradient(
-    to bottom,
-    oklch(var(--beige-light)),
-    oklch(var(--beige-champagne))
-  );
-  border-bottom: 1px solid oklch(var(--gold-medium) / 0.2);
-}
-
-.luxury-footer {
-  background: linear-gradient(
-    to top,
-    oklch(var(--beige-light)),
-    oklch(var(--beige-champagne))
-  );
-  border-top: 1px solid oklch(var(--gold-medium) / 0.2);
-}
-
-/* Off-white surface utility replacing chrome-surface */
-.off-white-surface {
-  background-color: #FAF9F6;
-  border: 1px solid oklch(var(--gold-medium) / 0.2);
-}
-
-/* Admin surface */
-.admin-surface {
-  background-color: oklch(var(--beige-light) / 0.8);
-}
-
-/* Gold border utility */
-.gold-border {
-  border: 2px solid oklch(var(--gold-medium));
-}
-
-/* Shadow utilities */
-.shadow-gold {
-  box-shadow: 0 4px 12px oklch(var(--gold-medium) / 0.3);
-}
-
-.shadow-silver {
-  box-shadow: 0 4px 12px oklch(var(--silver-oxidized) / 0.2);
-}
-
-/* Silver gradient utility */
-.silver-gradient {
-  background: linear-gradient(
-    135deg,
-    oklch(var(--silver-dark)),
-    oklch(var(--silver-oxidized)),
-    oklch(var(--silver-light))
-  );
-}
-
-/* Admin label text */
-.admin-label-text {
+[data-footer-scope="true"] h1,
+[data-footer-scope="true"] h2,
+[data-footer-scope="true"] h3,
+[data-footer-scope="true"] h4,
+[data-footer-scope="true"] h5,
+[data-footer-scope="true"] h6,
+[data-footer-scope="true"] p,
+[data-footer-scope="true"] span,
+[data-footer-scope="true"] a,
+[data-footer-scope="true"] div {
   color: oklch(var(--bottle-green-dark));
+}
+
+/* Shimmering Gold Button */
+.btn-shimmer-gold {
+  background: linear-gradient(
+    90deg,
+    oklch(var(--gold-dark)) 0%,
+    oklch(var(--gold-medium)) 25%,
+    oklch(var(--gold-light)) 50%,
+    oklch(var(--gold-medium)) 75%,
+    oklch(var(--gold-dark)) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+  color: oklch(var(--silver-oxidized));
   font-weight: 600;
+  border: none;
+  transition: all 0.3s ease;
 }
 
-/* Header brand button override for transparent logo */
-.header-brand-btn {
-  background: transparent !important;
-  border: none !important;
-  padding: 0 !important;
+.btn-shimmer-gold:hover {
+  background-size: 200% 100%;
+  box-shadow: 0 4px 20px oklch(var(--gold-medium) / 0.4);
+  transform: translateY(-2px);
 }
 
-.header-brand-btn:hover {
-  background: transparent !important;
-  opacity: 0.9;
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ============================================================
+   Masonry Product Grid — Card Entrance Animations
+   Cards slide in from four directions with staggered delays.
+   Respects prefers-reduced-motion for accessibility.
+   ============================================================ */
+
+/* Masonry grid responsive column count */
+.masonry-grid {
+  --masonry-cols: 2;
+}
+
+@media (min-width: 640px) {
+  .masonry-grid {
+    --masonry-cols: 2;
+  }
+}
+
+@media (min-width: 768px) {
+  .masonry-grid {
+    --masonry-cols: 3;
+  }
+}
+
+@media (min-width: 1024px) {
+  .masonry-grid {
+    --masonry-cols: 3;
+  }
+}
+
+@media (min-width: 1280px) {
+  .masonry-grid {
+    --masonry-cols: 4;
+  }
+}
+
+/* Base card entrance state */
+.card-entrance {
+  opacity: 0;
+  transition: opacity 0.55s ease-out, transform 0.60s
+    cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+/* Direction-specific starting positions */
+.card-entrance.from-left {
+  transform: translateX(-60px);
+}
+
+.card-entrance.from-right {
+  transform: translateX(60px);
+}
+
+.card-entrance.from-top {
+  transform: translateY(-60px);
+}
+
+.card-entrance.from-bottom {
+  transform: translateY(60px);
+}
+
+/* Arrived / visible state */
+.card-entrance.arrived {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Accessibility: disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card-entrance {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .card-entrance.arrived {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============================================================
+   Product Card Shimmer Gold Border
+   Subtle off-white border with a continuously sweeping
+   shimmering gold glow animation on every product card.
+   ============================================================ */
+
+@keyframes shimmer-gold-border {
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px oklch(95% 0.02 60 / 0.9), 0 0 4px 1px
+      oklch(65% 0.15 80 / 0.15), 0 0 8px 2px oklch(75% 0.12 80 / 0.08);
+  }
+  25% {
+    box-shadow: 0 0 0 1px oklch(95% 0.02 60 / 0.9), 0 0 6px 2px
+      oklch(65% 0.15 80 / 0.35), 0 0 14px 4px oklch(80% 0.1 80 / 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 1px oklch(95% 0.02 60 / 0.95), 0 0 8px 3px
+      oklch(65% 0.15 80 / 0.5), 0 0 18px 6px oklch(75% 0.12 80 / 0.25), 0 0 28px
+      8px oklch(80% 0.1 80 / 0.12);
+  }
+  75% {
+    box-shadow: 0 0 0 1px oklch(95% 0.02 60 / 0.9), 0 0 6px 2px
+      oklch(65% 0.15 80 / 0.35), 0 0 14px 4px oklch(80% 0.1 80 / 0.2);
+  }
+}
+
+.product-card-shimmer {
+  border: 1px solid oklch(95% 0.02 60 / 0.85);
+  border-radius: 0.5rem;
+  animation: shimmer-gold-border 3.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card-shimmer {
+    animation: none;
+    box-shadow: 0 0 0 1px oklch(95% 0.02 60 / 0.9), 0 0 6px 2px
+      oklch(65% 0.15 80 / 0.25);
+  }
 }

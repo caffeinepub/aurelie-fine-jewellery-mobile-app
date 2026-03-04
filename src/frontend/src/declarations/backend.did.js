@@ -38,12 +38,14 @@ export const ProductMedia = IDL.Record({
   'video' : IDL.Opt(ExternalBlob),
   'images' : IDL.Vec(ExternalBlob),
 });
+export const Gender = IDL.Variant({ 'boys' : IDL.Null, 'girls' : IDL.Null });
 export const ProductCreate = IDL.Record({
   'id' : IDL.Text,
   'media' : ProductMedia,
   'inStock' : IDL.Bool,
   'name' : IDL.Text,
   'description' : IDL.Text,
+  'gender' : Gender,
   'category' : IDL.Text,
   'priceInCents' : IDL.Nat,
 });
@@ -126,12 +128,15 @@ export const Order = IDL.Record({
   'quantity' : IDL.Nat,
   'shippingAddress' : ShippingAddress,
 });
+export const Time = IDL.Int;
 export const Product = IDL.Record({
   'id' : IDL.Text,
   'media' : ProductMedia,
   'inStock' : IDL.Bool,
   'name' : IDL.Text,
+  'createdAt' : Time,
   'description' : IDL.Text,
+  'gender' : Gender,
   'category' : IDL.Text,
   'priceInCents' : IDL.Nat,
 });
@@ -180,6 +185,15 @@ export const TransformationOutput = IDL.Record({
   'status' : IDL.Nat,
   'body' : IDL.Vec(IDL.Nat8),
   'headers' : IDL.Vec(http_header),
+});
+export const ProductUpdate = IDL.Record({
+  'media' : IDL.Opt(ProductMedia),
+  'inStock' : IDL.Opt(IDL.Bool),
+  'name' : IDL.Opt(IDL.Text),
+  'description' : IDL.Opt(IDL.Text),
+  'gender' : IDL.Opt(Gender),
+  'category' : IDL.Opt(IDL.Text),
+  'priceInCents' : IDL.Opt(IDL.Nat),
 });
 
 export const idlService = IDL.Service({
@@ -266,6 +280,7 @@ export const idlService = IDL.Service({
   'getCustomerOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
   'getInquiries' : IDL.Func([], [IDL.Vec(CustomerInquiry)], ['query']),
   'getInquiry' : IDL.Func([IDL.Text], [CustomerInquiry], ['query']),
+  'getNewArrivals' : IDL.Func([], [IDL.Vec(Product)], ['query']),
   'getOrder' : IDL.Func([IDL.Text], [Order], ['query']),
   'getOrders' : IDL.Func([], [IDL.Vec(Order)], []),
   'getProduct' : IDL.Func([IDL.Text], [Product], ['query']),
@@ -318,7 +333,7 @@ export const idlService = IDL.Service({
   'updateCategoryPrimaryImage' : IDL.Func([IDL.Text, ExternalBlob], [], []),
   'updateCategorySlide' : IDL.Func([IDL.Text, IDL.Nat, CarouselSlide], [], []),
   'updateOrderStatus' : IDL.Func([IDL.Text, OrderStatus], [], []),
-  'updateProduct' : IDL.Func([ProductCreate], [], []),
+  'updateProduct' : IDL.Func([IDL.Text, ProductUpdate], [], []),
   'updateSiteContent' : IDL.Func([SiteContent], [], []),
 });
 
@@ -355,12 +370,14 @@ export const idlFactory = ({ IDL }) => {
     'video' : IDL.Opt(ExternalBlob),
     'images' : IDL.Vec(ExternalBlob),
   });
+  const Gender = IDL.Variant({ 'boys' : IDL.Null, 'girls' : IDL.Null });
   const ProductCreate = IDL.Record({
     'id' : IDL.Text,
     'media' : ProductMedia,
     'inStock' : IDL.Bool,
     'name' : IDL.Text,
     'description' : IDL.Text,
+    'gender' : Gender,
     'category' : IDL.Text,
     'priceInCents' : IDL.Nat,
   });
@@ -443,12 +460,15 @@ export const idlFactory = ({ IDL }) => {
     'quantity' : IDL.Nat,
     'shippingAddress' : ShippingAddress,
   });
+  const Time = IDL.Int;
   const Product = IDL.Record({
     'id' : IDL.Text,
     'media' : ProductMedia,
     'inStock' : IDL.Bool,
     'name' : IDL.Text,
+    'createdAt' : Time,
     'description' : IDL.Text,
+    'gender' : Gender,
     'category' : IDL.Text,
     'priceInCents' : IDL.Nat,
   });
@@ -494,6 +514,15 @@ export const idlFactory = ({ IDL }) => {
     'status' : IDL.Nat,
     'body' : IDL.Vec(IDL.Nat8),
     'headers' : IDL.Vec(http_header),
+  });
+  const ProductUpdate = IDL.Record({
+    'media' : IDL.Opt(ProductMedia),
+    'inStock' : IDL.Opt(IDL.Bool),
+    'name' : IDL.Opt(IDL.Text),
+    'description' : IDL.Opt(IDL.Text),
+    'gender' : IDL.Opt(Gender),
+    'category' : IDL.Opt(IDL.Text),
+    'priceInCents' : IDL.Opt(IDL.Nat),
   });
   
   return IDL.Service({
@@ -588,6 +617,7 @@ export const idlFactory = ({ IDL }) => {
     'getCustomerOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
     'getInquiries' : IDL.Func([], [IDL.Vec(CustomerInquiry)], ['query']),
     'getInquiry' : IDL.Func([IDL.Text], [CustomerInquiry], ['query']),
+    'getNewArrivals' : IDL.Func([], [IDL.Vec(Product)], ['query']),
     'getOrder' : IDL.Func([IDL.Text], [Order], ['query']),
     'getOrders' : IDL.Func([], [IDL.Vec(Order)], []),
     'getProduct' : IDL.Func([IDL.Text], [Product], ['query']),
@@ -648,7 +678,7 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'updateOrderStatus' : IDL.Func([IDL.Text, OrderStatus], [], []),
-    'updateProduct' : IDL.Func([ProductCreate], [], []),
+    'updateProduct' : IDL.Func([IDL.Text, ProductUpdate], [], []),
     'updateSiteContent' : IDL.Func([SiteContent], [], []),
   });
 };

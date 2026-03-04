@@ -1,13 +1,16 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useActor } from './useActor';
-import { ExternalBlob } from '../backend';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { ExternalBlob } from "../backend";
+import { useActor } from "./useActor";
 
 // Query hook for getting carousel images for a specific category and carousel index
-export function useGetCategoryCarouselImages(categorySlug: string, carouselIndex: 1 | 2) {
+export function useGetCategoryCarouselImages(
+  categorySlug: string,
+  carouselIndex: 1 | 2,
+) {
   const { actor, isFetching } = useActor();
 
   return useQuery<ExternalBlob[]>({
-    queryKey: ['categoryCarousel', categorySlug, carouselIndex],
+    queryKey: ["categoryCarousel", categorySlug, carouselIndex],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getCategoryCarousel(categorySlug, BigInt(carouselIndex));
@@ -19,17 +22,26 @@ export function useGetCategoryCarouselImages(categorySlug: string, carouselIndex
 }
 
 // Mutation hook for updating carousel images
-export function useUpdateCategoryCarouselImages(categorySlug: string, carouselIndex: 1 | 2) {
+export function useUpdateCategoryCarouselImages(
+  categorySlug: string,
+  carouselIndex: 1 | 2,
+) {
   const { actor } = useActor();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (images: ExternalBlob[]) => {
-      if (!actor) throw new Error('Actor not available');
-      await actor.updateCategoryCarousel(categorySlug, BigInt(carouselIndex), images);
+      if (!actor) throw new Error("Actor not available");
+      await actor.updateCategoryCarousel(
+        categorySlug,
+        BigInt(carouselIndex),
+        images,
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categoryCarousel', categorySlug, carouselIndex] });
+      queryClient.invalidateQueries({
+        queryKey: ["categoryCarousel", categorySlug, carouselIndex],
+      });
     },
   });
 }
@@ -39,7 +51,7 @@ export function useGetCarouselRedirect(categorySlug: string) {
   const { actor, isFetching } = useActor();
 
   return useQuery<string | null>({
-    queryKey: ['carouselRedirect', categorySlug],
+    queryKey: ["carouselRedirect", categorySlug],
     queryFn: async () => {
       if (!actor) return null;
       return actor.getCarouselRedirect(categorySlug);
@@ -55,11 +67,13 @@ export function useUpdateCarouselRedirect(categorySlug: string) {
 
   return useMutation({
     mutationFn: async (redirectUrl: string) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       await actor.updateCarouselRedirect(categorySlug, redirectUrl);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carouselRedirect', categorySlug] });
+      queryClient.invalidateQueries({
+        queryKey: ["carouselRedirect", categorySlug],
+      });
     },
   });
 }

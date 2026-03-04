@@ -1,26 +1,40 @@
-import { useParams, useNavigate } from '@tanstack/react-router';
-import { useIsCallerAdmin, useGetCategory, useUpdateCategory } from '../../hooks/useQueries';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Textarea } from '../../components/ui/textarea';
-import { Skeleton } from '../../components/ui/skeleton';
-import { ArrowLeft, Save } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { toast } from 'sonner';
-import CategoryImagesManager from '../../components/admin/CategoryImagesManager';
-import { ExternalBlob } from '../../backend';
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { ArrowLeft, Save } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import type { ExternalBlob } from "../../backend";
+import CategoryImagesManager from "../../components/admin/CategoryImagesManager";
+import { Button } from "../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Skeleton } from "../../components/ui/skeleton";
+import { Textarea } from "../../components/ui/textarea";
+import {
+  useGetCategory,
+  useIsCallerAdmin,
+  useUpdateCategory,
+} from "../../hooks/useQueries";
 
 export default function CategoryEditPage() {
-  const { categorySlug } = useParams({ from: '/admin/categories/$categorySlug/edit' });
+  const params = useParams({ strict: false }) as Record<
+    string,
+    string | undefined
+  >;
+  const categorySlug = params.categorySlug ?? "";
   const navigate = useNavigate();
   const { data: isAdmin, isLoading: adminLoading } = useIsCallerAdmin();
-  const { data: category, isLoading: categoryLoading } = useGetCategory(categorySlug);
+  const { data: category, isLoading: categoryLoading } =
+    useGetCategory(categorySlug);
   const updateCategory = useUpdateCategory();
 
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [displayOrder, setDisplayOrder] = useState(0);
   const [images, setImages] = useState<ExternalBlob[]>([]);
   const [primaryImage, setPrimaryImage] = useState<ExternalBlob | null>(null);
@@ -37,7 +51,7 @@ export default function CategoryEditPage() {
 
   const handleSave = async () => {
     if (!category || !primaryImage) {
-      toast.error('Primary image is required');
+      toast.error("Primary image is required");
       return;
     }
 
@@ -53,11 +67,11 @@ export default function CategoryEditPage() {
           images,
         },
       });
-      toast.success('Category updated successfully');
-      navigate({ to: '/admin' });
+      toast.success("Category updated successfully");
+      navigate({ to: "/admin" });
     } catch (error: any) {
-      console.error('Failed to update category:', error);
-      toast.error(error.message || 'Failed to update category');
+      console.error("Failed to update category:", error);
+      toast.error(error.message || "Failed to update category");
     }
   };
 
@@ -78,8 +92,12 @@ export default function CategoryEditPage() {
     return (
       <div className="container px-4 py-8">
         <div className="text-center py-12">
-          <h2 className="text-2xl font-semibold mb-2 gold-text">Access Denied</h2>
-          <p className="gold-text opacity-80">You don't have permission to access this page.</p>
+          <h2 className="text-2xl font-semibold mb-2 gold-text">
+            Access Denied
+          </h2>
+          <p className="gold-text opacity-80">
+            You don't have permission to access this page.
+          </p>
         </div>
       </div>
     );
@@ -90,8 +108,10 @@ export default function CategoryEditPage() {
       <div className="container px-4 py-8">
         <div className="text-center py-12">
           <h2 className="text-2xl font-semibold mb-2">Category Not Found</h2>
-          <p className="text-muted-foreground">The category you're looking for doesn't exist.</p>
-          <Button onClick={() => navigate({ to: '/admin' })} className="mt-4">
+          <p className="text-muted-foreground">
+            The category you're looking for doesn't exist.
+          </p>
+          <Button onClick={() => navigate({ to: "/admin" })} className="mt-4">
             Back to Admin
           </Button>
         </div>
@@ -104,7 +124,7 @@ export default function CategoryEditPage() {
       <div className="mb-8">
         <Button
           variant="ghost"
-          onClick={() => navigate({ to: '/admin' })}
+          onClick={() => navigate({ to: "/admin" })}
           className="mb-4 text-bottle-green-dark hover:text-gold-medium"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -113,18 +133,24 @@ export default function CategoryEditPage() {
         <h1 className="font-serif text-3xl font-semibold tracking-tight mb-2 text-bottle-green-dark">
           Edit Category: {category.name}
         </h1>
-        <p className="text-bottle-green-medium">Update category details and manage images</p>
+        <p className="text-bottle-green-medium">
+          Update category details and manage images
+        </p>
       </div>
 
       <div className="space-y-6">
         {/* Basic Information */}
         <Card className="gold-border admin-surface">
           <CardHeader>
-            <CardTitle className="text-bottle-green-dark">Basic Information</CardTitle>
+            <CardTitle className="text-bottle-green-dark">
+              Basic Information
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-bottle-green-dark">Category Name</Label>
+              <Label htmlFor="name" className="text-bottle-green-dark">
+                Category Name
+              </Label>
               <Input
                 id="name"
                 value={name}
@@ -134,7 +160,9 @@ export default function CategoryEditPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description" className="text-bottle-green-dark">Description</Label>
+              <Label htmlFor="description" className="text-bottle-green-dark">
+                Description
+              </Label>
               <Textarea
                 id="description"
                 value={description}
@@ -145,12 +173,16 @@ export default function CategoryEditPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="displayOrder" className="text-bottle-green-dark">Display Order</Label>
+              <Label htmlFor="displayOrder" className="text-bottle-green-dark">
+                Display Order
+              </Label>
               <Input
                 id="displayOrder"
                 type="number"
                 value={displayOrder}
-                onChange={(e) => setDisplayOrder(parseInt(e.target.value) || 0)}
+                onChange={(e) =>
+                  setDisplayOrder(Number.parseInt(e.target.value) || 0)
+                }
                 className="bg-navy-medium border-gold-medium/30 text-beige-champagne"
               />
               <p className="text-xs text-bottle-green-medium">
@@ -172,7 +204,7 @@ export default function CategoryEditPage() {
         <div className="flex justify-end gap-4">
           <Button
             variant="outline"
-            onClick={() => navigate({ to: '/admin' })}
+            onClick={() => navigate({ to: "/admin" })}
             className="border-gold-medium/30"
           >
             Cancel
@@ -183,7 +215,7 @@ export default function CategoryEditPage() {
             className="bg-gold-medium hover:bg-gold-dark text-navy-dark"
           >
             <Save className="h-4 w-4 mr-2" />
-            {updateCategory.isPending ? 'Saving...' : 'Save Changes'}
+            {updateCategory.isPending ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </div>

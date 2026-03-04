@@ -3,12 +3,12 @@
  * Allows users to apply/remove coupon codes with inline validation.
  */
 
-import { useState } from 'react';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { Label } from '../ui/label';
-import { Tag, X, CheckCircle2 } from 'lucide-react';
-import { validateCoupon } from '../../utils/pricing';
+import { CheckCircle2, Tag, X } from "lucide-react";
+import { useState } from "react";
+import { validateCoupon } from "../../utils/pricing";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 interface CouponControlProps {
   appliedCoupon: string;
@@ -21,46 +21,49 @@ export default function CouponControl({
   onApplyCoupon,
   onRemoveCoupon,
 }: CouponControlProps) {
-  const [couponInput, setCouponInput] = useState('');
-  const [error, setError] = useState('');
+  const [couponInput, setCouponInput] = useState("");
+  const [error, setError] = useState("");
 
   const handleApply = () => {
     const code = couponInput.trim();
-    
+
     if (!code) {
-      setError('Please enter a coupon code');
+      setError("Please enter a coupon code");
       return;
     }
-    
+
     if (!validateCoupon(code)) {
-      setError('Invalid coupon code');
+      setError("Invalid coupon code");
       return;
     }
-    
-    setError('');
+
+    setError("");
     onApplyCoupon(code);
-    setCouponInput('');
+    setCouponInput("");
   };
 
   const handleRemove = () => {
     onRemoveCoupon();
-    setCouponInput('');
-    setError('');
+    setCouponInput("");
+    setError("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleApply();
     }
   };
 
   return (
     <div className="space-y-3">
-      <Label htmlFor="coupon" className="text-base font-semibold gold-text flex items-center gap-2">
+      <Label
+        htmlFor="coupon"
+        className="text-base font-semibold gold-text flex items-center gap-2"
+      >
         <Tag className="h-4 w-4" />
         Apply Coupon Code
       </Label>
-      
+
       {appliedCoupon ? (
         <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-gold-medium/10 to-gold-light/10 border-2 border-gold-medium/30 rounded-lg">
           <CheckCircle2 className="h-5 w-5 text-gold-medium flex-shrink-0" />
@@ -91,7 +94,7 @@ export default function CouponControl({
               value={couponInput}
               onChange={(e) => {
                 setCouponInput(e.target.value);
-                setError('');
+                setError("");
               }}
               onKeyPress={handleKeyPress}
               className="h-12 text-base border-2 border-gold-medium/30 focus:border-gold-medium focus:ring-gold-medium/20 bg-ivory-base/30"
@@ -103,16 +106,18 @@ export default function CouponControl({
               Apply
             </Button>
           </div>
-          
+
           {error && (
             <p className="text-sm text-destructive flex items-center gap-2">
               <X className="h-4 w-4" />
               {error}
             </p>
           )}
-          
+
           <p className="text-xs text-muted-foreground">
-            Use code <span className="font-semibold text-gold-medium">AFJ10</span> for 10% off
+            Use code{" "}
+            <span className="font-semibold text-gold-medium">AFJ10</span> for
+            10% off
           </p>
         </>
       )}

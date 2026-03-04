@@ -3,14 +3,14 @@
  * Handles subtotal calculation, coupon validation, discount computation, and final payable amount.
  */
 
-import type { Product } from '../backend';
+import type { Product } from "../backend";
 
 export interface CartItem {
   product: Product;
   quantity: number;
 }
 
-export const VALID_COUPON_CODE = 'AFJ10';
+export const VALID_COUPON_CODE = "AFJ10";
 export const COUPON_DISCOUNT_PERCENT = 10;
 
 /**
@@ -32,7 +32,10 @@ export function validateCoupon(code: string): boolean {
 /**
  * Compute discount amount in cents based on subtotal
  */
-export function computeDiscountInCents(subtotalInCents: number, couponCode: string): number {
+export function computeDiscountInCents(
+  subtotalInCents: number,
+  couponCode: string,
+): number {
   if (!validateCoupon(couponCode)) {
     return 0;
   }
@@ -43,7 +46,10 @@ export function computeDiscountInCents(subtotalInCents: number, couponCode: stri
 /**
  * Compute final payable amount in cents (subtotal - discount)
  */
-export function computeFinalAmountInCents(subtotalInCents: number, discountInCents: number): number {
+export function computeFinalAmountInCents(
+  subtotalInCents: number,
+  discountInCents: number,
+): number {
   return Math.max(0, subtotalInCents - discountInCents);
 }
 
@@ -52,9 +58,9 @@ export function computeFinalAmountInCents(subtotalInCents: number, discountInCen
  */
 export function formatINR(amountInCents: number): string {
   const amount = amountInCents / 100;
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount);
@@ -66,7 +72,7 @@ export function formatINR(amountInCents: number): string {
 export function computeDiscountedLineTotal(
   priceInCents: bigint,
   quantity: number,
-  couponCode: string
+  couponCode: string,
 ): bigint {
   const lineTotal = Number(priceInCents) * quantity;
   const discount = computeDiscountInCents(lineTotal, couponCode);

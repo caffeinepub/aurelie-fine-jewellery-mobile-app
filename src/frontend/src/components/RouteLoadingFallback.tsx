@@ -1,4 +1,4 @@
-import { Skeleton } from './ui/skeleton';
+import { Skeleton } from "./ui/skeleton";
 
 /**
  * Loading fallback component for lazy-loaded routes.

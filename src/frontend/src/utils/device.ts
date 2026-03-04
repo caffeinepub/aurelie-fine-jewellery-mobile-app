@@ -19,14 +19,14 @@ interface NavigatorWithUserAgentData extends Navigator {
  */
 export function isMobileDevice(): boolean {
   const nav = navigator as NavigatorWithUserAgentData;
-  
+
   // Modern API (Chromium-based browsers)
   if (nav.userAgentData) {
     return nav.userAgentData.mobile;
   }
-  
+
   // Fallback: User agent string detection
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
+    navigator.userAgent,
   );
 }

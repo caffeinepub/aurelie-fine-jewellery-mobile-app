@@ -1,14 +1,21 @@
-import { useGetAllCategoryHeaders } from '../hooks/useCategoryHeaderNav';
-import { PRODUCT_CATEGORIES } from '../utils/productCategories';
-import { useNavigate, useLocation } from '@tanstack/react-router';
+import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useGetAllCategoryHeaders } from "../hooks/useCategoryHeaderNav";
+import { PRODUCT_CATEGORIES } from "../utils/productCategories";
 
-export default function HeaderCategoryNav() {
+interface HeaderCategoryNavProps {
+  /** When true, renders regardless of route (used when embedded inside a page) */
+  forceShow?: boolean;
+}
+
+export default function HeaderCategoryNav({
+  forceShow = false,
+}: HeaderCategoryNavProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { data: categoryHeaders } = useGetAllCategoryHeaders();
 
-  // Don't show on admin routes
-  if (location.pathname.startsWith('/admin')) {
+  // Don't show on admin routes (unless forceShow)
+  if (!forceShow && location.pathname.startsWith("/admin")) {
     return null;
   }
 
@@ -16,9 +23,12 @@ export default function HeaderCategoryNav() {
   const headersMap = new Map(categoryHeaders || []);
 
   const handleCategoryClick = (categorySlug: string, redirectUrl?: string) => {
-    if (redirectUrl && redirectUrl.trim()) {
+    if (redirectUrl?.trim()) {
       // Check if it's an absolute URL
-      if (redirectUrl.startsWith('http://') || redirectUrl.startsWith('https://')) {
+      if (
+        redirectUrl.startsWith("http://") ||
+        redirectUrl.startsWith("https://")
+      ) {
         window.location.href = redirectUrl;
       } else {
         // Internal navigation
@@ -41,6 +51,7 @@ export default function HeaderCategoryNav() {
 
             return (
               <button
+                type="button"
                 key={category.slug}
                 onClick={() => handleCategoryClick(category.slug, redirectUrl)}
                 className="flex flex-col items-center gap-2 min-w-[80px] hover:opacity-80 transition-opacity group shrink-0"
@@ -55,7 +66,7 @@ export default function HeaderCategoryNav() {
                   ) : (
                     <div className="w-full h-full bg-beige-champagne/50 flex items-center justify-center">
                       <span className="text-xs text-bottle-green-medium text-center px-1">
-                        {category.title.split(' ')[0]}
+                        {category.title.split(" ")[0]}
                       </span>
                     </div>
                   )}

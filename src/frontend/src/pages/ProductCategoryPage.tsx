@@ -1,16 +1,23 @@
-import { useParams, useNavigate } from '@tanstack/react-router';
-import { useGetProducts } from '../hooks/useQueries';
-import { Loader2, ShoppingCart, Eye } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { toast } from 'sonner';
-import { useCart } from '../hooks/useCart';
-import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
-import { getCategoryBySlug, isValidCategorySlug } from '../utils/productCategories';
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { Eye, Loader2, ShoppingCart } from "lucide-react";
+import { toast } from "sonner";
+import CustomerPageStyleScope from "../components/CustomerPageStyleScope";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { useCart } from "../hooks/useCart";
+import { useInternetIdentity } from "../hooks/useInternetIdentity";
+import { useGetProducts } from "../hooks/useQueries";
+import {
+  getCategoryBySlug,
+  isValidCategorySlug,
+} from "../utils/productCategories";
 
 export default function ProductCategoryPage() {
-  const { categorySlug } = useParams({ strict: false });
+  const params = useParams({ strict: false }) as Record<
+    string,
+    string | undefined
+  >;
+  const categorySlug = params.categorySlug;
   const navigate = useNavigate();
   const { data: products, isLoading } = useGetProducts();
   const { addItem } = useCart();
@@ -23,28 +30,30 @@ export default function ProductCategoryPage() {
     return (
       <CustomerPageStyleScope>
         <div className="container px-4 py-16 text-center">
-          <h1 className="font-serif text-4xl font-bold mb-4">Category Not Found</h1>
+          <h1 className="font-serif text-4xl font-bold mb-4">
+            Category Not Found
+          </h1>
           <p className="text-muted-foreground mb-8">
             The category you're looking for doesn't exist.
           </p>
-          <Button onClick={() => navigate({ to: '/' })}>
-            Back to Home
-          </Button>
+          <Button onClick={() => navigate({ to: "/" })}>Back to Home</Button>
         </div>
       </CustomerPageStyleScope>
     );
   }
 
   const category = getCategoryBySlug(categorySlug);
-  
+
   // Filter products by category
-  const categoryProducts = products?.filter(
-    (product) => product.category.toLowerCase() === categorySlug.toLowerCase()
-  ) || [];
+  const categoryProducts =
+    products?.filter(
+      (product) =>
+        product.category.toLowerCase() === categorySlug.toLowerCase(),
+    ) || [];
 
   const handleAddToCart = (product: any) => {
     if (!isAuthenticated) {
-      toast.error('Please log in to add items to cart');
+      toast.error("Please log in to add items to cart");
       return;
     }
     addItem(product, 1);
@@ -53,11 +62,11 @@ export default function ProductCategoryPage() {
 
   const handleBuyNow = (product: any) => {
     if (!isAuthenticated) {
-      toast.error('Please log in to purchase');
+      toast.error("Please log in to purchase");
       return;
     }
     addItem(product, 1);
-    navigate({ to: '/checkout' });
+    navigate({ to: "/checkout" });
   };
 
   const handleViewDetails = (productId: string) => {
@@ -66,9 +75,9 @@ export default function ProductCategoryPage() {
 
   const formatINR = (priceInCents: bigint): string => {
     const priceInRupees = Number(priceInCents) / 100;
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(priceInRupees);
@@ -101,7 +110,7 @@ export default function ProductCategoryPage() {
                 <p className="text-xl text-muted-foreground mb-8">
                   No products available in this category yet.
                 </p>
-                <Button onClick={() => navigate({ to: '/' })}>
+                <Button onClick={() => navigate({ to: "/" })}>
                   Browse All Products
                 </Button>
               </div>
@@ -112,8 +121,9 @@ export default function ProductCategoryPage() {
                     key={product.id}
                     className="group overflow-hidden gold-border offwhite-surface hover:shadow-gold transition-all duration-300"
                   >
-                    <div
-                      className="relative aspect-square overflow-hidden cursor-pointer offwhite-surface"
+                    <button
+                      type="button"
+                      className="relative aspect-square overflow-hidden cursor-pointer offwhite-surface w-full"
                       onClick={() => handleViewDetails(product.id)}
                     >
                       {product.media.images.length > 0 ? (
@@ -128,7 +138,7 @@ export default function ProductCategoryPage() {
                           <Eye className="h-12 w-12 text-muted-foreground" />
                         </div>
                       )}
-                    </div>
+                    </button>
                     <CardContent className="p-6 space-y-4">
                       <div>
                         <h3 className="font-serif text-xl font-semibold tracking-tight line-clamp-1">
@@ -145,11 +155,11 @@ export default function ProductCategoryPage() {
                         <span
                           className={`text-xs px-3 py-1 rounded-full font-medium ${
                             product.inStock
-                              ? 'bg-emerald-100 text-emerald-700'
-                              : 'bg-red-100 text-red-700'
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-red-100 text-red-700"
                           }`}
                         >
-                          {product.inStock ? 'In Stock' : 'Out of Stock'}
+                          {product.inStock ? "In Stock" : "Out of Stock"}
                         </span>
                       </div>
                       <div className="flex gap-2">

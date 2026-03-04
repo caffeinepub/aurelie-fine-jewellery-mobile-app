@@ -1,11 +1,24 @@
-# Specification
+# Aurelie Fine Jewellery
 
-## Summary
-**Goal:** Fix two bugs on the For Her page (GirlsHomePage): category circle images not syncing with admin uploads, and an incorrect body background color.
+## Current State
+Version 89 is live in production. The current workspace contains the complete Version 89 codebase including all features up to and including:
+- Skeleton loading screens on HomePage, BoysHomePage (For Him), GirlsHomePage (For Her)
+- WhatsApp Share button on product detail pages with pre-filled message
+- All other V89 features (splash screen, masonry product grid, live filters, marquee banner, For Him/For Her tabs, footer with social media icons and policy links, admin panel with separate pages, etc.)
 
-**Planned changes:**
-- Update GirlsHomePage to fetch category header nav data from the backend (same pattern as BoysHomePage) so uploaded images are displayed in the sliding category circles instead of falling back to emoji/icons.
-- Show the emoji/icon only as a true fallback when no image has been uploaded for a category.
-- Fix the body background color of GirlsHomePage to match other customer-facing pages (e.g., HomePage, BoysHomePage), leaving header and footer styling untouched.
+Version 90 was a failed attempt to add Batch 3 features (ring sizes, subcategory videos, wishlist). It was never successfully deployed. The current workspace is functionally equivalent to Version 89 with Batch 1 already applied.
 
-**User-visible outcome:** On the For Her page, category circles show the images uploaded via the admin panel, and the page body background color is consistent with the rest of the site.
+## Requested Changes (Diff)
+
+### Add
+- Nothing new — Batch 1 features (skeleton loaders + WhatsApp share) are already present in the codebase
+
+### Modify
+- Nothing — deploy as-is from Version 89 baseline with Batch 1 already included
+
+### Remove
+- Nothing
+
+## Implementation Plan
+1. Verify the current workspace matches Version 89 + Batch 1 (confirmed — no Version 90 changes leaked in)
+2. Deploy the current code as a new draft

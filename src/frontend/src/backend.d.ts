@@ -26,6 +26,7 @@ export interface TransformationOutput {
     body: Uint8Array;
     headers: Array<http_header>;
 }
+export type Time = bigint;
 export type OrderStatus = {
     __kind__: "shipped";
     shipped: null;
@@ -115,16 +116,25 @@ export interface CategoryHeader {
     redirectUrl: string;
     image: ExternalBlob;
 }
-export interface BannerMessage {
-    order: bigint;
-    enabled: boolean;
-    message: string;
+export interface ProductUpdate {
+    media?: ProductMedia;
+    inStock?: boolean;
+    name?: string;
+    description?: string;
+    gender?: Gender;
+    category?: string;
+    priceInCents?: bigint;
 }
 export interface ShippingAddress {
     name: string;
     email: string;
     address: string;
     phone: string;
+}
+export interface BannerMessage {
+    order: bigint;
+    enabled: boolean;
+    message: string;
 }
 export interface Order {
     id: string;
@@ -169,6 +179,7 @@ export interface ProductCreate {
     inStock: boolean;
     name: string;
     description: string;
+    gender: Gender;
     category: string;
     priceInCents: bigint;
 }
@@ -184,9 +195,15 @@ export interface Product {
     media: ProductMedia;
     inStock: boolean;
     name: string;
+    createdAt: Time;
     description: string;
+    gender: Gender;
     category: string;
     priceInCents: bigint;
+}
+export enum Gender {
+    boys = "boys",
+    girls = "girls"
 }
 export enum UserRole {
     admin = "admin",
@@ -224,6 +241,7 @@ export interface backendInterface {
     getCustomerOrders(): Promise<Array<Order>>;
     getInquiries(): Promise<Array<CustomerInquiry>>;
     getInquiry(inquiryId: string): Promise<CustomerInquiry>;
+    getNewArrivals(): Promise<Array<Product>>;
     getOrder(orderId: string): Promise<Order>;
     getOrders(): Promise<Array<Order>>;
     getProduct(productId: string): Promise<Product>;
@@ -258,6 +276,6 @@ export interface backendInterface {
     updateCategoryPrimaryImage(name: string, primaryImage: ExternalBlob): Promise<void>;
     updateCategorySlide(category: string, slideIndex: bigint, updatedSlide: CarouselSlide): Promise<void>;
     updateOrderStatus(orderId: string, status: OrderStatus): Promise<void>;
-    updateProduct(product: ProductCreate): Promise<void>;
+    updateProduct(productId: string, updates: ProductUpdate): Promise<void>;
     updateSiteContent(newContent: SiteContent): Promise<void>;
 }

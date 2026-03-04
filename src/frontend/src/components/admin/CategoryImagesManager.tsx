@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Button } from '../ui/button';
-import { Label } from '../ui/label';
-import { Image as ImageIcon, X, ArrowUp, ArrowDown, Star } from 'lucide-react';
-import { toast } from 'sonner';
-import { ExternalBlob } from '../../backend';
-import { optimizeImage } from '../../utils/mediaOptimization';
+import { ArrowDown, ArrowUp, Image as ImageIcon, Star, X } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { ExternalBlob } from "../../backend";
+import { optimizeImage } from "../../utils/mediaOptimization";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Label } from "../ui/label";
 
 interface CategoryImagesManagerProps {
   images: ExternalBlob[];
@@ -38,10 +38,12 @@ export default function CategoryImagesManager({
       const optimized = await optimizeImage(file, 1200, 0.85);
       const arrayBuffer = await optimized.file.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
-      
-      const imageBlob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
-        setUploadProgress(percentage);
-      });
+
+      const imageBlob = ExternalBlob.fromBytes(uint8Array).withUploadProgress(
+        (percentage) => {
+          setUploadProgress(percentage);
+        },
+      );
 
       const newImages = [...images, imageBlob];
       onImagesChange(newImages);
@@ -51,10 +53,10 @@ export default function CategoryImagesManager({
         onPrimaryImageChange(imageBlob);
       }
 
-      toast.success('Image uploaded successfully');
+      toast.success("Image uploaded successfully");
     } catch (error) {
-      console.error('Image upload failed:', error);
-      toast.error('Failed to upload image');
+      console.error("Image upload failed:", error);
+      toast.error("Failed to upload image");
     } finally {
       setUploadingIndex(null);
       setUploadProgress(0);
@@ -71,34 +73,43 @@ export default function CategoryImagesManager({
       onPrimaryImageChange(newImages[0]);
     }
 
-    toast.success('Image removed');
+    toast.success("Image removed");
   };
 
   const handleMoveUp = (index: number) => {
     if (index === 0) return;
     const newImages = [...images];
-    [newImages[index - 1], newImages[index]] = [newImages[index], newImages[index - 1]];
+    [newImages[index - 1], newImages[index]] = [
+      newImages[index],
+      newImages[index - 1],
+    ];
     onImagesChange(newImages);
   };
 
   const handleMoveDown = (index: number) => {
     if (index === images.length - 1) return;
     const newImages = [...images];
-    [newImages[index], newImages[index + 1]] = [newImages[index + 1], newImages[index]];
+    [newImages[index], newImages[index + 1]] = [
+      newImages[index + 1],
+      newImages[index],
+    ];
     onImagesChange(newImages);
   };
 
   const handleSetPrimary = (index: number) => {
     onPrimaryImageChange(images[index]);
-    toast.success('Primary image updated');
+    toast.success("Primary image updated");
   };
 
   return (
     <Card className="gold-border admin-surface">
       <CardHeader>
-        <CardTitle className="text-bottle-green-dark">Category Images</CardTitle>
+        <CardTitle className="text-bottle-green-dark">
+          Category Images
+        </CardTitle>
         <p className="text-sm text-bottle-green-medium">
-          Manage up to {MAX_IMAGES} images. The primary image is used as the category thumbnail.
+          Manage up to {MAX_IMAGES} images. The primary image is used as the
+          category thumbnail.
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -107,13 +118,15 @@ export default function CategoryImagesManager({
           {images.map((image, index) => {
             const isPrimary = primaryImage === image;
             return (
-              <div key={index} className="relative group">
-                <div className={`aspect-square border-2 rounded-lg overflow-hidden ${
-                  isPrimary ? 'border-gold-medium' : 'border-gold-medium/30'
-                }`}>
+              <div key={image.getDirectURL()} className="relative group">
+                <div
+                  className={`aspect-square border-2 rounded-lg overflow-hidden ${
+                    isPrimary ? "border-gold-medium" : "border-gold-medium/30"
+                  }`}
+                >
                   <img
                     src={image.getDirectURL()}
-                    alt={`Category image ${index + 1}`}
+                    alt={`Category ${index + 1}`}
                     className="w-full h-full object-cover"
                   />
                   {isPrimary && (
@@ -173,8 +186,12 @@ export default function CategoryImagesManager({
             <div className="aspect-square border-2 border-dashed border-gold-medium/30 rounded-lg overflow-hidden bg-navy-medium hover:border-gold-medium/50 transition-colors">
               {uploadingIndex !== null ? (
                 <div className="w-full h-full flex flex-col items-center justify-center">
-                  <div className="text-gold-medium text-sm mb-2">Uploading...</div>
-                  <div className="text-gold-medium text-xs">{uploadProgress}%</div>
+                  <div className="text-gold-medium text-sm mb-2">
+                    Uploading...
+                  </div>
+                  <div className="text-gold-medium text-xs">
+                    {uploadProgress}%
+                  </div>
                 </div>
               ) : (
                 <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">

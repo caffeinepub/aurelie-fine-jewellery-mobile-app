@@ -1,14 +1,26 @@
-import { useState, useEffect } from 'react';
-import { useGetCategoryCarouselImages, useUpdateCategoryCarouselImages, useGetCarouselRedirect, useUpdateCarouselRedirect } from '../../hooks/useCategoryCarouselQueries';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Skeleton } from '../ui/skeleton';
-import { Image as ImageIcon, Save, X, Link as LinkIcon, ArrowUp, ArrowDown } from 'lucide-react';
-import { toast } from 'sonner';
-import { ExternalBlob } from '../../backend';
-import { optimizeImage } from '../../utils/mediaOptimization';
+import {
+  ArrowDown,
+  ArrowUp,
+  Image as ImageIcon,
+  Link as LinkIcon,
+  Save,
+  X,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { ExternalBlob } from "../../backend";
+import {
+  useGetCarouselRedirect,
+  useGetCategoryCarouselImages,
+  useUpdateCarouselRedirect,
+  useUpdateCategoryCarouselImages,
+} from "../../hooks/useCategoryCarouselQueries";
+import { optimizeImage } from "../../utils/mediaOptimization";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Skeleton } from "../ui/skeleton";
 
 interface CategoryCarouselManagementProps {
   categorySlug: string;
@@ -16,16 +28,31 @@ interface CategoryCarouselManagementProps {
   title: string;
 }
 
-export default function CategoryCarouselManagement({ categorySlug, carouselIndex, title }: CategoryCarouselManagementProps) {
-  const { data: images, isLoading } = useGetCategoryCarouselImages(categorySlug, carouselIndex);
-  const { data: redirectUrl, isLoading: redirectLoading } = useGetCarouselRedirect(categorySlug);
-  const updateImages = useUpdateCategoryCarouselImages(categorySlug, carouselIndex);
+export default function CategoryCarouselManagement({
+  categorySlug,
+  carouselIndex,
+  title,
+}: CategoryCarouselManagementProps) {
+  const { data: images, isLoading } = useGetCategoryCarouselImages(
+    categorySlug,
+    carouselIndex,
+  );
+  const { data: redirectUrl, isLoading: redirectLoading } =
+    useGetCarouselRedirect(categorySlug);
+  const updateImages = useUpdateCategoryCarouselImages(
+    categorySlug,
+    carouselIndex,
+  );
   const updateRedirect = useUpdateCarouselRedirect(categorySlug);
 
   const [localImages, setLocalImages] = useState<ExternalBlob[]>([]);
-  const [newImages, setNewImages] = useState<{ file: File; index: number }[]>([]);
-  const [uploadProgress, setUploadProgress] = useState<Record<number, number>>({});
-  const [redirectUrlInput, setRedirectUrlInput] = useState('');
+  const [newImages, setNewImages] = useState<{ file: File; index: number }[]>(
+    [],
+  );
+  const [uploadProgress, setUploadProgress] = useState<Record<number, number>>(
+    {},
+  );
+  const [redirectUrlInput, setRedirectUrlInput] = useState("");
 
   useEffect(() => {
     if (images) {
@@ -41,25 +68,25 @@ export default function CategoryCarouselManagement({ categorySlug, carouselIndex
 
   const handleImageUpload = async (file: File) => {
     if (localImages.length + newImages.length >= 5) {
-      toast.error('Maximum of 5 images allowed');
+      toast.error("Maximum of 5 images allowed");
       return;
     }
 
     const newIndex = localImages.length + newImages.length;
-    setNewImages(prev => [...prev, { file, index: newIndex }]);
+    setNewImages((prev) => [...prev, { file, index: newIndex }]);
   };
 
   const handleRemoveExisting = (index: number) => {
-    setLocalImages(prev => prev.filter((_, i) => i !== index));
+    setLocalImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleRemoveNew = (index: number) => {
-    setNewImages(prev => prev.filter(img => img.index !== index));
+    setNewImages((prev) => prev.filter((img) => img.index !== index));
   };
 
   const handleMoveUp = (index: number) => {
     if (index === 0) return;
-    setLocalImages(prev => {
+    setLocalImages((prev) => {
       const newArr = [...prev];
       [newArr[index - 1], newArr[index]] = [newArr[index], newArr[index - 1]];
       return newArr;
@@ -68,7 +95,7 @@ export default function CategoryCarouselManagement({ categorySlug, carouselIndex
 
   const handleMoveDown = (index: number) => {
     if (index === localImages.length - 1) return;
-    setLocalImages(prev => {
+    setLocalImages((prev) => {
       const newArr = [...prev];
       [newArr[index], newArr[index + 1]] = [newArr[index + 1], newArr[index]];
       return newArr;
@@ -83,29 +110,31 @@ export default function CategoryCarouselManagement({ categorySlug, carouselIndex
         const optimized = await optimizeImage(file, 1200, 0.85);
         const arrayBuffer = await optimized.file.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
-        const imageBlob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
-          setUploadProgress(prev => ({ ...prev, [index]: percentage }));
-        });
+        const imageBlob = ExternalBlob.fromBytes(uint8Array).withUploadProgress(
+          (percentage) => {
+            setUploadProgress((prev) => ({ ...prev, [index]: percentage }));
+          },
+        );
         finalImages.push(imageBlob);
       }
 
       await updateImages.mutateAsync(finalImages);
       setNewImages([]);
       setUploadProgress({});
-      toast.success('Carousel images saved successfully');
+      toast.success("Carousel images saved successfully");
     } catch (error: any) {
-      console.error('Failed to save carousel images:', error);
-      toast.error(error.message || 'Failed to save carousel images');
+      console.error("Failed to save carousel images:", error);
+      toast.error(error.message || "Failed to save carousel images");
     }
   };
 
   const handleSaveRedirectUrl = async () => {
     try {
       await updateRedirect.mutateAsync(redirectUrlInput.trim());
-      toast.success('Redirect URL saved successfully');
+      toast.success("Redirect URL saved successfully");
     } catch (error: any) {
-      console.error('Failed to save redirect URL:', error);
-      toast.error(error.message || 'Failed to save redirect URL');
+      console.error("Failed to save redirect URL:", error);
+      toast.error(error.message || "Failed to save redirect URL");
     }
   };
 
@@ -117,8 +146,11 @@ export default function CategoryCarouselManagement({ categorySlug, carouselIndex
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Skeleton key={i} className="aspect-video rounded-lg" />
+            {(["a", "b", "c", "d", "e"] as const).map((id) => (
+              <Skeleton
+                key={`skel-${id}`}
+                className="aspect-video rounded-lg"
+              />
             ))}
           </div>
         </CardContent>
@@ -126,7 +158,8 @@ export default function CategoryCarouselManagement({ categorySlug, carouselIndex
     );
   }
 
-  const hasChanges = newImages.length > 0 || localImages.length !== (images?.length || 0);
+  const hasChanges =
+    newImages.length > 0 || localImages.length !== (images?.length || 0);
   const hasRedirectChange = redirectUrl !== redirectUrlInput.trim();
 
   return (
@@ -137,7 +170,10 @@ export default function CategoryCarouselManagement({ categorySlug, carouselIndex
       <CardContent className="space-y-6">
         {/* Redirect URL Configuration */}
         <div className="space-y-2">
-          <Label htmlFor={`redirect-${categorySlug}-${carouselIndex}`} className="text-gold-medium flex items-center gap-2">
+          <Label
+            htmlFor={`redirect-${categorySlug}-${carouselIndex}`}
+            className="text-gold-medium flex items-center gap-2"
+          >
             <LinkIcon className="h-4 w-4" />
             Redirect URL (optional)
           </Label>
@@ -153,7 +189,11 @@ export default function CategoryCarouselManagement({ categorySlug, carouselIndex
             />
             <Button
               onClick={handleSaveRedirectUrl}
-              disabled={!hasRedirectChange || redirectLoading || updateRedirect.isPending}
+              disabled={
+                !hasRedirectChange ||
+                redirectLoading ||
+                updateRedirect.isPending
+              }
               className="bg-gold-medium hover:bg-gold-dark text-navy-dark"
             >
               <Save className="h-4 w-4" />
@@ -167,7 +207,7 @@ export default function CategoryCarouselManagement({ categorySlug, carouselIndex
         {/* Image Management */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {localImages.map((image, index) => (
-            <div key={`existing-${index}`} className="relative group">
+            <div key={image.getDirectURL()} className="relative group">
               <div className="aspect-video border-2 border-gold-medium/30 rounded-lg overflow-hidden bg-navy-medium">
                 <img
                   src={image.getDirectURL()}
@@ -218,7 +258,9 @@ export default function CategoryCarouselManagement({ categorySlug, carouselIndex
                 />
                 {uploadProgress[index] > 0 && uploadProgress[index] < 100 && (
                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <div className="text-gold-medium text-sm">{uploadProgress[index]}%</div>
+                    <div className="text-gold-medium text-sm">
+                      {uploadProgress[index]}%
+                    </div>
                   </div>
                 )}
               </div>
@@ -260,7 +302,7 @@ export default function CategoryCarouselManagement({ categorySlug, carouselIndex
               className="bg-gold-medium hover:bg-gold-dark text-navy-dark"
             >
               <Save className="h-4 w-4 mr-2" />
-              {updateImages.isPending ? 'Saving...' : 'Save All Images'}
+              {updateImages.isPending ? "Saving..." : "Save All Images"}
             </Button>
           </div>
         )}

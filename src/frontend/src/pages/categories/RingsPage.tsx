@@ -1,4 +1,4 @@
-import CategoryPageTemplate from './CategoryPageTemplate';
+import CategoryPageTemplate from "./CategoryPageTemplate";
 
 export default function RingsPage() {
   return (

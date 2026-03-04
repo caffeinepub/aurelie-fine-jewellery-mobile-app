@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 /**
  * Hook that toggles data-admin-ui="true" attribute on document.body
@@ -7,10 +7,10 @@ import { useEffect } from 'react';
  */
 export function useAdminUiBodyAttribute() {
   useEffect(() => {
-    document.body.setAttribute('data-admin-ui', 'true');
-    
+    document.body.setAttribute("data-admin-ui", "true");
+
     return () => {
-      document.body.removeAttribute('data-admin-ui');
+      document.body.removeAttribute("data-admin-ui");
     };
   }, []);
 }

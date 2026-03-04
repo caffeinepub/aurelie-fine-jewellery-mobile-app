@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { useGetProducts, useAddProduct, useUpdateProduct, useDeleteProduct } from '../../hooks/useQueries';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
-import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
-import { Plus, Edit, Trash2, Package } from 'lucide-react';
-import ProductFormModal from './ProductFormModal';
-import { toast } from 'sonner';
-import type { Product } from '../../backend';
+import { Edit, Package, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import type { Product } from "../../backend";
+import {
+  useAddProduct,
+  useDeleteProduct,
+  useGetProducts,
+  useUpdateProduct,
+} from "../../hooks/useQueries";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,7 +17,17 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '../ui/alert-dialog';
+} from "../ui/alert-dialog";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import ProductFormModal from "./ProductFormModal";
 
 export default function ProductManagement() {
   const { data: products, isLoading } = useGetProducts();
@@ -27,9 +38,9 @@ export default function ProductManagement() {
 
   const formatINR = (priceInCents: bigint) => {
     const amount = Number(priceInCents) / 100;
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -45,11 +56,11 @@ export default function ProductManagement() {
 
     try {
       await deleteProduct.mutateAsync(deletingProduct.id);
-      toast.success('Product deleted successfully');
+      toast.success("Product deleted successfully");
       setDeletingProduct(null);
     } catch (error: any) {
-      console.error('Failed to delete product:', error);
-      toast.error(error.message || 'Failed to delete product');
+      console.error("Failed to delete product:", error);
+      toast.error(error.message || "Failed to delete product");
     }
   };
 
@@ -72,7 +83,10 @@ export default function ProductManagement() {
                 Add, edit, and manage your jewellery products
               </CardDescription>
             </div>
-            <Button onClick={() => setShowForm(true)} className="gap-2 gold-gradient text-secondary shadow-gold">
+            <Button
+              onClick={() => setShowForm(true)}
+              className="gap-2 gold-gradient text-secondary shadow-gold"
+            >
               <Plus className="h-4 w-4" />
               Add Product
             </Button>
@@ -105,9 +119,18 @@ export default function ProductManagement() {
                     )}
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-bottle-green-dark">{product.name}</h3>
-                        <Badge variant={product.inStock ? 'default' : 'secondary'} className={product.inStock ? 'bg-gold-medium text-secondary' : ''}>
-                          {product.inStock ? 'In Stock' : 'Out of Stock'}
+                        <h3 className="font-semibold text-bottle-green-dark">
+                          {product.name}
+                        </h3>
+                        <Badge
+                          variant={product.inStock ? "default" : "secondary"}
+                          className={
+                            product.inStock
+                              ? "bg-gold-medium text-secondary"
+                              : ""
+                          }
+                        >
+                          {product.inStock ? "In Stock" : "Out of Stock"}
                         </Badge>
                       </div>
                       <p className="text-sm text-bottle-green-medium line-clamp-1">
@@ -144,8 +167,13 @@ export default function ProductManagement() {
           ) : (
             <div className="text-center py-12">
               <Package className="h-16 w-16 mx-auto mb-4 text-gold-medium opacity-50" />
-              <p className="text-bottle-green-medium mb-4">No products yet. Add your first product to get started.</p>
-              <Button onClick={() => setShowForm(true)} className="gap-2 gold-gradient text-secondary shadow-gold">
+              <p className="text-bottle-green-medium mb-4">
+                No products yet. Add your first product to get started.
+              </p>
+              <Button
+                onClick={() => setShowForm(true)}
+                className="gap-2 gold-gradient text-secondary shadow-gold"
+              >
                 <Plus className="h-4 w-4" />
                 Add Your First Product
               </Button>
@@ -160,18 +188,30 @@ export default function ProductManagement() {
         product={editingProduct}
       />
 
-      <AlertDialog open={!!deletingProduct} onOpenChange={() => setDeletingProduct(null)}>
+      <AlertDialog
+        open={!!deletingProduct}
+        onOpenChange={() => setDeletingProduct(null)}
+      >
         <AlertDialogContent className="gold-border admin-surface backdrop-blur">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-bottle-green-dark">Delete Product</AlertDialogTitle>
+            <AlertDialogTitle className="text-bottle-green-dark">
+              Delete Product
+            </AlertDialogTitle>
             <AlertDialogDescription className="text-bottle-green-medium">
-              Are you sure you want to delete "{deletingProduct?.name}"? This action cannot be undone.
+              Are you sure you want to delete "{deletingProduct?.name}"? This
+              action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-gold-medium text-bottle-green-dark">Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} disabled={deleteProduct.isPending} className="bg-destructive text-destructive-foreground">
-              {deleteProduct.isPending ? 'Deleting...' : 'Delete'}
+            <AlertDialogCancel className="border-gold-medium text-bottle-green-dark">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={deleteProduct.isPending}
+              className="bg-destructive text-destructive-foreground"
+            >
+              {deleteProduct.isPending ? "Deleting..." : "Delete"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

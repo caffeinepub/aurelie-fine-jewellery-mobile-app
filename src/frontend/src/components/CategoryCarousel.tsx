@@ -1,23 +1,27 @@
-import { useState, useEffect } from 'react';
-import { useGetCategorySlides } from '../hooks/useQueries';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from './ui/button';
-import { Skeleton } from './ui/skeleton';
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useGetCategorySlides } from "../hooks/useQueries";
+import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 interface CategoryCarouselProps {
   category: string;
   title: string;
 }
 
-export default function CategoryCarousel({ category, title }: CategoryCarouselProps) {
+export default function CategoryCarousel({
+  category,
+  title,
+}: CategoryCarouselProps) {
   const { data: slides, isLoading } = useGetCategorySlides(category);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
   // Filter enabled slides and sort by order
-  const enabledSlides = slides
-    ?.filter(slide => slide.enabled)
-    .sort((a, b) => Number(a.order) - Number(b.order)) || [];
+  const enabledSlides =
+    slides
+      ?.filter((slide) => slide.enabled)
+      .sort((a, b) => Number(a.order) - Number(b.order)) || [];
 
   // Reset currentIndex when enabledSlides changes
   useEffect(() => {
@@ -43,7 +47,9 @@ export default function CategoryCarousel({ category, title }: CategoryCarouselPr
   };
 
   const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev - 1 + enabledSlides.length) % enabledSlides.length);
+    setCurrentIndex(
+      (prev) => (prev - 1 + enabledSlides.length) % enabledSlides.length,
+    );
   };
 
   const goToNext = () => {
@@ -76,9 +82,11 @@ export default function CategoryCarousel({ category, title }: CategoryCarouselPr
 
   return (
     <div>
-      <h2 className="font-serif text-xl font-semibold tracking-tight mb-3 gold-text">{title}</h2>
-      
-      <div 
+      <h2 className="font-serif text-xl font-semibold tracking-tight mb-3 gold-text">
+        {title}
+      </h2>
+
+      <div
         className="relative w-full group"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -90,26 +98,27 @@ export default function CategoryCarousel({ category, title }: CategoryCarouselPr
 
             return (
               <div
-                key={index}
+                key={`slide-${String(slide.order)}-${index}`}
                 className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${
-                  isActive ? 'opacity-100' : 'opacity-0'
+                  isActive ? "opacity-100" : "opacity-0"
                 }`}
-                style={{ pointerEvents: isActive ? 'auto' : 'none' }}
+                style={{ pointerEvents: isActive ? "auto" : "none" }}
               >
-                <div
-                  className="w-full h-full cursor-pointer relative overflow-hidden"
+                <button
+                  type="button"
+                  className="w-full h-full cursor-pointer relative overflow-hidden focus:outline-none"
                   onClick={() => handleSlideClick(slide.urlRedirect)}
                 >
                   <img
                     src={slide.visualContent.getDirectURL()}
                     alt={`${title} - Slide ${index + 1}`}
                     className="w-full h-full object-cover"
-                    loading={index === 0 ? 'eager' : 'lazy'}
+                    loading={index === 0 ? "eager" : "lazy"}
                     decoding="async"
                   />
                   {/* Subtle gradient overlay for better text readability if needed */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
-                </div>
+                </button>
               </div>
             );
           })}
@@ -140,14 +149,15 @@ export default function CategoryCarousel({ category, title }: CategoryCarouselPr
         {/* Navigation Dots */}
         {enabledSlides.length > 1 && (
           <div className="flex justify-center gap-2 mt-3">
-            {enabledSlides.map((_, index) => (
+            {enabledSlides.map((slide, index) => (
               <button
-                key={index}
+                type="button"
+                key={`dot-${String(slide.order)}-${slide.urlRedirect || index}`}
                 onClick={() => goToSlide(index)}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   index === currentIndex
-                    ? 'w-6 bg-gold-medium shadow-gold'
-                    : 'w-1.5 bg-gold-medium/40 hover:bg-gold-medium/60'
+                    ? "w-6 bg-gold-medium shadow-gold"
+                    : "w-1.5 bg-gold-medium/40 hover:bg-gold-medium/60"
                 }`}
                 aria-label={`Go to ${title} slide ${index + 1}`}
               />

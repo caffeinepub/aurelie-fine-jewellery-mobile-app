@@ -17,10 +17,10 @@ export interface UpiPaymentDetails {
  */
 export function buildUpiUri(details: UpiPaymentDetails): string {
   const { payeeVpa, payeeName, amountInCents, currency } = details;
-  
+
   // Convert cents to rupees with 2 decimal places
   const amountInRupees = (amountInCents / 100).toFixed(2);
-  
+
   // Build UPI URI with proper encoding
   const params = new URLSearchParams({
     pa: payeeVpa,
@@ -28,7 +28,7 @@ export function buildUpiUri(details: UpiPaymentDetails): string {
     am: amountInRupees,
     cu: currency,
   });
-  
+
   return `upi://pay?${params.toString()}`;
 }
 
@@ -39,10 +39,10 @@ export function buildUpiUri(details: UpiPaymentDetails): string {
  */
 export function generateAurelieUpiUri(amountInCents: number): string {
   return buildUpiUri({
-    payeeVpa: 'arjun.tapse-1@okhdfcbank',
-    payeeName: 'Arjun Tapse',
+    payeeVpa: "arjun.tapse-1@okhdfcbank",
+    payeeName: "Arjun Tapse",
     amountInCents,
-    currency: 'INR',
+    currency: "INR",
   });
 }
 
@@ -54,7 +54,7 @@ export function generateAurelieUpiUri(amountInCents: number): string {
 export function generateGooglePayUri(amountInCents: number): string {
   const upiUri = generateAurelieUpiUri(amountInCents);
   // Google Pay uses the standard UPI URI with gpay:// scheme or tez:// scheme
-  return `gpay://upi/pay?${upiUri.split('?')[1]}`;
+  return `gpay://upi/pay?${upiUri.split("?")[1]}`;
 }
 
 /**
@@ -65,5 +65,5 @@ export function generateGooglePayUri(amountInCents: number): string {
 export function generatePhonePeUri(amountInCents: number): string {
   const upiUri = generateAurelieUpiUri(amountInCents);
   // PhonePe uses the standard UPI URI with phonepe:// scheme
-  return `phonepe://pay?${upiUri.split('?')[1]}`;
+  return `phonepe://pay?${upiUri.split("?")[1]}`;
 }

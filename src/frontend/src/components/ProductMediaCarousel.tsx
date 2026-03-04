@@ -1,29 +1,34 @@
-import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from './ui/button';
-import type { ProductMedia } from '../backend';
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import type { ProductMedia } from "../backend";
+import { Button } from "./ui/button";
 
 interface ProductMediaCarouselProps {
   media: ProductMedia;
   productName: string;
 }
 
-export default function ProductMediaCarousel({ media, productName }: ProductMediaCarouselProps) {
+export default function ProductMediaCarousel({
+  media,
+  productName,
+}: ProductMediaCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Build media array: video first (if present), then images
-  const mediaItems: Array<{ type: 'video' | 'image'; url: string }> = [];
-  
+  const mediaItems: Array<{ type: "video" | "image"; url: string }> = [];
+
   if (media.video) {
-    mediaItems.push({ type: 'video', url: media.video.getDirectURL() });
+    mediaItems.push({ type: "video", url: media.video.getDirectURL() });
   }
-  
-  media.images.forEach(image => {
-    mediaItems.push({ type: 'image', url: image.getDirectURL() });
-  });
+
+  for (const image of media.images) {
+    mediaItems.push({ type: "image", url: image.getDirectURL() });
+  }
 
   const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev - 1 + mediaItems.length) % mediaItems.length);
+    setCurrentIndex(
+      (prev) => (prev - 1 + mediaItems.length) % mediaItems.length,
+    );
   };
 
   const goToNext = () => {
@@ -36,7 +41,10 @@ export default function ProductMediaCarousel({ media, productName }: ProductMedi
 
   if (mediaItems.length === 0) {
     return (
-      <div className="relative overflow-hidden rounded-lg gold-border bg-bottle-green-light/20 shadow-gold flex items-center justify-center" style={{ paddingBottom: '100%' }}>
+      <div
+        className="relative overflow-hidden rounded-lg gold-border bg-bottle-green-light/20 shadow-gold flex items-center justify-center"
+        style={{ paddingBottom: "100%" }}
+      >
         <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
           No media available
         </div>
@@ -48,27 +56,29 @@ export default function ProductMediaCarousel({ media, productName }: ProductMedi
     <div className="relative w-full group">
       {/* Media Container with square aspect ratio */}
       <div className="relative overflow-hidden rounded-lg gold-border bg-bottle-green-light/20 shadow-gold">
-        <div className="relative w-full" style={{ paddingBottom: '100%' }}>
+        <div className="relative w-full" style={{ paddingBottom: "100%" }}>
           {mediaItems.map((item, index) => {
             const isActive = index === currentIndex;
-            const isAdjacent = Math.abs(index - currentIndex) <= 1 || 
-                              (currentIndex === 0 && index === mediaItems.length - 1) ||
-                              (currentIndex === mediaItems.length - 1 && index === 0);
-            
+            const isAdjacent =
+              Math.abs(index - currentIndex) <= 1 ||
+              (currentIndex === 0 && index === mediaItems.length - 1) ||
+              (currentIndex === mediaItems.length - 1 && index === 0);
+
             return (
               <div
-                key={index}
+                key={`media-item-${item.url}`}
                 className={`absolute inset-0 transition-opacity duration-500 ${
-                  isActive ? 'opacity-100' : 'opacity-0'
+                  isActive ? "opacity-100" : "opacity-0"
                 }`}
-                style={{ pointerEvents: isActive ? 'auto' : 'none' }}
+                style={{ pointerEvents: isActive ? "auto" : "none" }}
               >
-                {item.type === 'video' ? (
+                {item.type === "video" ? (
+                  // biome-ignore lint/a11y/useMediaCaption: decorative product video
                   <video
                     src={item.url}
                     controls
                     className="w-full h-full object-cover"
-                    preload={isActive ? 'auto' : 'metadata'}
+                    preload={isActive ? "auto" : "metadata"}
                   >
                     Your browser does not support the video tag.
                   </video>
@@ -77,7 +87,7 @@ export default function ProductMediaCarousel({ media, productName }: ProductMedi
                     src={item.url}
                     alt={`${productName} - ${index + 1}`}
                     className="w-full h-full object-cover"
-                    loading={isAdjacent ? 'eager' : 'lazy'}
+                    loading={isAdjacent ? "eager" : "lazy"}
                     decoding="async"
                   />
                 )}
@@ -114,15 +124,16 @@ export default function ProductMediaCarousel({ media, productName }: ProductMedi
         <div className="flex justify-center gap-2 mt-4">
           {mediaItems.map((item, index) => (
             <button
-              key={index}
+              type="button"
+              key={`media-dot-${item.url}`}
               onClick={() => goToSlide(index)}
               className={`h-2 rounded-full transition-all ${
                 index === currentIndex
-                  ? 'w-8 bg-gold-medium'
-                  : 'w-2 bg-gold-medium/40 hover:bg-gold-medium/60'
+                  ? "w-8 bg-gold-medium"
+                  : "w-2 bg-gold-medium/40 hover:bg-gold-medium/60"
               }`}
               aria-label={`Go to ${item.type} ${index + 1}`}
-              title={item.type === 'video' ? 'Video' : `Image ${index + 1}`}
+              title={item.type === "video" ? "Video" : `Image ${index + 1}`}
             />
           ))}
         </div>
@@ -131,7 +142,9 @@ export default function ProductMediaCarousel({ media, productName }: ProductMedi
       {/* Media Type Indicator */}
       {mediaItems.length > 0 && (
         <div className="absolute top-4 left-4 bg-black/50 text-white text-xs px-2 py-1 rounded">
-          {mediaItems[currentIndex].type === 'video' ? 'Video' : `${currentIndex + 1} / ${mediaItems.length}`}
+          {mediaItems[currentIndex].type === "video"
+            ? "Video"
+            : `${currentIndex + 1} / ${mediaItems.length}`}
         </div>
       )}
     </div>

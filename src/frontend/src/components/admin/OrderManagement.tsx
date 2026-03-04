@@ -1,18 +1,51 @@
-import { useGetOrders, useUpdateOrderStatus, useGetProducts } from '../../hooks/useQueries';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
-import { Badge } from '../ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Clock, CheckCircle, Truck, Home, XCircle, ShoppingBag, Printer, MapPin } from 'lucide-react';
-import { toast } from 'sonner';
-import { Order, OrderStatus, Product } from '../../backend';
-import { Button } from '../ui/button';
+import {
+  CheckCircle,
+  Clock,
+  Home,
+  MapPin,
+  Printer,
+  ShoppingBag,
+  Truck,
+  XCircle,
+} from "lucide-react";
+import { toast } from "sonner";
+import { type Order, type OrderStatus, Product } from "../../backend";
+import {
+  useGetOrders,
+  useGetProducts,
+  useUpdateOrderStatus,
+} from "../../hooks/useQueries";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const statusConfig = {
-  pending: { label: 'Pending', icon: Clock, variant: 'secondary' as const },
-  confirmed: { label: 'Confirmed', icon: CheckCircle, variant: 'default' as const },
-  shipped: { label: 'Shipped', icon: Truck, variant: 'default' as const },
-  delivered: { label: 'Delivered', icon: Home, variant: 'outline' as const },
-  cancelled: { label: 'Cancelled', icon: XCircle, variant: 'destructive' as const },
+  pending: { label: "Pending", icon: Clock, variant: "secondary" as const },
+  confirmed: {
+    label: "Confirmed",
+    icon: CheckCircle,
+    variant: "default" as const,
+  },
+  shipped: { label: "Shipped", icon: Truck, variant: "default" as const },
+  delivered: { label: "Delivered", icon: Home, variant: "outline" as const },
+  cancelled: {
+    label: "Cancelled",
+    icon: XCircle,
+    variant: "destructive" as const,
+  },
 };
 
 export default function OrderManagement() {
@@ -22,9 +55,9 @@ export default function OrderManagement() {
 
   const formatINR = (priceInCents: bigint) => {
     const amount = Number(priceInCents) / 100;
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -32,43 +65,43 @@ export default function OrderManagement() {
 
   const formatDate = (timestamp: bigint) => {
     const date = new Date(Number(timestamp) / 1_000_000);
-    return date.toLocaleString('en-IN', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
+    return date.toLocaleString("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
     });
   };
 
   const getProductName = (productId: string): string => {
     const product = products?.find((p) => p.id === productId);
-    return product?.name || 'Unknown Product';
+    return product?.name || "Unknown Product";
   };
 
   const handleStatusChange = async (orderId: string, newStatusKind: string) => {
     try {
       let status: OrderStatus;
-      
+
       switch (newStatusKind) {
-        case 'pending':
-          status = { __kind__: 'pending', pending: null };
+        case "pending":
+          status = { __kind__: "pending", pending: null };
           break;
-        case 'confirmed':
-          status = { __kind__: 'confirmed', confirmed: null };
+        case "confirmed":
+          status = { __kind__: "confirmed", confirmed: null };
           break;
-        case 'shipped':
-          status = { __kind__: 'shipped', shipped: null };
+        case "shipped":
+          status = { __kind__: "shipped", shipped: null };
           break;
-        case 'delivered':
-          status = { __kind__: 'delivered', delivered: null };
+        case "delivered":
+          status = { __kind__: "delivered", delivered: null };
           break;
         default:
-          throw new Error('Invalid status');
+          throw new Error("Invalid status");
       }
 
       await updateStatus.mutateAsync({ orderId, status });
-      toast.success('Order status updated successfully');
+      toast.success("Order status updated successfully");
     } catch (error: any) {
-      console.error('Failed to update order status:', error);
-      toast.error(error.message || 'Failed to update order status');
+      console.error("Failed to update order status:", error);
+      toast.error(error.message || "Failed to update order status");
     }
   };
 
@@ -77,9 +110,9 @@ export default function OrderManagement() {
     const productName = getProductName(order.productId);
     const cancellationReason = getCancellationReason(order);
 
-    const printWindow = window.open('', '_blank');
+    const printWindow = window.open("", "_blank");
     if (!printWindow) {
-      toast.error('Please allow pop-ups to print orders');
+      toast.error("Please allow pop-ups to print orders");
       return;
     }
 
@@ -295,7 +328,7 @@ export default function OrderManagement() {
                 </div>
                 <div class="info-row">
                   <div class="info-label">Status</div>
-                  <div class="status-badge ${order.status.__kind__ === 'cancelled' ? 'cancelled' : ''}">${statusInfo.label}</div>
+                  <div class="status-badge ${order.status.__kind__ === "cancelled" ? "cancelled" : ""}">${statusInfo.label}</div>
                 </div>
               </div>
               
@@ -312,12 +345,16 @@ export default function OrderManagement() {
               </div>
             </div>
             
-            ${cancellationReason ? `
+            ${
+              cancellationReason
+                ? `
               <div class="cancellation-notice">
                 <h3>Order Cancelled</h3>
                 <p><strong>Reason:</strong> ${cancellationReason}</p>
               </div>
-            ` : ''}
+            `
+                : ""
+            }
             
             <div class="product-details">
               <h2>Product Details</h2>
@@ -347,19 +384,19 @@ export default function OrderManagement() {
               </h2>
               <div class="info-row">
                 <div class="info-label">Name</div>
-                <div class="info-value">${order.shippingAddress.name || 'Not provided'}</div>
+                <div class="info-value">${order.shippingAddress.name || "Not provided"}</div>
               </div>
               <div class="info-row">
                 <div class="info-label">Email</div>
-                <div class="info-value">${order.shippingAddress.email || 'Not provided'}</div>
+                <div class="info-value">${order.shippingAddress.email || "Not provided"}</div>
               </div>
               <div class="info-row">
                 <div class="info-label">Phone</div>
-                <div class="info-value">${order.shippingAddress.phone || 'Not provided'}</div>
+                <div class="info-value">${order.shippingAddress.phone || "Not provided"}</div>
               </div>
               <div class="info-row">
                 <div class="info-label">Address</div>
-                <div class="info-value">${order.shippingAddress.address || 'Not provided'}</div>
+                <div class="info-value">${order.shippingAddress.address || "Not provided"}</div>
               </div>
             </div>
             
@@ -383,14 +420,17 @@ export default function OrderManagement() {
   };
 
   const getStatusInfo = (order: Order) => {
-    if (order.status.__kind__ === 'cancelled') {
+    if (order.status.__kind__ === "cancelled") {
       return statusConfig.cancelled;
     }
-    return statusConfig[order.status.__kind__ as keyof typeof statusConfig] || statusConfig.pending;
+    return (
+      statusConfig[order.status.__kind__ as keyof typeof statusConfig] ||
+      statusConfig.pending
+    );
   };
 
   const getCancellationReason = (order: Order) => {
-    if (order.status.__kind__ === 'cancelled') {
+    if (order.status.__kind__ === "cancelled") {
       return order.status.cancelled.reason;
     }
     return null;
@@ -418,7 +458,7 @@ export default function OrderManagement() {
               const statusInfo = getStatusInfo(order);
               const StatusIcon = statusInfo.icon;
               const cancellationReason = getCancellationReason(order);
-              const isCancelled = order.status.__kind__ === 'cancelled';
+              const isCancelled = order.status.__kind__ === "cancelled";
 
               return (
                 <div
@@ -427,7 +467,9 @@ export default function OrderManagement() {
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <h3 className="font-semibold text-bottle-green-dark">Order #{order.id.slice(-8)}</h3>
+                      <h3 className="font-semibold text-bottle-green-dark">
+                        Order #{order.id.slice(-8)}
+                      </h3>
                       <p className="text-sm text-bottle-green-medium">
                         Customer: {order.customer.toString().slice(0, 10)}...
                       </p>
@@ -436,7 +478,10 @@ export default function OrderManagement() {
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant={statusInfo.variant} className="gap-1 bg-gold-medium text-secondary">
+                      <Badge
+                        variant={statusInfo.variant}
+                        className="gap-1 bg-gold-medium text-secondary"
+                      >
                         <StatusIcon className="h-3 w-3" />
                         {statusInfo.label}
                       </Badge>
@@ -456,11 +501,15 @@ export default function OrderManagement() {
                   <div className="grid gap-2 sm:grid-cols-2 mb-3">
                     <div>
                       <p className="text-sm admin-table-text">Product ID</p>
-                      <p className="font-medium text-sm text-bottle-green-dark">{order.productId}</p>
+                      <p className="font-medium text-sm text-bottle-green-dark">
+                        {order.productId}
+                      </p>
                     </div>
                     <div>
                       <p className="text-sm admin-table-text">Quantity</p>
-                      <p className="font-medium text-sm text-bottle-green-dark">{order.quantity.toString()}</p>
+                      <p className="font-medium text-sm text-bottle-green-dark">
+                        {order.quantity.toString()}
+                      </p>
                     </div>
                     <div>
                       <p className="text-sm admin-table-text">Total Amount</p>
@@ -470,7 +519,9 @@ export default function OrderManagement() {
                     </div>
                     <div>
                       <p className="text-sm admin-table-text">UPI ID</p>
-                      <p className="font-medium text-sm text-bottle-green-dark">{order.upiId}</p>
+                      <p className="font-medium text-sm text-bottle-green-dark">
+                        {order.upiId}
+                      </p>
                     </div>
                   </div>
 
@@ -478,41 +529,59 @@ export default function OrderManagement() {
                   <div className="mb-3 p-3 bg-emerald-light/10 rounded-lg border border-gold-medium/20">
                     <div className="flex items-center gap-2 mb-2">
                       <MapPin className="h-4 w-4 text-gold-medium" />
-                      <p className="text-sm font-semibold admin-table-text">Shipping Address</p>
+                      <p className="text-sm font-semibold admin-table-text">
+                        Shipping Address
+                      </p>
                     </div>
                     <div className="grid gap-1 text-sm">
                       <p className="text-bottle-green-dark">
-                        <span className="admin-table-text">Name:</span>{' '}
-                        <span className="font-medium">{order.shippingAddress.name || 'Not provided'}</span>
+                        <span className="admin-table-text">Name:</span>{" "}
+                        <span className="font-medium">
+                          {order.shippingAddress.name || "Not provided"}
+                        </span>
                       </p>
                       <p className="text-bottle-green-dark">
-                        <span className="admin-table-text">Email:</span>{' '}
-                        <span className="font-medium">{order.shippingAddress.email || 'Not provided'}</span>
+                        <span className="admin-table-text">Email:</span>{" "}
+                        <span className="font-medium">
+                          {order.shippingAddress.email || "Not provided"}
+                        </span>
                       </p>
                       <p className="text-bottle-green-dark">
-                        <span className="admin-table-text">Phone:</span>{' '}
-                        <span className="font-medium">{order.shippingAddress.phone || 'Not provided'}</span>
+                        <span className="admin-table-text">Phone:</span>{" "}
+                        <span className="font-medium">
+                          {order.shippingAddress.phone || "Not provided"}
+                        </span>
                       </p>
                       <p className="text-bottle-green-dark">
-                        <span className="admin-table-text">Address:</span>{' '}
-                        <span className="font-medium">{order.shippingAddress.address || 'Not provided'}</span>
+                        <span className="admin-table-text">Address:</span>{" "}
+                        <span className="font-medium">
+                          {order.shippingAddress.address || "Not provided"}
+                        </span>
                       </p>
                     </div>
                   </div>
 
                   {cancellationReason && (
                     <div className="mb-3 p-3 bg-destructive/10 rounded-lg border border-destructive/30">
-                      <p className="text-sm font-medium text-destructive mb-1">Cancellation Reason</p>
-                      <p className="text-sm text-destructive/80">{cancellationReason}</p>
+                      <p className="text-sm font-medium text-destructive mb-1">
+                        Cancellation Reason
+                      </p>
+                      <p className="text-sm text-destructive/80">
+                        {cancellationReason}
+                      </p>
                     </div>
                   )}
 
                   {!isCancelled && (
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium admin-label-text">Update Status:</span>
+                      <span className="text-sm font-medium admin-label-text">
+                        Update Status:
+                      </span>
                       <Select
                         value={order.status.__kind__}
-                        onValueChange={(value) => handleStatusChange(order.id, value)}
+                        onValueChange={(value) =>
+                          handleStatusChange(order.id, value)
+                        }
                         disabled={updateStatus.isPending}
                       >
                         <SelectTrigger className="w-40 border-gold-medium/30 text-bottle-green-dark">

@@ -1,4 +1,4 @@
-import { useGetEnabledBannerMessages } from '../hooks/useBannerQueries';
+import { useGetEnabledBannerMessages } from "../hooks/useBannerQueries";
 
 export default function MarqueeBanner() {
   const { data: messages, isLoading } = useGetEnabledBannerMessages();
@@ -9,9 +9,7 @@ export default function MarqueeBanner() {
   }
 
   // Create a continuous string of messages separated by decorative elements
-  const messageText = messages
-    .map((msg) => msg.message)
-    .join(' ✨ ');
+  const messageText = messages.map((msg) => msg.message).join(" ✨ ");
 
   // Duplicate the message text to create seamless loop
   const fullText = `${messageText} ✨ ${messageText}`;

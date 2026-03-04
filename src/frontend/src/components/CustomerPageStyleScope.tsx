@@ -1,13 +1,11 @@
-import React from 'react';
+import type React from "react";
 
 interface CustomerPageStyleScopeProps {
   children: React.ReactNode;
 }
 
-export default function CustomerPageStyleScope({ children }: CustomerPageStyleScopeProps) {
-  return (
-    <div data-customer-page="true">
-      {children}
-    </div>
-  );
+export default function CustomerPageStyleScope({
+  children,
+}: CustomerPageStyleScopeProps) {
+  return <div data-customer-page="true">{children}</div>;
 }

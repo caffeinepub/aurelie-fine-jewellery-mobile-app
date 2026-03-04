@@ -1,38 +1,47 @@
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
-import { useActor } from '../hooks/useActor';
-import { useQueryClient } from '@tanstack/react-query';
-import type { UserProfile } from '../backend';
+import { useQueryClient } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import type { UserProfile } from "../backend";
+import { useActor } from "../hooks/useActor";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 interface ProfileSetupModalProps {
   open: boolean;
   onComplete: () => void;
 }
 
-export default function ProfileSetupModal({ open, onComplete }: ProfileSetupModalProps) {
+export default function ProfileSetupModal({
+  open,
+  onComplete,
+}: ProfileSetupModalProps) {
   const { actor } = useActor();
   const queryClient = useQueryClient();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!name.trim() || !email.trim() || !phone.trim() || !address.trim()) {
-      toast.error('Please fill in all fields');
+      toast.error("Please fill in all fields");
       return;
     }
 
     if (!actor) {
-      toast.error('Actor not available');
+      toast.error("Actor not available");
       return;
     }
 
@@ -44,26 +53,26 @@ export default function ProfileSetupModal({ open, onComplete }: ProfileSetupModa
         email: email.trim(),
         phone: phone.trim(),
         address: address.trim(),
-        dob: '', // Default empty DOB for initial profile setup
+        dob: "", // Default empty DOB for initial profile setup
       };
 
       await actor.saveCallerUserProfile(profile);
-      
+
       // Invalidate both profile and admin status queries
-      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
-      queryClient.invalidateQueries({ queryKey: ['isAdmin'] });
-      
+      queryClient.invalidateQueries({ queryKey: ["currentUserProfile"] });
+      queryClient.invalidateQueries({ queryKey: ["isAdmin"] });
+
       // Show special message if admin email is used
-      if (email.trim() === 'aureliefinejewellery06@gmail.com') {
-        toast.success('Profile created successfully! Admin access granted.');
+      if (email.trim() === "aureliefinejewellery06@gmail.com") {
+        toast.success("Profile created successfully! Admin access granted.");
       } else {
-        toast.success('Profile created successfully!');
+        toast.success("Profile created successfully!");
       }
-      
+
       onComplete();
     } catch (error: any) {
-      console.error('Failed to save profile:', error);
-      toast.error(error.message || 'Failed to save profile');
+      console.error("Failed to save profile:", error);
+      toast.error(error.message || "Failed to save profile");
     } finally {
       setIsSubmitting(false);
     }
@@ -71,16 +80,23 @@ export default function ProfileSetupModal({ open, onComplete }: ProfileSetupModa
 
   return (
     <Dialog open={open} onOpenChange={() => {}}>
-      <DialogContent className="sm:max-w-md gold-border bg-beige-light/95 backdrop-blur" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent
+        className="sm:max-w-md gold-border bg-beige-light/95 backdrop-blur"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader>
-          <DialogTitle className="font-serif text-2xl gold-text">Welcome to Aurelie</DialogTitle>
+          <DialogTitle className="font-serif text-2xl gold-text">
+            Welcome to Aurelie
+          </DialogTitle>
           <DialogDescription className="gold-text opacity-70">
             Please complete your profile to continue
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="gold-text">Full Name</Label>
+            <Label htmlFor="name" className="gold-text">
+              Full Name
+            </Label>
             <Input
               id="name"
               value={name}
@@ -92,7 +108,9 @@ export default function ProfileSetupModal({ open, onComplete }: ProfileSetupModa
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email" className="gold-text">Email Address</Label>
+            <Label htmlFor="email" className="gold-text">
+              Email Address
+            </Label>
             <Input
               id="email"
               type="email"
@@ -105,7 +123,9 @@ export default function ProfileSetupModal({ open, onComplete }: ProfileSetupModa
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone" className="gold-text">Phone Number</Label>
+            <Label htmlFor="phone" className="gold-text">
+              Phone Number
+            </Label>
             <Input
               id="phone"
               type="tel"
@@ -118,7 +138,9 @@ export default function ProfileSetupModal({ open, onComplete }: ProfileSetupModa
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address" className="gold-text">Address</Label>
+            <Label htmlFor="address" className="gold-text">
+              Address
+            </Label>
             <Input
               id="address"
               value={address}
@@ -140,7 +162,7 @@ export default function ProfileSetupModal({ open, onComplete }: ProfileSetupModa
                 Creating Profile...
               </>
             ) : (
-              'Complete Profile'
+              "Complete Profile"
             )}
           </Button>
         </form>

@@ -1,19 +1,20 @@
-import { useState, useEffect } from 'react';
-import { useGetCarouselSlides } from '../hooks/useQueries';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from './ui/button';
-import { Skeleton } from './ui/skeleton';
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useGetCarouselSlides } from "../hooks/useQueries";
+import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 export default function HomeCarousel() {
   const { data: slides, isLoading } = useGetCarouselSlides();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const [direction, setDirection] = useState<'left' | 'right'>('right');
+  const [direction, setDirection] = useState<"left" | "right">("right");
 
   // Filter enabled slides and sort by order
-  const enabledSlides = slides
-    ?.filter(slide => slide.enabled)
-    .sort((a, b) => Number(a.order) - Number(b.order)) || [];
+  const enabledSlides =
+    slides
+      ?.filter((slide) => slide.enabled)
+      .sort((a, b) => Number(a.order) - Number(b.order)) || [];
 
   // Reset currentIndex when enabledSlides changes
   useEffect(() => {
@@ -28,7 +29,7 @@ export default function HomeCarousel() {
     if (enabledSlides.length < 2 || isHovered) return;
 
     const interval = setInterval(() => {
-      setDirection('right');
+      setDirection("right");
       setCurrentIndex((prev) => (prev + 1) % enabledSlides.length);
     }, 2500);
 
@@ -37,20 +38,22 @@ export default function HomeCarousel() {
 
   const goToSlide = (index: number) => {
     if (index > currentIndex) {
-      setDirection('right');
+      setDirection("right");
     } else if (index < currentIndex) {
-      setDirection('left');
+      setDirection("left");
     }
     setCurrentIndex(index);
   };
 
   const goToPrevious = () => {
-    setDirection('left');
-    setCurrentIndex((prev) => (prev - 1 + enabledSlides.length) % enabledSlides.length);
+    setDirection("left");
+    setCurrentIndex(
+      (prev) => (prev - 1 + enabledSlides.length) % enabledSlides.length,
+    );
   };
 
   const goToNext = () => {
-    setDirection('right');
+    setDirection("right");
     setCurrentIndex((prev) => (prev + 1) % enabledSlides.length);
   };
 
@@ -75,7 +78,7 @@ export default function HomeCarousel() {
   }
 
   return (
-    <div 
+    <div
       className="relative w-full mb-8 group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -84,39 +87,42 @@ export default function HomeCarousel() {
       <div className="relative w-full aspect-video overflow-hidden rounded-2xl shadow-bottle-green">
         {enabledSlides.map((slide, index) => {
           const isActive = index === currentIndex;
-          const isPrev = index === (currentIndex - 1 + enabledSlides.length) % enabledSlides.length;
+          const isPrev =
+            index ===
+            (currentIndex - 1 + enabledSlides.length) % enabledSlides.length;
           const isNext = index === (currentIndex + 1) % enabledSlides.length;
-          
-          let slideClass = 'opacity-0 translate-x-full';
-          
+
+          let slideClass = "opacity-0 translate-x-full";
+
           if (isActive) {
-            slideClass = 'opacity-100 translate-x-0';
-          } else if (direction === 'right' && isPrev) {
-            slideClass = 'opacity-0 -translate-x-full';
-          } else if (direction === 'left' && isNext) {
-            slideClass = 'opacity-0 translate-x-full';
+            slideClass = "opacity-100 translate-x-0";
+          } else if (direction === "right" && isPrev) {
+            slideClass = "opacity-0 -translate-x-full";
+          } else if (direction === "left" && isNext) {
+            slideClass = "opacity-0 translate-x-full";
           } else {
-            slideClass = 'opacity-0 translate-x-full';
+            slideClass = "opacity-0 translate-x-full";
           }
 
           return (
             <div
-              key={index}
+              key={`home-slide-${String(slide.order)}-${index}`}
               className={`absolute inset-0 transition-all duration-700 ease-in-out ${slideClass}`}
-              style={{ pointerEvents: isActive ? 'auto' : 'none' }}
+              style={{ pointerEvents: isActive ? "auto" : "none" }}
             >
-              <div
-                className="w-full h-full cursor-pointer"
+              <button
+                type="button"
+                className="w-full h-full cursor-pointer focus:outline-none"
                 onClick={() => handleSlideClick(slide.urlRedirect)}
               >
                 <img
                   src={slide.visualContent.getDirectURL()}
                   alt={`Slide ${index + 1}`}
                   className="w-full h-full object-cover"
-                  loading={index === 0 ? 'eager' : 'lazy'}
+                  loading={index === 0 ? "eager" : "lazy"}
                   decoding="async"
                 />
-              </div>
+              </button>
             </div>
           );
         })}
@@ -147,14 +153,15 @@ export default function HomeCarousel() {
       {/* Navigation Dots */}
       {enabledSlides.length > 1 && (
         <div className="flex justify-center gap-2 mt-4">
-          {enabledSlides.map((_, index) => (
+          {enabledSlides.map((slide, index) => (
             <button
-              key={index}
+              type="button"
+              key={`home-dot-${String(slide.order)}-${slide.urlRedirect || index}`}
               onClick={() => goToSlide(index)}
               className={`h-2 rounded-full transition-all ${
                 index === currentIndex
-                  ? 'w-8 bg-gold-medium'
-                  : 'w-2 bg-gold-medium/40 hover:bg-gold-medium/60'
+                  ? "w-8 bg-gold-medium"
+                  : "w-2 bg-gold-medium/40 hover:bg-gold-medium/60"
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />

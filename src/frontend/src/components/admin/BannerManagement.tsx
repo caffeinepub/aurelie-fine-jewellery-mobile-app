@@ -1,14 +1,19 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Switch } from '../ui/switch';
-import { Trash2, Plus, GripVertical, Save } from 'lucide-react';
-import { useGetAllBannerMessages, useAddBannerMessage, useUpdateBannerMessage, useDeleteBannerMessage } from '../../hooks/useBannerQueries';
-import { Skeleton } from '../ui/skeleton';
-import { toast } from 'sonner';
-import type { BannerMessage } from '../../backend';
+import { GripVertical, Plus, Save, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import type { BannerMessage } from "../../backend";
+import {
+  useAddBannerMessage,
+  useDeleteBannerMessage,
+  useGetAllBannerMessages,
+  useUpdateBannerMessage,
+} from "../../hooks/useBannerQueries";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Skeleton } from "../ui/skeleton";
+import { Switch } from "../ui/switch";
 
 export default function BannerManagement() {
   const { data: messages, isLoading } = useGetAllBannerMessages();
@@ -16,8 +21,10 @@ export default function BannerManagement() {
   const updateMessage = useUpdateBannerMessage();
   const deleteMessage = useDeleteBannerMessage();
 
-  const [newMessage, setNewMessage] = useState('');
-  const [editingMessages, setEditingMessages] = useState<Record<number, string>>({});
+  const [newMessage, setNewMessage] = useState("");
+  const [editingMessages, setEditingMessages] = useState<
+    Record<number, string>
+  >({});
 
   const sortedMessages = messages
     ? [...messages].sort((a, b) => Number(a.order) - Number(b.order))
@@ -25,42 +32,47 @@ export default function BannerManagement() {
 
   const handleAddMessage = async () => {
     if (!newMessage.trim()) {
-      toast.error('Please enter a message');
+      toast.error("Please enter a message");
       return;
     }
 
     try {
-      const nextOrder = sortedMessages.length > 0 
-        ? Math.max(...sortedMessages.map(m => Number(m.order))) + 1 
-        : 0;
-      
+      const nextOrder =
+        sortedMessages.length > 0
+          ? Math.max(...sortedMessages.map((m) => Number(m.order))) + 1
+          : 0;
+
       await addMessage.mutateAsync({
         message: newMessage.trim(),
         order: BigInt(nextOrder),
         enabled: true,
       });
-      
-      setNewMessage('');
-      toast.success('Banner message added successfully');
+
+      setNewMessage("");
+      toast.success("Banner message added successfully");
     } catch (error: any) {
-      toast.error(error.message || 'Failed to add banner message');
+      toast.error(error.message || "Failed to add banner message");
     }
   };
 
-  const handleUpdateMessage = async (order: bigint, message: string, enabled: boolean) => {
+  const handleUpdateMessage = async (
+    order: bigint,
+    message: string,
+    enabled: boolean,
+  ) => {
     try {
       await updateMessage.mutateAsync({ order, message, enabled });
-      toast.success('Banner message updated');
-      
+      toast.success("Banner message updated");
+
       // Clear editing state for this message
       const orderNum = Number(order);
-      setEditingMessages(prev => {
+      setEditingMessages((prev) => {
         const newState = { ...prev };
         delete newState[orderNum];
         return newState;
       });
     } catch (error: any) {
-      toast.error(error.message || 'Failed to update banner message');
+      toast.error(error.message || "Failed to update banner message");
     }
   };
 
@@ -71,31 +83,31 @@ export default function BannerManagement() {
         message: msg.message,
         enabled: !msg.enabled,
       });
-      toast.success(`Banner message ${!msg.enabled ? 'enabled' : 'disabled'}`);
+      toast.success(`Banner message ${!msg.enabled ? "enabled" : "disabled"}`);
     } catch (error: any) {
-      toast.error(error.message || 'Failed to toggle banner message');
+      toast.error(error.message || "Failed to toggle banner message");
     }
   };
 
   const handleDeleteMessage = async (order: bigint) => {
-    if (!confirm('Are you sure you want to delete this banner message?')) {
+    if (!confirm("Are you sure you want to delete this banner message?")) {
       return;
     }
 
     try {
       await deleteMessage.mutateAsync(order);
-      toast.success('Banner message deleted');
+      toast.success("Banner message deleted");
     } catch (error: any) {
-      toast.error(error.message || 'Failed to delete banner message');
+      toast.error(error.message || "Failed to delete banner message");
     }
   };
 
   const handleMoveUp = async (index: number) => {
     if (index === 0) return;
-    
+
     const current = sortedMessages[index];
     const previous = sortedMessages[index - 1];
-    
+
     try {
       // Swap orders
       await updateMessage.mutateAsync({
@@ -108,18 +120,18 @@ export default function BannerManagement() {
         message: previous.message,
         enabled: previous.enabled,
       });
-      toast.success('Message order updated');
+      toast.success("Message order updated");
     } catch (error: any) {
-      toast.error(error.message || 'Failed to reorder messages');
+      toast.error(error.message || "Failed to reorder messages");
     }
   };
 
   const handleMoveDown = async (index: number) => {
     if (index === sortedMessages.length - 1) return;
-    
+
     const current = sortedMessages[index];
     const next = sortedMessages[index + 1];
-    
+
     try {
       // Swap orders
       await updateMessage.mutateAsync({
@@ -132,9 +144,9 @@ export default function BannerManagement() {
         message: next.message,
         enabled: next.enabled,
       });
-      toast.success('Message order updated');
+      toast.success("Message order updated");
     } catch (error: any) {
-      toast.error(error.message || 'Failed to reorder messages');
+      toast.error(error.message || "Failed to reorder messages");
     }
   };
 
@@ -158,15 +170,21 @@ export default function BannerManagement() {
   return (
     <Card className="gold-border admin-surface">
       <CardHeader>
-        <CardTitle className="text-bottle-green-dark">Marquee Banner Messages</CardTitle>
+        <CardTitle className="text-bottle-green-dark">
+          Marquee Banner Messages
+        </CardTitle>
         <p className="text-sm text-bottle-green-medium mt-2">
-          Manage scrolling banner messages that appear below the header. Messages scroll continuously in the order shown below.
+          Manage scrolling banner messages that appear below the header.
+          Messages scroll continuously in the order shown below.
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Add New Message */}
         <div className="space-y-3 p-4 rounded-lg border border-gold-medium/30 bg-beige-champagne/50">
-          <Label htmlFor="new-message" className="text-bottle-green-dark font-semibold">
+          <Label
+            htmlFor="new-message"
+            className="text-bottle-green-dark font-semibold"
+          >
             Add New Message
           </Label>
           <div className="flex gap-2">
@@ -177,7 +195,7 @@ export default function BannerManagement() {
               placeholder="Enter banner message..."
               className="flex-1 border-gold-medium/30"
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === "Enter") {
                   handleAddMessage();
                 }
               }}
@@ -198,7 +216,7 @@ export default function BannerManagement() {
           <Label className="text-bottle-green-dark font-semibold">
             Current Messages ({sortedMessages.length})
           </Label>
-          
+
           {sortedMessages.length === 0 ? (
             <div className="text-center py-8 text-bottle-green-medium">
               No banner messages yet. Add your first message above.
@@ -208,21 +226,24 @@ export default function BannerManagement() {
               {sortedMessages.map((msg, index) => {
                 const orderNum = Number(msg.order);
                 const isEditing = orderNum in editingMessages;
-                const editValue = isEditing ? editingMessages[orderNum] : msg.message;
+                const editValue = isEditing
+                  ? editingMessages[orderNum]
+                  : msg.message;
 
                 return (
                   <div
                     key={orderNum}
                     className={`p-4 rounded-lg border ${
                       msg.enabled
-                        ? 'border-gold-medium/50 bg-beige-light/80'
-                        : 'border-gray-300 bg-gray-100/50'
+                        ? "border-gold-medium/50 bg-beige-light/80"
+                        : "border-gray-300 bg-gray-100/50"
                     }`}
                   >
                     <div className="flex items-start gap-3">
                       {/* Reorder Controls */}
                       <div className="flex flex-col gap-1 pt-1">
                         <button
+                          type="button"
                           onClick={() => handleMoveUp(index)}
                           disabled={index === 0 || updateMessage.isPending}
                           className="text-bottle-green-medium hover:text-bottle-green-dark disabled:opacity-30 disabled:cursor-not-allowed"
@@ -231,8 +252,12 @@ export default function BannerManagement() {
                           <GripVertical className="h-4 w-4" />
                         </button>
                         <button
+                          type="button"
                           onClick={() => handleMoveDown(index)}
-                          disabled={index === sortedMessages.length - 1 || updateMessage.isPending}
+                          disabled={
+                            index === sortedMessages.length - 1 ||
+                            updateMessage.isPending
+                          }
                           className="text-bottle-green-medium hover:text-bottle-green-dark disabled:opacity-30 disabled:cursor-not-allowed"
                           title="Move down"
                         >
@@ -252,14 +277,14 @@ export default function BannerManagement() {
                             disabled={updateMessage.isPending}
                           />
                           <span className="text-xs text-bottle-green-medium">
-                            {msg.enabled ? 'Enabled' : 'Disabled'}
+                            {msg.enabled ? "Enabled" : "Disabled"}
                           </span>
                         </div>
 
                         <Input
                           value={editValue}
                           onChange={(e) => {
-                            setEditingMessages(prev => ({
+                            setEditingMessages((prev) => ({
                               ...prev,
                               [orderNum]: e.target.value,
                             }));
@@ -271,8 +296,16 @@ export default function BannerManagement() {
                         {isEditing && editValue !== msg.message && (
                           <Button
                             size="sm"
-                            onClick={() => handleUpdateMessage(msg.order, editValue, msg.enabled)}
-                            disabled={updateMessage.isPending || !editValue.trim()}
+                            onClick={() =>
+                              handleUpdateMessage(
+                                msg.order,
+                                editValue,
+                                msg.enabled,
+                              )
+                            }
+                            disabled={
+                              updateMessage.isPending || !editValue.trim()
+                            }
                             className="bg-gold-medium hover:bg-gold-dark text-navy-dark"
                           >
                             <Save className="h-3 w-3 mr-1" />
@@ -300,18 +333,20 @@ export default function BannerManagement() {
         </div>
 
         {/* Preview */}
-        {sortedMessages.filter(m => m.enabled).length > 0 && (
+        {sortedMessages.filter((m) => m.enabled).length > 0 && (
           <div className="space-y-2">
-            <Label className="text-bottle-green-dark font-semibold">Preview</Label>
+            <Label className="text-bottle-green-dark font-semibold">
+              Preview
+            </Label>
             <div className="rounded-lg overflow-hidden border border-gold-medium/30">
               <div className="w-full bg-gradient-to-r from-gold-dark via-gold-medium to-gold-dark overflow-hidden relative">
                 <div className="marquee-container-preview">
                   <div className="marquee-content-preview">
                     <span className="marquee-text-preview">
                       {sortedMessages
-                        .filter(m => m.enabled)
-                        .map(m => m.message)
-                        .join(' ✨ ')}
+                        .filter((m) => m.enabled)
+                        .map((m) => m.message)
+                        .join(" ✨ ")}
                     </span>
                   </div>
                 </div>

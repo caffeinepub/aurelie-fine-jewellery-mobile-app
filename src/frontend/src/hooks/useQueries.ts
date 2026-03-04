@@ -1,16 +1,30 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useActor } from './useActor';
-import { useInternetIdentity } from './useInternetIdentity';
-import type { Product, Order, CustomerInquiry, OrderStatus, SiteContent, CancelReason, OrderCreate, UserProfile, CarouselSlide, ProductCreate, Category, CategoryCreate } from '../backend';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type {
+  CancelReason,
+  CarouselSlide,
+  Category,
+  CategoryCreate,
+  CustomerInquiry,
+  Order,
+  OrderCreate,
+  OrderStatus,
+  Product,
+  ProductCreate,
+  ProductUpdate,
+  SiteContent,
+  UserProfile,
+} from "../backend";
+import { useActor } from "./useActor";
+import { useInternetIdentity } from "./useInternetIdentity";
 
 // User Profile Queries
 export function useGetCallerUserProfile() {
   const { actor, isFetching: actorFetching } = useActor();
 
   const query = useQuery<UserProfile | null>({
-    queryKey: ['currentUserProfile'],
+    queryKey: ["currentUserProfile"],
     queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.getCallerUserProfile();
     },
     enabled: !!actor && !actorFetching,
@@ -30,12 +44,12 @@ export function useSaveCallerUserProfile() {
 
   return useMutation({
     mutationFn: async (profile: UserProfile) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       await actor.saveCallerUserProfile(profile);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
-      queryClient.invalidateQueries({ queryKey: ['isAdmin'] });
+      queryClient.invalidateQueries({ queryKey: ["currentUserProfile"] });
+      queryClient.invalidateQueries({ queryKey: ["isAdmin"] });
     },
   });
 }
@@ -46,7 +60,7 @@ export function useIsCallerAdmin() {
   const { identity } = useInternetIdentity();
 
   return useQuery<boolean>({
-    queryKey: ['isAdmin', identity?.getPrincipal().toString()],
+    queryKey: ["isAdmin", identity?.getPrincipal().toString()],
     queryFn: async () => {
       if (!actor) return false;
       return actor.isCallerAdmin();
@@ -60,7 +74,7 @@ export function useGetCategory(categorySlug: string) {
   const { actor, isFetching } = useActor();
 
   return useQuery<Category | null>({
-    queryKey: ['category', categorySlug],
+    queryKey: ["category", categorySlug],
     queryFn: async () => {
       if (!actor) return null;
       return actor.getCategory(categorySlug);
@@ -73,7 +87,7 @@ export function useGetAllCategories() {
   const { actor, isFetching } = useActor();
 
   return useQuery<Category[]>({
-    queryKey: ['categories'],
+    queryKey: ["categories"],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getAllCategories();
@@ -87,13 +101,16 @@ export function useUpdateCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ name, categoryInput }: { name: string; categoryInput: CategoryCreate }) => {
-      if (!actor) throw new Error('Actor not available');
+    mutationFn: async ({
+      name,
+      categoryInput,
+    }: { name: string; categoryInput: CategoryCreate }) => {
+      if (!actor) throw new Error("Actor not available");
       await actor.updateCategory(name, categoryInput);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-      queryClient.invalidateQueries({ queryKey: ['category'] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["category"] });
     },
   });
 }
@@ -103,10 +120,10 @@ export function useGetCarouselSlides() {
   const { actor, isFetching } = useActor();
 
   return useQuery<CarouselSlide[]>({
-    queryKey: ['carouselSlides', 'homepage'],
+    queryKey: ["carouselSlides", "homepage"],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getAllCategorySlides('homepage');
+      return actor.getAllCategorySlides("homepage");
     },
     enabled: !!actor && !isFetching,
     refetchOnWindowFocus: true,
@@ -119,12 +136,21 @@ export function useUpdateCarouselSlide() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ slideIndex, updatedSlide }: { slideIndex: number; updatedSlide: CarouselSlide }) => {
-      if (!actor) throw new Error('Actor not available');
-      await actor.updateCategorySlide('homepage', BigInt(slideIndex), updatedSlide);
+    mutationFn: async ({
+      slideIndex,
+      updatedSlide,
+    }: { slideIndex: number; updatedSlide: CarouselSlide }) => {
+      if (!actor) throw new Error("Actor not available");
+      await actor.updateCategorySlide(
+        "homepage",
+        BigInt(slideIndex),
+        updatedSlide,
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carouselSlides', 'homepage'] });
+      queryClient.invalidateQueries({
+        queryKey: ["carouselSlides", "homepage"],
+      });
     },
   });
 }
@@ -134,12 +160,17 @@ export function useToggleCarouselSlide() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ slideIndex, enabled }: { slideIndex: number; enabled: boolean }) => {
-      if (!actor) throw new Error('Actor not available');
-      await actor.toggleCategorySlide('homepage', BigInt(slideIndex), enabled);
+    mutationFn: async ({
+      slideIndex,
+      enabled,
+    }: { slideIndex: number; enabled: boolean }) => {
+      if (!actor) throw new Error("Actor not available");
+      await actor.toggleCategorySlide("homepage", BigInt(slideIndex), enabled);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carouselSlides', 'homepage'] });
+      queryClient.invalidateQueries({
+        queryKey: ["carouselSlides", "homepage"],
+      });
     },
   });
 }
@@ -150,11 +181,16 @@ export function useReorderCarouselSlides() {
 
   return useMutation({
     mutationFn: async (newOrder: number[]) => {
-      if (!actor) throw new Error('Actor not available');
-      await actor.reorderCategorySlides('homepage', newOrder.map(n => BigInt(n)));
+      if (!actor) throw new Error("Actor not available");
+      await actor.reorderCategorySlides(
+        "homepage",
+        newOrder.map((n) => BigInt(n)),
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carouselSlides', 'homepage'] });
+      queryClient.invalidateQueries({
+        queryKey: ["carouselSlides", "homepage"],
+      });
     },
   });
 }
@@ -164,7 +200,7 @@ export function useGetCategorySlides(category: string) {
   const { actor, isFetching } = useActor();
 
   return useQuery<CarouselSlide[]>({
-    queryKey: ['carouselSlides', category],
+    queryKey: ["carouselSlides", category],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getAllCategorySlides(category);
@@ -180,12 +216,19 @@ export function useUpdateCategorySlide(category: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ slideIndex, updatedSlide }: { slideIndex: number; updatedSlide: CarouselSlide }) => {
-      if (!actor) throw new Error('Actor not available');
-      await actor.updateCategorySlide(category, BigInt(slideIndex), updatedSlide);
+    mutationFn: async ({
+      slideIndex,
+      updatedSlide,
+    }: { slideIndex: number; updatedSlide: CarouselSlide }) => {
+      if (!actor) throw new Error("Actor not available");
+      await actor.updateCategorySlide(
+        category,
+        BigInt(slideIndex),
+        updatedSlide,
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carouselSlides', category] });
+      queryClient.invalidateQueries({ queryKey: ["carouselSlides", category] });
     },
   });
 }
@@ -195,12 +238,15 @@ export function useToggleCategorySlide(category: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ slideIndex, enabled }: { slideIndex: number; enabled: boolean }) => {
-      if (!actor) throw new Error('Actor not available');
+    mutationFn: async ({
+      slideIndex,
+      enabled,
+    }: { slideIndex: number; enabled: boolean }) => {
+      if (!actor) throw new Error("Actor not available");
       await actor.toggleCategorySlide(category, BigInt(slideIndex), enabled);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carouselSlides', category] });
+      queryClient.invalidateQueries({ queryKey: ["carouselSlides", category] });
     },
   });
 }
@@ -211,11 +257,14 @@ export function useReorderCategorySlides(category: string) {
 
   return useMutation({
     mutationFn: async (newOrder: number[]) => {
-      if (!actor) throw new Error('Actor not available');
-      await actor.reorderCategorySlides(category, newOrder.map(n => BigInt(n)));
+      if (!actor) throw new Error("Actor not available");
+      await actor.reorderCategorySlides(
+        category,
+        newOrder.map((n) => BigInt(n)),
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carouselSlides', category] });
+      queryClient.invalidateQueries({ queryKey: ["carouselSlides", category] });
     },
   });
 }
@@ -225,7 +274,7 @@ export function useGetProducts() {
   const { actor, isFetching } = useActor();
 
   return useQuery<Product[]>({
-    queryKey: ['products'],
+    queryKey: ["products"],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getProducts();
@@ -238,12 +287,26 @@ export function useGetProduct(productId: string) {
   const { actor, isFetching } = useActor();
 
   return useQuery<Product>({
-    queryKey: ['product', productId],
+    queryKey: ["product", productId],
     queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.getProduct(productId);
     },
     enabled: !!actor && !isFetching && !!productId,
+  });
+}
+
+// New Arrivals Query
+export function useGetNewArrivals() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Product[]>({
+    queryKey: ["newArrivals"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getNewArrivals();
+    },
+    enabled: !!actor && !isFetching,
   });
 }
 
@@ -253,11 +316,12 @@ export function useAddProduct() {
 
   return useMutation({
     mutationFn: async (product: ProductCreate) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       await actor.addProduct(product);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["newArrivals"] });
     },
   });
 }
@@ -267,12 +331,15 @@ export function useUpdateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (product: ProductCreate) => {
-      if (!actor) throw new Error('Actor not available');
-      await actor.updateProduct(product);
+    mutationFn: async ({
+      productId,
+      updates,
+    }: { productId: string; updates: ProductUpdate }) => {
+      if (!actor) throw new Error("Actor not available");
+      await actor.updateProduct(productId, updates);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
     },
   });
 }
@@ -283,11 +350,12 @@ export function useDeleteProduct() {
 
   return useMutation({
     mutationFn: async (productId: string) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       await actor.deleteProduct(productId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["newArrivals"] });
     },
   });
 }
@@ -297,7 +365,7 @@ export function useGetOrders() {
   const { actor, isFetching } = useActor();
 
   return useQuery<Order[]>({
-    queryKey: ['orders'],
+    queryKey: ["orders"],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getOrders();
@@ -313,7 +381,7 @@ export function useGetCustomerOrders() {
   const { identity } = useInternetIdentity();
 
   return useQuery<Order[]>({
-    queryKey: ['customerOrders', identity?.getPrincipal().toString()],
+    queryKey: ["customerOrders", identity?.getPrincipal().toString()],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getCustomerOrders();
@@ -328,9 +396,9 @@ export function useGetOrder(orderId: string) {
   const { actor, isFetching } = useActor();
 
   return useQuery<Order>({
-    queryKey: ['order', orderId],
+    queryKey: ["order", orderId],
     queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.getOrder(orderId);
     },
     enabled: !!actor && !isFetching && !!orderId,
@@ -343,12 +411,12 @@ export function useCreateOrder() {
 
   return useMutation({
     mutationFn: async (order: OrderCreate) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       await actor.createOrder(order);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
-      queryClient.invalidateQueries({ queryKey: ['customerOrders'] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["customerOrders"] });
     },
   });
 }
@@ -358,13 +426,16 @@ export function useUpdateOrderStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ orderId, status }: { orderId: string; status: OrderStatus }) => {
-      if (!actor) throw new Error('Actor not available');
+    mutationFn: async ({
+      orderId,
+      status,
+    }: { orderId: string; status: OrderStatus }) => {
+      if (!actor) throw new Error("Actor not available");
       await actor.updateOrderStatus(orderId, status);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
-      queryClient.invalidateQueries({ queryKey: ['customerOrders'] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["customerOrders"] });
     },
   });
 }
@@ -374,13 +445,16 @@ export function useCancelOrder() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ orderId, reason }: { orderId: string; reason: CancelReason }) => {
-      if (!actor) throw new Error('Actor not available');
+    mutationFn: async ({
+      orderId,
+      reason,
+    }: { orderId: string; reason: CancelReason }) => {
+      if (!actor) throw new Error("Actor not available");
       await actor.cancelOrder(orderId, reason);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
-      queryClient.invalidateQueries({ queryKey: ['customerOrders'] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["customerOrders"] });
     },
   });
 }
@@ -389,7 +463,7 @@ export function useIsOrderCancellable(orderId: string) {
   const { actor, isFetching } = useActor();
 
   return useQuery<boolean>({
-    queryKey: ['orderCancellable', orderId],
+    queryKey: ["orderCancellable", orderId],
     queryFn: async () => {
       if (!actor) return false;
       return actor.isOrderCancellable(orderId);
@@ -403,7 +477,7 @@ export function useGetInquiries() {
   const { actor, isFetching } = useActor();
 
   return useQuery<CustomerInquiry[]>({
-    queryKey: ['inquiries'],
+    queryKey: ["inquiries"],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getInquiries();
@@ -417,7 +491,7 @@ export function useGetCustomerInquiries() {
   const { identity } = useInternetIdentity();
 
   return useQuery<CustomerInquiry[]>({
-    queryKey: ['customerInquiries', identity?.getPrincipal().toString()],
+    queryKey: ["customerInquiries", identity?.getPrincipal().toString()],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getCustomerInquiries();
@@ -432,12 +506,12 @@ export function useSubmitInquiry() {
 
   return useMutation({
     mutationFn: async (inquiry: CustomerInquiry) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       await actor.submitInquiry(inquiry);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['inquiries'] });
-      queryClient.invalidateQueries({ queryKey: ['customerInquiries'] });
+      queryClient.invalidateQueries({ queryKey: ["inquiries"] });
+      queryClient.invalidateQueries({ queryKey: ["customerInquiries"] });
     },
   });
 }
@@ -447,13 +521,16 @@ export function useRespondToInquiry() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ inquiryId, response }: { inquiryId: string; response: string }) => {
-      if (!actor) throw new Error('Actor not available');
+    mutationFn: async ({
+      inquiryId,
+      response,
+    }: { inquiryId: string; response: string }) => {
+      if (!actor) throw new Error("Actor not available");
       await actor.respondToInquiry(inquiryId, response);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['inquiries'] });
-      queryClient.invalidateQueries({ queryKey: ['customerInquiries'] });
+      queryClient.invalidateQueries({ queryKey: ["inquiries"] });
+      queryClient.invalidateQueries({ queryKey: ["customerInquiries"] });
     },
   });
 }
@@ -463,9 +540,9 @@ export function useGetSiteContent() {
   const { actor, isFetching } = useActor();
 
   return useQuery<SiteContent>({
-    queryKey: ['siteContent'],
+    queryKey: ["siteContent"],
     queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.getSiteContent();
     },
     enabled: !!actor && !isFetching,
@@ -478,11 +555,11 @@ export function useUpdateSiteContent() {
 
   return useMutation({
     mutationFn: async (content: SiteContent) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       await actor.updateSiteContent(content);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['siteContent'] });
+      queryClient.invalidateQueries({ queryKey: ["siteContent"] });
     },
   });
 }

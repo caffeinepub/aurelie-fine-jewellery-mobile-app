@@ -1,6 +1,6 @@
-import { useGetSiteContent } from '../hooks/useQueries';
-import CustomerPageStyleScope from '../components/CustomerPageStyleScope';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from "lucide-react";
+import CustomerPageStyleScope from "../components/CustomerPageStyleScope";
+import { useGetSiteContent } from "../hooks/useQueries";
 
 export default function ShippingPolicyPage() {
   const { data: siteContent, isLoading } = useGetSiteContent();
@@ -27,7 +27,8 @@ export default function ShippingPolicyPage() {
           </h1>
           <div className="prose prose-lg max-w-none">
             <p className="whitespace-pre-wrap text-bottle-green-dark leading-relaxed">
-              {siteContent?.shippingPolicy || 'Shipping policy content not available.'}
+              {siteContent?.shippingPolicy ||
+                "Shipping policy content not available."}
             </p>
           </div>
         </div>

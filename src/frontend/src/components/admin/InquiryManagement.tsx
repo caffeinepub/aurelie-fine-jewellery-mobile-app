@@ -1,32 +1,41 @@
-import { useState } from 'react';
-import { useGetInquiries, useRespondToInquiry } from '../../hooks/useQueries';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Textarea } from '../ui/textarea';
-import { MessageSquare, Send } from 'lucide-react';
-import { toast } from 'sonner';
+import { MessageSquare, Send } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { useGetInquiries, useRespondToInquiry } from "../../hooks/useQueries";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { Textarea } from "../ui/textarea";
 
 export default function InquiryManagement() {
   const { data: inquiries, isLoading } = useGetInquiries();
   const respondToInquiry = useRespondToInquiry();
   const [respondingTo, setRespondingTo] = useState<string | null>(null);
-  const [response, setResponse] = useState('');
+  const [response, setResponse] = useState("");
 
   const handleRespond = async (inquiryId: string) => {
     if (!response.trim()) {
-      toast.error('Please enter a response');
+      toast.error("Please enter a response");
       return;
     }
 
     try {
-      await respondToInquiry.mutateAsync({ inquiryId, response: response.trim() });
-      toast.success('Response sent successfully');
+      await respondToInquiry.mutateAsync({
+        inquiryId,
+        response: response.trim(),
+      });
+      toast.success("Response sent successfully");
       setRespondingTo(null);
-      setResponse('');
+      setResponse("");
     } catch (error: any) {
-      console.error('Failed to send response:', error);
-      toast.error(error.message || 'Failed to send response');
+      console.error("Failed to send response:", error);
+      toast.error(error.message || "Failed to send response");
     }
   };
 
@@ -55,23 +64,40 @@ export default function InquiryManagement() {
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h3 className="font-semibold text-bottle-green-dark">{inquiry.name}</h3>
-                    <p className="text-sm text-bottle-green-medium">{inquiry.email}</p>
+                    <h3 className="font-semibold text-bottle-green-dark">
+                      {inquiry.name}
+                    </h3>
+                    <p className="text-sm text-bottle-green-medium">
+                      {inquiry.email}
+                    </p>
                   </div>
-                  <Badge variant={inquiry.response ? 'outline' : 'default'} className={!inquiry.response ? 'bg-gold-medium text-secondary' : ''}>
-                    {inquiry.response ? 'Answered' : 'Pending'}
+                  <Badge
+                    variant={inquiry.response ? "outline" : "default"}
+                    className={
+                      !inquiry.response ? "bg-gold-medium text-secondary" : ""
+                    }
+                  >
+                    {inquiry.response ? "Answered" : "Pending"}
                   </Badge>
                 </div>
 
                 <div className="mb-3">
-                  <p className="text-sm font-medium admin-label-text mb-1">Message:</p>
-                  <p className="text-sm text-bottle-green-dark">{inquiry.message}</p>
+                  <p className="text-sm font-medium admin-label-text mb-1">
+                    Message:
+                  </p>
+                  <p className="text-sm text-bottle-green-dark">
+                    {inquiry.message}
+                  </p>
                 </div>
 
                 {inquiry.response ? (
                   <div className="bg-bottle-green-light/10 p-3 rounded border border-gold-medium/30">
-                    <p className="text-sm font-medium admin-label-text mb-1">Your Response:</p>
-                    <p className="text-sm text-bottle-green-dark">{inquiry.response}</p>
+                    <p className="text-sm font-medium admin-label-text mb-1">
+                      Your Response:
+                    </p>
+                    <p className="text-sm text-bottle-green-dark">
+                      {inquiry.response}
+                    </p>
                   </div>
                 ) : respondingTo === inquiry.id ? (
                   <div className="space-y-2">
@@ -88,7 +114,7 @@ export default function InquiryManagement() {
                         size="sm"
                         onClick={() => {
                           setRespondingTo(null);
-                          setResponse('');
+                          setResponse("");
                         }}
                         className="border-gold-medium text-bottle-green-dark"
                       >
@@ -101,7 +127,9 @@ export default function InquiryManagement() {
                         className="gap-2 gold-gradient text-secondary shadow-gold"
                       >
                         <Send className="h-4 w-4" />
-                        {respondToInquiry.isPending ? 'Sending...' : 'Send Response'}
+                        {respondToInquiry.isPending
+                          ? "Sending..."
+                          : "Send Response"}
                       </Button>
                     </div>
                   </div>

@@ -1,9 +1,14 @@
-import { useNavigate } from '@tanstack/react-router';
-import { useCart } from '../hooks/useCart';
-import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { ShoppingCart, Trash2, Plus, Minus, Package } from 'lucide-react';
+import { useNavigate } from "@tanstack/react-router";
+import { Minus, Package, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { useCart } from "../hooks/useCart";
+import { useInternetIdentity } from "../hooks/useInternetIdentity";
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -14,9 +19,9 @@ export default function CartPage() {
 
   const formatINR = (priceInCents: number) => {
     const amount = priceInCents / 100;
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -27,8 +32,12 @@ export default function CartPage() {
       <div className="container px-4 py-8">
         <div className="text-center py-12">
           <ShoppingCart className="h-16 w-16 mx-auto mb-4 text-gold-medium" />
-          <h2 className="text-2xl font-semibold mb-2 gold-text">Login Required</h2>
-          <p className="text-muted-foreground">Please login to view your cart.</p>
+          <h2 className="text-2xl font-semibold mb-2 gold-text">
+            Login Required
+          </h2>
+          <p className="text-muted-foreground">
+            Please login to view your cart.
+          </p>
         </div>
       </div>
     );
@@ -39,9 +48,16 @@ export default function CartPage() {
       <div className="container px-4 py-8">
         <div className="text-center py-12">
           <ShoppingCart className="h-16 w-16 mx-auto mb-4 text-gold-medium" />
-          <h2 className="text-2xl font-semibold mb-2 gold-text">Your Cart is Empty</h2>
-          <p className="text-muted-foreground mb-6">Start shopping to add items to your cart.</p>
-          <Button onClick={() => navigate({ to: '/' })} className="gold-gradient text-secondary shadow-gold">
+          <h2 className="text-2xl font-semibold mb-2 gold-text">
+            Your Cart is Empty
+          </h2>
+          <p className="text-muted-foreground mb-6">
+            Start shopping to add items to your cart.
+          </p>
+          <Button
+            onClick={() => navigate({ to: "/" })}
+            className="gold-gradient text-secondary shadow-gold"
+          >
             Browse Products
           </Button>
         </div>
@@ -52,8 +68,12 @@ export default function CartPage() {
   return (
     <div className="container px-4 py-8" data-customer-control="true">
       <div className="mb-8">
-        <h1 className="font-serif text-3xl font-semibold tracking-tight mb-2">Shopping Cart</h1>
-        <p className="text-muted-foreground">Review your items before checkout</p>
+        <h1 className="font-serif text-3xl font-semibold tracking-tight mb-2">
+          Shopping Cart
+        </h1>
+        <p className="text-muted-foreground">
+          Review your items before checkout
+        </p>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
@@ -61,7 +81,10 @@ export default function CartPage() {
           {items.map((item) => {
             const firstImage = item.product.media.images[0];
             return (
-              <Card key={item.product.id} className="overflow-hidden gold-border chrome-surface backdrop-blur">
+              <Card
+                key={item.product.id}
+                className="overflow-hidden gold-border chrome-surface backdrop-blur"
+              >
                 <CardContent className="p-4">
                   <div className="flex gap-4">
                     {firstImage ? (
@@ -76,7 +99,9 @@ export default function CartPage() {
                       </div>
                     )}
                     <div className="flex-1">
-                      <h3 className="font-semibold gold-text mb-1">{item.product.name}</h3>
+                      <h3 className="font-semibold gold-text mb-1">
+                        {item.product.name}
+                      </h3>
                       <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
                         {item.product.description}
                       </p>
@@ -97,16 +122,22 @@ export default function CartPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                          onClick={() =>
+                            updateQuantity(item.product.id, item.quantity - 1)
+                          }
                           className="h-8 w-8 p-0 border-gold-medium"
                         >
                           <Minus className="h-3 w-3" />
                         </Button>
-                        <span className="w-8 text-center font-medium">{item.quantity}</span>
+                        <span className="w-8 text-center font-medium">
+                          {item.quantity}
+                        </span>
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                          onClick={() =>
+                            updateQuantity(item.product.id, item.quantity + 1)
+                          }
                           className="h-8 w-8 p-0 border-gold-medium"
                         >
                           <Plus className="h-3 w-3" />
@@ -144,7 +175,7 @@ export default function CartPage() {
                   </span>
                 </div>
                 <Button
-                  onClick={() => navigate({ to: '/checkout' })}
+                  onClick={() => navigate({ to: "/checkout" })}
                   className="w-full gold-gradient text-secondary shadow-gold"
                   size="lg"
                 >

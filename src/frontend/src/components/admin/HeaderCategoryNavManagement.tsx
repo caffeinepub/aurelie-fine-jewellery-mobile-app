@@ -1,15 +1,18 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { PRODUCT_CATEGORIES } from '../../utils/productCategories';
-import { useGetAllCategoryHeaders, useSetCategoryHeader } from '../../hooks/useCategoryHeaderNav';
-import { ExternalBlob } from '../../backend';
-import { optimizeImage } from '../../utils/mediaOptimization';
-import { toast } from 'sonner';
-import { Upload, Save, Loader2 } from 'lucide-react';
-import { Progress } from '../ui/progress';
+import { Loader2, Save, Upload } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { ExternalBlob } from "../../backend";
+import {
+  useGetAllCategoryHeaders,
+  useSetCategoryHeader,
+} from "../../hooks/useCategoryHeaderNav";
+import { optimizeImage } from "../../utils/mediaOptimization";
+import { PRODUCT_CATEGORIES } from "../../utils/productCategories";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Progress } from "../ui/progress";
 
 interface CategoryHeaderState {
   image: ExternalBlob | null;
@@ -25,16 +28,18 @@ export default function HeaderCategoryNavManagement() {
   const headersMap = new Map(categoryHeaders || []);
 
   // Initialize state for each category
-  const [categoryStates, setCategoryStates] = useState<Record<string, CategoryHeaderState>>(() => {
+  const [categoryStates, setCategoryStates] = useState<
+    Record<string, CategoryHeaderState>
+  >(() => {
     const initial: Record<string, CategoryHeaderState> = {};
-    PRODUCT_CATEGORIES.forEach((cat) => {
+    for (const cat of PRODUCT_CATEGORIES) {
       const existing = headersMap.get(cat.slug);
       initial[cat.slug] = {
         image: existing?.image || null,
-        redirectUrl: existing?.redirectUrl || '',
+        redirectUrl: existing?.redirectUrl || "",
         uploadProgress: 0,
       };
-    });
+    }
     return initial;
   });
 
@@ -48,34 +53,43 @@ export default function HeaderCategoryNavManagement() {
       }));
 
       const optimized = await optimizeImage(file);
-      
+
       // Convert File to Uint8Array
       const arrayBuffer = await optimized.file.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
-      
-      const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
-        setCategoryStates((prev) => ({
-          ...prev,
-          [categorySlug]: { ...prev[categorySlug], uploadProgress: percentage },
-        }));
-      });
+
+      const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress(
+        (percentage) => {
+          setCategoryStates((prev) => ({
+            ...prev,
+            [categorySlug]: {
+              ...prev[categorySlug],
+              uploadProgress: percentage,
+            },
+          }));
+        },
+      );
 
       setCategoryStates((prev) => ({
         ...prev,
-        [categorySlug]: { ...prev[categorySlug], image: blob, uploadProgress: 100 },
+        [categorySlug]: {
+          ...prev[categorySlug],
+          image: blob,
+          uploadProgress: 100,
+        },
       }));
 
-      toast.success('Image uploaded successfully');
+      toast.success("Image uploaded successfully");
     } catch (error) {
-      console.error('Image upload error:', error);
-      toast.error('Failed to upload image');
+      console.error("Image upload error:", error);
+      toast.error("Failed to upload image");
     }
   };
 
   const handleSave = async (categorySlug: string) => {
     const state = categoryStates[categorySlug];
     if (!state.image) {
-      toast.error('Please upload an image first');
+      toast.error("Please upload an image first");
       return;
     }
 
@@ -88,10 +102,10 @@ export default function HeaderCategoryNavManagement() {
           redirectUrl: state.redirectUrl.trim(),
         },
       });
-      toast.success('Category header saved successfully');
+      toast.success("Category header saved successfully");
     } catch (error) {
-      console.error('Save error:', error);
-      toast.error('Failed to save category header');
+      console.error("Save error:", error);
+      toast.error("Failed to save category header");
     } finally {
       setSavingCategory(null);
     }
@@ -100,11 +114,14 @@ export default function HeaderCategoryNavManagement() {
   return (
     <Card className="gold-border admin-surface">
       <CardHeader>
-        <CardTitle className="text-bottle-green-dark">Header Category Navigation</CardTitle>
+        <CardTitle className="text-bottle-green-dark">
+          Header Category Navigation
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-bottle-green-medium mb-6">
-          Manage circular category images and redirect URLs for the header navigation row
+          Manage circular category images and redirect URLs for the header
+          navigation row
         </p>
 
         <div className="space-y-6">
@@ -114,13 +131,20 @@ export default function HeaderCategoryNavManagement() {
             const isSaving = savingCategory === category.slug;
 
             return (
-              <div key={category.slug} className="border border-gold-medium/30 rounded-lg p-4">
-                <h4 className="font-semibold text-bottle-green-dark mb-4">{category.title}</h4>
+              <div
+                key={category.slug}
+                className="border border-gold-medium/30 rounded-lg p-4"
+              >
+                <h4 className="font-semibold text-bottle-green-dark mb-4">
+                  {category.title}
+                </h4>
 
                 <div className="grid gap-4 md:grid-cols-2">
                   {/* Image Upload */}
                   <div>
-                    <Label className="text-bottle-green-dark mb-2 block">Category Image</Label>
+                    <Label className="text-bottle-green-dark mb-2 block">
+                      Category Image
+                    </Label>
                     <div className="flex items-center gap-4">
                       {imageUrl && (
                         <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gold-medium/30 flex-shrink-0">
@@ -141,16 +165,23 @@ export default function HeaderCategoryNavManagement() {
                           }}
                           className="border-gold-medium/30"
                         />
-                        {state.uploadProgress > 0 && state.uploadProgress < 100 && (
-                          <Progress value={state.uploadProgress} className="mt-2" />
-                        )}
+                        {state.uploadProgress > 0 &&
+                          state.uploadProgress < 100 && (
+                            <Progress
+                              value={state.uploadProgress}
+                              className="mt-2"
+                            />
+                          )}
                       </div>
                     </div>
                   </div>
 
                   {/* Redirect URL */}
                   <div>
-                    <Label htmlFor={`url-${category.slug}`} className="text-bottle-green-dark mb-2 block">
+                    <Label
+                      htmlFor={`url-${category.slug}`}
+                      className="text-bottle-green-dark mb-2 block"
+                    >
                       Redirect URL (optional)
                     </Label>
                     <Input
@@ -161,7 +192,10 @@ export default function HeaderCategoryNavManagement() {
                       onChange={(e) =>
                         setCategoryStates((prev) => ({
                           ...prev,
-                          [category.slug]: { ...prev[category.slug], redirectUrl: e.target.value },
+                          [category.slug]: {
+                            ...prev[category.slug],
+                            redirectUrl: e.target.value,
+                          },
                         }))
                       }
                       className="border-gold-medium/30"

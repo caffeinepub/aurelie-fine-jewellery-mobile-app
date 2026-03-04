@@ -1,21 +1,27 @@
-import { useState } from 'react';
-import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { useSubmitInquiry } from '../hooks/useQueries';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Textarea } from '../components/ui/textarea';
-import { Mail, Send, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
-import type { CustomerInquiry } from '../backend';
+import { Loader2, Mail, Send } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import type { CustomerInquiry } from "../backend";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Textarea } from "../components/ui/textarea";
+import { useInternetIdentity } from "../hooks/useInternetIdentity";
+import { useSubmitInquiry } from "../hooks/useQueries";
 
 export default function ContactPage() {
   const { identity } = useInternetIdentity();
   const submitInquiry = useSubmitInquiry();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
   const isAuthenticated = !!identity;
 
@@ -23,12 +29,12 @@ export default function ContactPage() {
     e.preventDefault();
 
     if (!name.trim() || !email.trim() || !message.trim()) {
-      toast.error('Please fill in all fields');
+      toast.error("Please fill in all fields");
       return;
     }
 
     if (!identity) {
-      toast.error('Please login to submit an inquiry');
+      toast.error("Please login to submit an inquiry");
       return;
     }
 
@@ -43,13 +49,13 @@ export default function ContactPage() {
       };
 
       await submitInquiry.mutateAsync(inquiry);
-      toast.success('Inquiry submitted successfully! We will respond soon.');
-      setName('');
-      setEmail('');
-      setMessage('');
+      toast.success("Inquiry submitted successfully! We will respond soon.");
+      setName("");
+      setEmail("");
+      setMessage("");
     } catch (error: any) {
-      console.error('Failed to submit inquiry:', error);
-      toast.error(error.message || 'Failed to submit inquiry');
+      console.error("Failed to submit inquiry:", error);
+      toast.error(error.message || "Failed to submit inquiry");
     }
   };
 
@@ -58,7 +64,9 @@ export default function ContactPage() {
       <div className="container px-4 py-8">
         <div className="text-center py-12">
           <Mail className="h-16 w-16 mx-auto mb-4 text-gold-medium" />
-          <h2 className="text-2xl font-semibold mb-2 gold-text">Login Required</h2>
+          <h2 className="text-2xl font-semibold mb-2 gold-text">
+            Login Required
+          </h2>
           <p className="text-muted-foreground">Please login to contact us.</p>
         </div>
       </div>
@@ -68,8 +76,12 @@ export default function ContactPage() {
   return (
     <div className="container px-4 py-8">
       <div className="mb-8">
-        <h1 className="font-serif text-3xl font-semibold tracking-tight mb-2">Contact Us</h1>
-        <p className="text-muted-foreground">Have a question? We're here to help.</p>
+        <h1 className="font-serif text-3xl font-semibold tracking-tight mb-2">
+          Contact Us
+        </h1>
+        <p className="text-muted-foreground">
+          Have a question? We're here to help.
+        </p>
       </div>
 
       <div className="max-w-2xl mx-auto">
@@ -80,13 +92,16 @@ export default function ContactPage() {
               Send us a message
             </CardTitle>
             <CardDescription className="gold-text opacity-70">
-              Fill out the form below and we'll get back to you as soon as possible
+              Fill out the form below and we'll get back to you as soon as
+              possible
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="gold-text">Name</Label>
+                <Label htmlFor="name" className="gold-text">
+                  Name
+                </Label>
                 <Input
                   id="name"
                   value={name}
@@ -98,7 +113,9 @@ export default function ContactPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="gold-text">Email</Label>
+                <Label htmlFor="email" className="gold-text">
+                  Email
+                </Label>
                 <Input
                   id="email"
                   type="email"
@@ -111,7 +128,9 @@ export default function ContactPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="message" className="gold-text">Message</Label>
+                <Label htmlFor="message" className="gold-text">
+                  Message
+                </Label>
                 <Textarea
                   id="message"
                   value={message}

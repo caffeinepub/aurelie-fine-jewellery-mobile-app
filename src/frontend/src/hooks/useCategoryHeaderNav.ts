@@ -1,12 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useActor } from './useActor';
-import type { CategoryHeader } from '../backend';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { CategoryHeader } from "../backend";
+import { useActor } from "./useActor";
 
 export function useGetAllCategoryHeaders() {
   const { actor, isFetching } = useActor();
 
   return useQuery<Array<[string, CategoryHeader]>>({
-    queryKey: ['categoryHeaders'],
+    queryKey: ["categoryHeaders"],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getAllCategoryHeaders();
@@ -19,7 +19,7 @@ export function useGetCategoryHeader(categorySlug: string) {
   const { actor, isFetching } = useActor();
 
   return useQuery<CategoryHeader | null>({
-    queryKey: ['categoryHeader', categorySlug],
+    queryKey: ["categoryHeader", categorySlug],
     queryFn: async () => {
       if (!actor) return null;
       return actor.getCategoryHeader(categorySlug);
@@ -33,13 +33,16 @@ export function useSetCategoryHeader() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ categorySlug, header }: { categorySlug: string; header: CategoryHeader }) => {
-      if (!actor) throw new Error('Actor not available');
+    mutationFn: async ({
+      categorySlug,
+      header,
+    }: { categorySlug: string; header: CategoryHeader }) => {
+      if (!actor) throw new Error("Actor not available");
       await actor.setCategoryHeader(categorySlug, header);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categoryHeaders'] });
-      queryClient.invalidateQueries({ queryKey: ['categoryHeader'] });
+      queryClient.invalidateQueries({ queryKey: ["categoryHeaders"] });
+      queryClient.invalidateQueries({ queryKey: ["categoryHeader"] });
     },
   });
 }

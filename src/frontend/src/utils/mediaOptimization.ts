@@ -17,8 +17,8 @@ interface OptimizedMedia {
  */
 export async function optimizeImage(
   file: File,
-  maxDimension: number = 1200,
-  quality: number = 0.85
+  maxDimension = 1200,
+  quality = 0.85,
 ): Promise<OptimizedMedia> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -44,13 +44,13 @@ export async function optimizeImage(
       }
 
       // Create canvas and draw resized image
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
 
       if (!ctx) {
-        reject(new Error('Failed to get canvas context'));
+        reject(new Error("Failed to get canvas context"));
         return;
       }
 
@@ -60,13 +60,13 @@ export async function optimizeImage(
       canvas.toBlob(
         (blob) => {
           if (!blob) {
-            reject(new Error('Failed to create blob'));
+            reject(new Error("Failed to create blob"));
             return;
           }
 
           // Create optimized file
           const optimizedFile = new File([blob], file.name, {
-            type: 'image/jpeg',
+            type: "image/jpeg",
             lastModified: Date.now(),
           });
 
@@ -74,17 +74,17 @@ export async function optimizeImage(
 
           resolve({ file: optimizedFile, previewUrl });
         },
-        'image/jpeg',
-        quality
+        "image/jpeg",
+        quality,
       );
     };
 
     img.onerror = () => {
-      reject(new Error('Failed to load image'));
+      reject(new Error("Failed to load image"));
     };
 
     reader.onerror = () => {
-      reject(new Error('Failed to read file'));
+      reject(new Error("Failed to read file"));
     };
 
     reader.readAsDataURL(file);
@@ -100,10 +100,12 @@ export async function optimizeImage(
  */
 export async function optimizeImages(
   files: File[],
-  maxDimension: number = 1200,
-  quality: number = 0.85
+  maxDimension = 1200,
+  quality = 0.85,
 ): Promise<OptimizedMedia[]> {
-  const promises = files.map((file) => optimizeImage(file, maxDimension, quality));
+  const promises = files.map((file) =>
+    optimizeImage(file, maxDimension, quality),
+  );
   return Promise.all(promises);
 }
 

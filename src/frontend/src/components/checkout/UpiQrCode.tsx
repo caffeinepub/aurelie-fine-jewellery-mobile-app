@@ -3,10 +3,10 @@
  * Renders a scannable QR code using QR code generation API and provides a copy link action.
  */
 
-import { Button } from '../ui/button';
-import { Copy, CheckCircle2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { toast } from 'sonner';
+import { CheckCircle2, Copy } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 
 interface UpiQrCodeProps {
   upiUri: string;
@@ -15,7 +15,7 @@ interface UpiQrCodeProps {
 
 export default function UpiQrCode({ upiUri, size = 256 }: UpiQrCodeProps) {
   const [copied, setCopied] = useState(false);
-  const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
 
   useEffect(() => {
     // Generate QR code URL using a free QR code API
@@ -29,10 +29,10 @@ export default function UpiQrCode({ upiUri, size = 256 }: UpiQrCodeProps) {
     try {
       await navigator.clipboard.writeText(upiUri);
       setCopied(true);
-      toast.success('UPI link copied to clipboard');
+      toast.success("UPI link copied to clipboard");
       setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      toast.error('Failed to copy link');
+    } catch (_error) {
+      toast.error("Failed to copy link");
     }
   };
 
@@ -45,7 +45,7 @@ export default function UpiQrCode({ upiUri, size = 256 }: UpiQrCodeProps) {
             alt="UPI Payment QR Code"
             width={size}
             height={size}
-            style={{ maxWidth: '100%', height: 'auto' }}
+            style={{ maxWidth: "100%", height: "auto" }}
           />
         ) : (
           <div
@@ -56,7 +56,7 @@ export default function UpiQrCode({ upiUri, size = 256 }: UpiQrCodeProps) {
           </div>
         )}
       </div>
-      
+
       <div className="text-center space-y-2">
         <p className="text-sm font-medium gold-text">
           Scan QR code with any UPI app

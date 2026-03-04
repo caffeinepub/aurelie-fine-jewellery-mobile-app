@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useGetCategoryCarouselImages, useGetCarouselRedirect } from '../hooks/useCategoryCarouselQueries';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from './ui/button';
-import { Skeleton } from './ui/skeleton';
-import { isValidCategorySlug } from '../utils/productCategories';
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  useGetCarouselRedirect,
+  useGetCategoryCarouselImages,
+} from "../hooks/useCategoryCarouselQueries";
+import { isValidCategorySlug } from "../utils/productCategories";
+import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 interface CategoryImageCarouselProps {
   categorySlug: string;
@@ -11,15 +14,22 @@ interface CategoryImageCarouselProps {
   title?: string;
 }
 
-export default function CategoryImageCarousel({ categorySlug, carouselIndex, title }: CategoryImageCarouselProps) {
+export default function CategoryImageCarousel({
+  categorySlug,
+  carouselIndex,
+  title,
+}: CategoryImageCarouselProps) {
   // All hooks must be called before any conditional returns
-  const { data: images, isLoading } = useGetCategoryCarouselImages(categorySlug, carouselIndex);
+  const { data: images, isLoading } = useGetCategoryCarouselImages(
+    categorySlug,
+    carouselIndex,
+  );
   const { data: redirectUrl } = useGetCarouselRedirect(categorySlug);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
   // Filter out empty images
-  const enabledImages = images?.filter(img => img) || [];
+  const enabledImages = images?.filter((img) => img) || [];
 
   // Reset currentIndex when enabledImages changes
   useEffect(() => {
@@ -51,7 +61,9 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
 
   const goToPrevious = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setCurrentIndex((prev) => (prev - 1 + enabledImages.length) % enabledImages.length);
+    setCurrentIndex(
+      (prev) => (prev - 1 + enabledImages.length) % enabledImages.length,
+    );
   };
 
   const goToNext = (e: React.MouseEvent) => {
@@ -60,7 +72,7 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
   };
 
   const handleCarouselClick = () => {
-    if (redirectUrl && redirectUrl.trim()) {
+    if (redirectUrl?.trim()) {
       window.location.href = redirectUrl;
     }
   };
@@ -83,20 +95,25 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
     return null;
   }
 
-  const isClickable = redirectUrl && redirectUrl.trim();
+  const isClickable = redirectUrl?.trim();
 
   return (
     <div>
-      {title && <h2 className="font-serif text-xl font-semibold tracking-tight mb-3 gold-text">{title}</h2>}
-      
-      <div 
+      {title && (
+        <h2 className="font-serif text-xl font-semibold tracking-tight mb-3 gold-text">
+          {title}
+        </h2>
+      )}
+
+      <div
         className="relative w-full group"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Carousel Container with 16:9 aspect ratio for category carousels */}
-        <div 
-          className={`relative w-full aspect-video overflow-hidden rounded-2xl shadow-bottle-green ${isClickable ? 'cursor-pointer' : ''}`}
+        <button
+          type="button"
+          className={`relative w-full aspect-video overflow-hidden rounded-2xl shadow-bottle-green ${isClickable ? "cursor-pointer" : "cursor-default"} focus:outline-none`}
           onClick={isClickable ? handleCarouselClick : undefined}
         >
           {enabledImages.map((image, index) => {
@@ -104,18 +121,18 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
 
             return (
               <div
-                key={index}
+                key={`carousel-img-${image.getDirectURL()}`}
                 className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${
-                  isActive ? 'opacity-100' : 'opacity-0'
+                  isActive ? "opacity-100" : "opacity-0"
                 }`}
-                style={{ pointerEvents: isActive ? 'auto' : 'none' }}
+                style={{ pointerEvents: isActive ? "auto" : "none" }}
               >
                 <div className="w-full h-full relative overflow-hidden">
                   <img
                     src={image.getDirectURL()}
-                    alt={`${title || 'Carousel'} - Slide ${index + 1}`}
+                    alt={`${title || "Carousel"} - Slide ${index + 1}`}
                     className="w-full h-full object-cover"
-                    loading={index === 0 ? 'eager' : 'lazy'}
+                    loading={index === 0 ? "eager" : "lazy"}
                     decoding="async"
                   />
                   {/* Subtle gradient overlay for better visual depth */}
@@ -146,22 +163,23 @@ export default function CategoryImageCarousel({ categorySlug, carouselIndex, tit
               </Button>
             </>
           )}
-        </div>
+        </button>
 
         {/* Navigation Dots */}
         {enabledImages.length > 1 && (
           <div className="flex justify-center gap-2 mt-3">
-            {enabledImages.map((_, index) => (
+            {enabledImages.map((image, index) => (
               <button
-                key={index}
+                type="button"
+                key={`img-dot-${image.getDirectURL()}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   goToSlide(index);
                 }}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   index === currentIndex
-                    ? 'w-6 bg-gold-medium shadow-gold'
-                    : 'w-1.5 bg-gold-medium/40 hover:bg-gold-medium/60'
+                    ? "w-6 bg-gold-medium shadow-gold"
+                    : "w-1.5 bg-gold-medium/40 hover:bg-gold-medium/60"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
