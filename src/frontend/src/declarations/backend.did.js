@@ -21,6 +21,7 @@ export const _CaffeineStorageRefillResult = IDL.Record({
 });
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
 export const CategoryCreate = IDL.Record({
+  'video' : IDL.Opt(ExternalBlob),
   'displayOrder' : IDL.Nat,
   'name' : IDL.Text,
   'description' : IDL.Text,
@@ -39,6 +40,10 @@ export const ProductMedia = IDL.Record({
   'images' : IDL.Vec(ExternalBlob),
 });
 export const Gender = IDL.Variant({ 'boys' : IDL.Null, 'girls' : IDL.Null });
+export const RingVariants = IDL.Record({
+  'sizes' : IDL.Vec(IDL.Text),
+  'colours' : IDL.Vec(IDL.Text),
+});
 export const ProductCreate = IDL.Record({
   'id' : IDL.Text,
   'media' : ProductMedia,
@@ -48,6 +53,7 @@ export const ProductCreate = IDL.Record({
   'gender' : Gender,
   'category' : IDL.Text,
   'priceInCents' : IDL.Nat,
+  'ringVariants' : IDL.Opt(RingVariants),
 });
 export const UserRole = IDL.Variant({
   'admin' : IDL.Null,
@@ -71,8 +77,10 @@ export const ShippingAddress = IDL.Record({
 export const OrderCreate = IDL.Record({
   'id' : IDL.Text,
   'totalPriceInCents' : IDL.Nat,
+  'ringSize' : IDL.Opt(IDL.Text),
   'customer' : IDL.Principal,
   'productId' : IDL.Text,
+  'metalColour' : IDL.Opt(IDL.Text),
   'upiId' : IDL.Text,
   'quantity' : IDL.Nat,
   'shippingAddress' : ShippingAddress,
@@ -83,6 +91,7 @@ export const BannerMessage = IDL.Record({
   'message' : IDL.Text,
 });
 export const Category = IDL.Record({
+  'video' : IDL.Opt(ExternalBlob),
   'displayOrder' : IDL.Nat,
   'name' : IDL.Text,
   'description' : IDL.Text,
@@ -120,9 +129,11 @@ export const Order = IDL.Record({
   'id' : IDL.Text,
   'status' : OrderStatus,
   'totalPriceInCents' : IDL.Nat,
+  'ringSize' : IDL.Opt(IDL.Text),
   'customer' : IDL.Principal,
   'productId' : IDL.Text,
   'cancellable' : IDL.Bool,
+  'metalColour' : IDL.Opt(IDL.Text),
   'timestamp' : IDL.Int,
   'upiId' : IDL.Text,
   'quantity' : IDL.Nat,
@@ -139,6 +150,7 @@ export const Product = IDL.Record({
   'gender' : Gender,
   'category' : IDL.Text,
   'priceInCents' : IDL.Nat,
+  'ringVariants' : IDL.Opt(RingVariants),
 });
 export const SiteContent = IDL.Record({
   'generalDisclaimer' : IDL.Text,
@@ -194,6 +206,7 @@ export const ProductUpdate = IDL.Record({
   'gender' : IDL.Opt(Gender),
   'category' : IDL.Opt(IDL.Text),
   'priceInCents' : IDL.Opt(IDL.Nat),
+  'ringVariants' : IDL.Opt(RingVariants),
 });
 
 export const idlService = IDL.Service({
@@ -332,6 +345,7 @@ export const idlService = IDL.Service({
   'updateCategoryImages' : IDL.Func([IDL.Text, IDL.Vec(ExternalBlob)], [], []),
   'updateCategoryPrimaryImage' : IDL.Func([IDL.Text, ExternalBlob], [], []),
   'updateCategorySlide' : IDL.Func([IDL.Text, IDL.Nat, CarouselSlide], [], []),
+  'updateCategoryVideo' : IDL.Func([IDL.Text, IDL.Opt(ExternalBlob)], [], []),
   'updateOrderStatus' : IDL.Func([IDL.Text, OrderStatus], [], []),
   'updateProduct' : IDL.Func([IDL.Text, ProductUpdate], [], []),
   'updateSiteContent' : IDL.Func([SiteContent], [], []),
@@ -353,6 +367,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const ExternalBlob = IDL.Vec(IDL.Nat8);
   const CategoryCreate = IDL.Record({
+    'video' : IDL.Opt(ExternalBlob),
     'displayOrder' : IDL.Nat,
     'name' : IDL.Text,
     'description' : IDL.Text,
@@ -371,6 +386,10 @@ export const idlFactory = ({ IDL }) => {
     'images' : IDL.Vec(ExternalBlob),
   });
   const Gender = IDL.Variant({ 'boys' : IDL.Null, 'girls' : IDL.Null });
+  const RingVariants = IDL.Record({
+    'sizes' : IDL.Vec(IDL.Text),
+    'colours' : IDL.Vec(IDL.Text),
+  });
   const ProductCreate = IDL.Record({
     'id' : IDL.Text,
     'media' : ProductMedia,
@@ -380,6 +399,7 @@ export const idlFactory = ({ IDL }) => {
     'gender' : Gender,
     'category' : IDL.Text,
     'priceInCents' : IDL.Nat,
+    'ringVariants' : IDL.Opt(RingVariants),
   });
   const UserRole = IDL.Variant({
     'admin' : IDL.Null,
@@ -403,8 +423,10 @@ export const idlFactory = ({ IDL }) => {
   const OrderCreate = IDL.Record({
     'id' : IDL.Text,
     'totalPriceInCents' : IDL.Nat,
+    'ringSize' : IDL.Opt(IDL.Text),
     'customer' : IDL.Principal,
     'productId' : IDL.Text,
+    'metalColour' : IDL.Opt(IDL.Text),
     'upiId' : IDL.Text,
     'quantity' : IDL.Nat,
     'shippingAddress' : ShippingAddress,
@@ -415,6 +437,7 @@ export const idlFactory = ({ IDL }) => {
     'message' : IDL.Text,
   });
   const Category = IDL.Record({
+    'video' : IDL.Opt(ExternalBlob),
     'displayOrder' : IDL.Nat,
     'name' : IDL.Text,
     'description' : IDL.Text,
@@ -452,9 +475,11 @@ export const idlFactory = ({ IDL }) => {
     'id' : IDL.Text,
     'status' : OrderStatus,
     'totalPriceInCents' : IDL.Nat,
+    'ringSize' : IDL.Opt(IDL.Text),
     'customer' : IDL.Principal,
     'productId' : IDL.Text,
     'cancellable' : IDL.Bool,
+    'metalColour' : IDL.Opt(IDL.Text),
     'timestamp' : IDL.Int,
     'upiId' : IDL.Text,
     'quantity' : IDL.Nat,
@@ -471,6 +496,7 @@ export const idlFactory = ({ IDL }) => {
     'gender' : Gender,
     'category' : IDL.Text,
     'priceInCents' : IDL.Nat,
+    'ringVariants' : IDL.Opt(RingVariants),
   });
   const SiteContent = IDL.Record({
     'generalDisclaimer' : IDL.Text,
@@ -523,6 +549,7 @@ export const idlFactory = ({ IDL }) => {
     'gender' : IDL.Opt(Gender),
     'category' : IDL.Opt(IDL.Text),
     'priceInCents' : IDL.Opt(IDL.Nat),
+    'ringVariants' : IDL.Opt(RingVariants),
   });
   
   return IDL.Service({
@@ -677,6 +704,7 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
+    'updateCategoryVideo' : IDL.Func([IDL.Text, IDL.Opt(ExternalBlob)], [], []),
     'updateOrderStatus' : IDL.Func([IDL.Text, OrderStatus], [], []),
     'updateProduct' : IDL.Func([IDL.Text, ProductUpdate], [], []),
     'updateSiteContent' : IDL.Func([SiteContent], [], []),

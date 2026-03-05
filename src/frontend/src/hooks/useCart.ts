@@ -5,11 +5,18 @@ import type { Product } from "../backend";
 export interface CartItem {
   product: Product;
   quantity: number;
+  ringSize?: string;
+  metalColour?: string;
 }
 
 interface CartStore {
   items: CartItem[];
-  addItem: (product: Product, quantity?: number) => void;
+  addItem: (
+    product: Product,
+    ringSize?: string,
+    metalColour?: string,
+    quantity?: number,
+  ) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -22,16 +29,21 @@ export const useCart = create<CartStore>()(
     (set, get) => ({
       items: [],
 
-      addItem: (product, quantity = 1) => {
+      addItem: (product, ringSize, metalColour, quantity = 1) => {
         set((state) => {
           const existingItem = state.items.find(
-            (item) => item.product.id === product.id,
+            (item) =>
+              item.product.id === product.id &&
+              item.ringSize === ringSize &&
+              item.metalColour === metalColour,
           );
 
           if (existingItem) {
             return {
               items: state.items.map((item) =>
-                item.product.id === product.id
+                item.product.id === product.id &&
+                item.ringSize === ringSize &&
+                item.metalColour === metalColour
                   ? { ...item, quantity: item.quantity + quantity }
                   : item,
               ),
@@ -39,7 +51,10 @@ export const useCart = create<CartStore>()(
           }
 
           return {
-            items: [...state.items, { product, quantity }],
+            items: [
+              ...state.items,
+              { product, quantity, ringSize, metalColour },
+            ],
           };
         });
       },

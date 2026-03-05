@@ -50,6 +50,7 @@ export interface TransformationInput {
     response: http_request_result;
 }
 export interface CategoryCreate {
+    video?: ExternalBlob;
     displayOrder: bigint;
     name: string;
     description: string;
@@ -91,6 +92,7 @@ export interface SiteContent {
     termsOfService: string;
 }
 export interface Category {
+    video?: ExternalBlob;
     displayOrder: bigint;
     name: string;
     description: string;
@@ -124,6 +126,7 @@ export interface ProductUpdate {
     gender?: Gender;
     category?: string;
     priceInCents?: bigint;
+    ringVariants?: RingVariants;
 }
 export interface ShippingAddress {
     name: string;
@@ -136,13 +139,19 @@ export interface BannerMessage {
     enabled: boolean;
     message: string;
 }
+export interface RingVariants {
+    sizes: Array<string>;
+    colours: Array<string>;
+}
 export interface Order {
     id: string;
     status: OrderStatus;
     totalPriceInCents: bigint;
+    ringSize?: string;
     customer: Principal;
     productId: string;
     cancellable: boolean;
+    metalColour?: string;
     timestamp: bigint;
     upiId: string;
     quantity: bigint;
@@ -160,8 +169,10 @@ export interface http_request_result {
 export interface OrderCreate {
     id: string;
     totalPriceInCents: bigint;
+    ringSize?: string;
     customer: Principal;
     productId: string;
+    metalColour?: string;
     upiId: string;
     quantity: bigint;
     shippingAddress: ShippingAddress;
@@ -182,6 +193,7 @@ export interface ProductCreate {
     gender: Gender;
     category: string;
     priceInCents: bigint;
+    ringVariants?: RingVariants;
 }
 export interface ProductMedia {
     video?: ExternalBlob;
@@ -200,6 +212,7 @@ export interface Product {
     gender: Gender;
     category: string;
     priceInCents: bigint;
+    ringVariants?: RingVariants;
 }
 export enum Gender {
     boys = "boys",
@@ -275,6 +288,7 @@ export interface backendInterface {
     updateCategoryImages(name: string, images: Array<ExternalBlob>): Promise<void>;
     updateCategoryPrimaryImage(name: string, primaryImage: ExternalBlob): Promise<void>;
     updateCategorySlide(category: string, slideIndex: bigint, updatedSlide: CarouselSlide): Promise<void>;
+    updateCategoryVideo(name: string, video: ExternalBlob | null): Promise<void>;
     updateOrderStatus(orderId: string, status: OrderStatus): Promise<void>;
     updateProduct(productId: string, updates: ProductUpdate): Promise<void>;
     updateSiteContent(newContent: SiteContent): Promise<void>;

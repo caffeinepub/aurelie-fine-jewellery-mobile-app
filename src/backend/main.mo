@@ -13,10 +13,10 @@ import OutCall "http-outcalls/outcall";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
-
+import Migration "migration";
 
 // Apply migration logic
-
+(with migration = Migration.run)
 actor {
   // Time Constants
   let cancellationWindowHours = 12;
@@ -31,6 +31,11 @@ actor {
   public type Gender = {
     #boys;
     #girls;
+  };
+
+  public type RingVariants = {
+    sizes : [Text];
+    colours : [Text];
   };
 
   public type ProductMedia = {
@@ -48,6 +53,7 @@ actor {
     media : ProductMedia;
     gender : Gender;
     createdAt : Time.Time;
+    ringVariants : ?RingVariants;
   };
 
   public type ProductCreate = {
@@ -59,6 +65,7 @@ actor {
     category : Text;
     media : ProductMedia;
     gender : Gender;
+    ringVariants : ?RingVariants;
   };
 
   public type ProductUpdate = {
@@ -69,6 +76,7 @@ actor {
     category : ?Text;
     media : ?ProductMedia;
     gender : ?Gender;
+    ringVariants : ?RingVariants;
   };
 
   public type CategoryCarousels = {
@@ -114,6 +122,8 @@ actor {
     timestamp : Int;
     cancellable : Bool;
     shippingAddress : ShippingAddress;
+    ringSize : ?Text;
+    metalColour : ?Text;
   };
 
   public type CustomerInquiry = {
@@ -159,6 +169,8 @@ actor {
     totalPriceInCents : Nat;
     upiId : Text;
     shippingAddress : ShippingAddress;
+    ringSize : ?Text;
+    metalColour : ?Text;
   };
 
   public type CancelReason = {
@@ -172,6 +184,7 @@ actor {
     isActive : Bool;
     primaryImage : Storage.ExternalBlob;
     images : [Storage.ExternalBlob];
+    video : ?Storage.ExternalBlob;
   };
 
   public type CategoryCreate = {
@@ -181,6 +194,7 @@ actor {
     isActive : Bool;
     primaryImage : Storage.ExternalBlob;
     images : [Storage.ExternalBlob];
+    video : ?Storage.ExternalBlob;
   };
 
   public type BannerMessage = {
@@ -350,6 +364,7 @@ actor {
       isActive = categoryInput.isActive;
       primaryImage = categoryInput.primaryImage;
       images = categoryInput.images;
+      video = categoryInput.video;
     };
     categories.add(category.name, category);
   };
@@ -368,6 +383,7 @@ actor {
           isActive = categoryInput.isActive;
           primaryImage = categoryInput.primaryImage;
           images = categoryInput.images;
+          video = categoryInput.video;
         };
         categories.add(name, category);
       };
@@ -435,6 +451,22 @@ actor {
         let updatedCategory = {
           category with
           primaryImage
+        };
+        categories.add(name, updatedCategory);
+      };
+    };
+  };
+
+  public shared ({ caller }) func updateCategoryVideo(name : Text, video : ?Storage.ExternalBlob) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can update category video");
+    };
+    switch (categories.get(name)) {
+      case (null) { Runtime.trap("Category not found") };
+      case (?category) {
+        let updatedCategory = {
+          category with
+          video
         };
         categories.add(name, updatedCategory);
       };
@@ -512,7 +544,6 @@ actor {
   };
 
   public shared ({ caller }) func reorderCategorySlides(category : Text, newOrder : [Nat]) : async () {
-    // Fixed typo: was accessControlControlState (double "Control")
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can reorder category slides");
     };
@@ -718,6 +749,7 @@ actor {
       media = product.media;
       gender = product.gender;
       createdAt = Time.now();
+      ringVariants = product.ringVariants;
     };
     products.add(product.id, productEntity);
   };
@@ -740,6 +772,10 @@ actor {
           media = switch (updates.media) { case (null) { existingProduct.media }; case (?media) { media } };
           gender = switch (updates.gender) { case (null) { existingProduct.gender }; case (?gender) { gender } };
           createdAt = existingProduct.createdAt; // Preserve original creation time
+          ringVariants = switch (updates.ringVariants) {
+            case (null) { existingProduct.ringVariants };
+            case (?variants) { ?variants };
+          };
         };
 
         products.add(productId, updatedProduct);
@@ -786,6 +822,8 @@ actor {
       cancellable = true;
       status = #pending;
       shippingAddress = input.shippingAddress;
+      ringSize = input.ringSize;
+      metalColour = input.metalColour;
     };
 
     orders.add(newOrder.id, newOrder);
@@ -836,6 +874,8 @@ actor {
           timestamp = order.timestamp;
           cancellable = order.cancellable;
           shippingAddress = order.shippingAddress;
+          ringSize = order.ringSize;
+          metalColour = order.metalColour;
         };
         orders.add(orderId, updatedOrder);
       };

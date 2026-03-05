@@ -12,7 +12,7 @@ import { Button } from "../../components/ui/button";
 import { useCart } from "../../hooks/useCart";
 import { useInternetIdentity } from "../../hooks/useInternetIdentity";
 import { useProductFilters } from "../../hooks/useProductFilters";
-import { useGetProducts } from "../../hooks/useQueries";
+import { useGetCategory, useGetProducts } from "../../hooks/useQueries";
 
 interface CategoryPageTemplateProps {
   categorySlug: string;
@@ -29,11 +29,15 @@ export default function CategoryPageTemplate({
 }: CategoryPageTemplateProps) {
   const navigate = useNavigate();
   const { data: products, isLoading } = useGetProducts();
+  const { data: categoryData } = useGetCategory(categorySlug);
   const { addItem } = useCart();
   const { identity } = useInternetIdentity();
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
 
   const isAuthenticated = !!identity;
+
+  // Fetch video URL for this category (if set)
+  const categoryVideoUrl = categoryData?.video?.getDirectURL() ?? null;
 
   // Filter products by category and optionally by gender first
   const categoryProducts: Product[] =
@@ -65,7 +69,7 @@ export default function CategoryPageTemplate({
       toast.error("Please log in to add items to cart");
       return;
     }
-    addItem(product, 1);
+    addItem(product, undefined, undefined, 1);
     toast.success(`${product.name} added to cart`);
   };
 
@@ -74,7 +78,7 @@ export default function CategoryPageTemplate({
       toast.error("Please log in to purchase");
       return;
     }
-    addItem(product, 1);
+    addItem(product, undefined, undefined, 1);
     navigate({ to: "/checkout" });
   };
 
@@ -83,6 +87,20 @@ export default function CategoryPageTemplate({
       <div className="min-h-screen">
         {/* Category Navigation Bar */}
         <HeaderCategoryNav forceShow />
+
+        {/* Sub-category video banner (auto-play, muted, looped) */}
+        {categoryVideoUrl && (
+          <div className="w-full aspect-video bg-black overflow-hidden">
+            <video
+              src={categoryVideoUrl}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
 
         {/* Category Header */}
         <div className="offwhite-surface py-12 md:py-16">

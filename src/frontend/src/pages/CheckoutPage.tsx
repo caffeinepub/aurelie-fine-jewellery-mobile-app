@@ -177,6 +177,8 @@ export default function CheckoutPage() {
           totalPriceInCents: discountedTotal,
           upiId: upiId.trim(),
           shippingAddress: shippingAddressData,
+          ringSize: item.ringSize,
+          metalColour: item.metalColour,
         };
 
         await createOrder.mutateAsync(orderInput);
@@ -646,6 +648,20 @@ export default function CheckoutPage() {
                           <p className="text-xs text-muted-foreground mt-1">
                             Qty: {item.quantity}
                           </p>
+                          {(item.ringSize || item.metalColour) && (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {item.ringSize && (
+                                <span className="text-xs px-1.5 py-0.5 rounded border border-gold-medium/30 text-gold-dark bg-gold-light/10">
+                                  Size: {item.ringSize}
+                                </span>
+                              )}
+                              {item.metalColour && (
+                                <span className="text-xs px-1.5 py-0.5 rounded border border-gold-medium/30 text-gold-dark bg-gold-light/10">
+                                  {item.metalColour}
+                                </span>
+                              )}
+                            </div>
+                          )}
                           <p className="text-sm font-semibold text-gold-medium mt-1">
                             {formatINR(Number(item.product.priceInCents))}
                           </p>

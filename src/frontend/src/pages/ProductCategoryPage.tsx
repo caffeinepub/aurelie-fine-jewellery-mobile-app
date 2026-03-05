@@ -56,7 +56,7 @@ export default function ProductCategoryPage() {
       toast.error("Please log in to add items to cart");
       return;
     }
-    addItem(product, 1);
+    addItem(product, undefined, undefined, 1);
     toast.success(`${product.name} added to cart`);
   };
 
@@ -65,7 +65,7 @@ export default function ProductCategoryPage() {
       toast.error("Please log in to purchase");
       return;
     }
-    addItem(product, 1);
+    addItem(product, undefined, undefined, 1);
     navigate({ to: "/checkout" });
   };
 

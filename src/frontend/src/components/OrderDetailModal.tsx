@@ -181,6 +181,20 @@ export default function OrderDetailModal({
               <p className="text-sm text-muted-foreground mb-1">UPI ID</p>
               <p className="font-medium">{order.upiId}</p>
             </div>
+            {order.ringSize && (
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Ring Size</p>
+                <p className="font-medium">{order.ringSize}</p>
+              </div>
+            )}
+            {order.metalColour && (
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">
+                  Metal Colour
+                </p>
+                <p className="font-medium">{order.metalColour}</p>
+              </div>
+            )}
           </div>
 
           {/* Cancellation Reason (if cancelled) */}

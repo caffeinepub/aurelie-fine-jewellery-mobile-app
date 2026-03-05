@@ -105,6 +105,20 @@ export default function CartPage() {
                       <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
                         {item.product.description}
                       </p>
+                      {(item.ringSize || item.metalColour) && (
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {item.ringSize && (
+                            <span className="text-xs px-2 py-0.5 rounded-full border border-gold-medium/40 text-bottle-green-dark bg-gold-light/10 font-medium">
+                              Size: {item.ringSize}
+                            </span>
+                          )}
+                          {item.metalColour && (
+                            <span className="text-xs px-2 py-0.5 rounded-full border border-gold-medium/40 text-bottle-green-dark bg-gold-light/10 font-medium">
+                              {item.metalColour}
+                            </span>
+                          )}
+                        </div>
+                      )}
                       <p className="text-lg font-semibold gold-text">
                         {formatINR(Number(item.product.priceInCents))}
                       </p>

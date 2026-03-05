@@ -111,7 +111,7 @@ export default function NewArrivalsSection() {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      addItem(product);
+                      addItem(product, undefined, undefined);
                     }}
                     className="w-full flex items-center justify-center gap-1 py-1.5 bg-gold/10 hover:bg-gold/20 text-gold rounded text-xs transition-colors"
                   >

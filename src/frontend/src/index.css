@@ -46,6 +46,7 @@
     --gold-medium: 65% 0.15 80;
     --gold-light: 75% 0.12 80;
     --gold-shimmer: 80% 0.1 80;
+    --beige-dark: 79% 0.05 60;
     --beige-sand: 85% 0.04 60;
     --beige-champagne: 90% 0.03 60;
     --beige-light: 95% 0.02 60;
@@ -279,12 +280,12 @@
 
 /* Customer Page Scoped Styles */
 [data-customer-page="true"] {
-  background-color: oklch(var(--beige-light));
+  background-color: oklch(var(--beige-dark));
   color: #392a48;
 }
 
 [data-customer-page="true"] .off-white-surface {
-  background-color: oklch(var(--beige-light));
+  background-color: oklch(var(--beige-dark));
 }
 
 /* Footer Scoped Styles */

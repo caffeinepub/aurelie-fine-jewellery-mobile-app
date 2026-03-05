@@ -185,6 +185,22 @@ export default function OrdersPage() {
                         <p className="text-sm text-muted-foreground">Status</p>
                         <p className="font-medium">{statusInfo.label}</p>
                       </div>
+                      {order.ringSize && (
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            Ring Size
+                          </p>
+                          <p className="font-medium">{order.ringSize}</p>
+                        </div>
+                      )}
+                      {order.metalColour && (
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            Metal Colour
+                          </p>
+                          <p className="font-medium">{order.metalColour}</p>
+                        </div>
+                      )}
                     </div>
 
                     {cancellationReason && (

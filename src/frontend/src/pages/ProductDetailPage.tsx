@@ -20,12 +20,27 @@ function formatINR(priceInCents: bigint): string {
   }).format(amount);
 }
 
+/** Detect if a category string refers to rings */
+function isRingCategory(category: string): boolean {
+  return /\brings?\b/i.test(category);
+}
+
+const METAL_COLOUR_SWATCHES: Record<string, string> = {
+  "Yellow Gold": "#FFD700",
+  "Rose Gold": "#B76E79",
+  "White Gold": "#E8E8E8",
+};
+
 export default function ProductDetailPage() {
   const { productId } = useParams({ from: "/product/$productId" });
   const navigate = useNavigate();
   const { data: product, isLoading } = useGetProduct(productId);
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [selectedRingSize, setSelectedRingSize] = useState<string | null>(null);
+  const [selectedMetalColour, setSelectedMetalColour] = useState<string | null>(
+    null,
+  );
   const { addProduct } = useRecentlyViewed();
 
   // Track this product as recently viewed
@@ -35,9 +50,24 @@ export default function ProductDetailPage() {
     }
   }, [productId, addProduct]);
 
+  const isRing = product ? isRingCategory(product.category) : false;
+  const hasSizes =
+    isRing &&
+    product?.ringVariants?.sizes &&
+    product.ringVariants.sizes.length > 0;
+  const hasColours =
+    isRing &&
+    product?.ringVariants?.colours &&
+    product.ringVariants.colours.length > 0;
+
   const handleAddToCart = () => {
     if (!product) return;
-    addItem(product, quantity);
+    addItem(
+      product,
+      selectedRingSize ?? undefined,
+      selectedMetalColour ?? undefined,
+      quantity,
+    );
     toast.success(`${quantity} × ${product.name} added to cart`);
   };
 
@@ -116,6 +146,7 @@ export default function ProductDetailPage() {
                 </p>
               </div>
 
+              {/* Stock Badge */}
               <div
                 className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${
                   product.inStock
@@ -126,6 +157,88 @@ export default function ProductDetailPage() {
                 {product.inStock ? "In Stock" : "Out of Stock"}
               </div>
 
+              {/* Ring Size Selector */}
+              {hasSizes && (
+                <div className="space-y-3" data-ocid="ring.size_selector">
+                  <p className="text-sm font-semibold text-bottle-green-dark tracking-wide uppercase">
+                    Ring Size
+                    {selectedRingSize && (
+                      <span className="ml-2 font-normal text-gold-dark normal-case">
+                        — {selectedRingSize}
+                      </span>
+                    )}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {product.ringVariants!.sizes.map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() =>
+                          setSelectedRingSize(
+                            selectedRingSize === size ? null : size,
+                          )
+                        }
+                        className={`w-11 h-11 rounded-full border-2 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-medium ${
+                          selectedRingSize === size
+                            ? "border-gold-dark bg-gold-medium text-white shadow-md"
+                            : "border-gold-medium/40 text-bottle-green-dark hover:border-gold-medium hover:bg-gold-light/20"
+                        }`}
+                        aria-pressed={selectedRingSize === size}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Metal Colour Selector */}
+              {hasColours && (
+                <div className="space-y-3" data-ocid="ring.colour_selector">
+                  <p className="text-sm font-semibold text-bottle-green-dark tracking-wide uppercase">
+                    Metal Colour
+                    {selectedMetalColour && (
+                      <span className="ml-2 font-normal text-gold-dark normal-case">
+                        — {selectedMetalColour}
+                      </span>
+                    )}
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    {product.ringVariants!.colours.map((colour) => {
+                      const swatchColour =
+                        METAL_COLOUR_SWATCHES[colour] ?? "#cccccc";
+                      return (
+                        <button
+                          key={colour}
+                          type="button"
+                          onClick={() =>
+                            setSelectedMetalColour(
+                              selectedMetalColour === colour ? null : colour,
+                            )
+                          }
+                          className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-medium ${
+                            selectedMetalColour === colour
+                              ? "border-gold-dark bg-gold-medium/10 shadow-md"
+                              : "border-gold-medium/40 hover:border-gold-medium hover:bg-gold-light/10"
+                          }`}
+                          aria-pressed={selectedMetalColour === colour}
+                        >
+                          <span
+                            className="w-4 h-4 rounded-full border border-black/10 shrink-0"
+                            style={{ backgroundColor: swatchColour }}
+                            aria-hidden="true"
+                          />
+                          <span className="text-bottle-green-dark">
+                            {colour}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Description */}
               <Card className="border-gold-medium/30 bg-off-white">
                 <CardContent className="p-6">
                   <h2 className="text-lg font-serif font-semibold mb-3 text-bottle-green-dark">

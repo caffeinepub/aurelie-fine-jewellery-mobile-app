@@ -5,6 +5,7 @@ import type {
   Category,
   CategoryCreate,
   CustomerInquiry,
+  ExternalBlob,
   Order,
   OrderCreate,
   OrderStatus,
@@ -107,6 +108,25 @@ export function useUpdateCategory() {
     }: { name: string; categoryInput: CategoryCreate }) => {
       if (!actor) throw new Error("Actor not available");
       await actor.updateCategory(name, categoryInput);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["category"] });
+    },
+  });
+}
+
+export function useUpdateCategoryVideo() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      name,
+      video,
+    }: { name: string; video: ExternalBlob | null }) => {
+      if (!actor) throw new Error("Actor not available");
+      await actor.updateCategoryVideo(name, video);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });

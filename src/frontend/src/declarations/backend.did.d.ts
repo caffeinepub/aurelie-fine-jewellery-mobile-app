@@ -23,6 +23,7 @@ export interface CarouselSlide {
   'urlRedirect' : string,
 }
 export interface Category {
+  'video' : [] | [ExternalBlob],
   'displayOrder' : bigint,
   'name' : string,
   'description' : string,
@@ -31,6 +32,7 @@ export interface Category {
   'images' : Array<ExternalBlob>,
 }
 export interface CategoryCreate {
+  'video' : [] | [ExternalBlob],
   'displayOrder' : bigint,
   'name' : string,
   'description' : string,
@@ -57,9 +59,11 @@ export interface Order {
   'id' : string,
   'status' : OrderStatus,
   'totalPriceInCents' : bigint,
+  'ringSize' : [] | [string],
   'customer' : Principal,
   'productId' : string,
   'cancellable' : boolean,
+  'metalColour' : [] | [string],
   'timestamp' : bigint,
   'upiId' : string,
   'quantity' : bigint,
@@ -68,8 +72,10 @@ export interface Order {
 export interface OrderCreate {
   'id' : string,
   'totalPriceInCents' : bigint,
+  'ringSize' : [] | [string],
   'customer' : Principal,
   'productId' : string,
+  'metalColour' : [] | [string],
   'upiId' : string,
   'quantity' : bigint,
   'shippingAddress' : ShippingAddress,
@@ -89,6 +95,7 @@ export interface Product {
   'gender' : Gender,
   'category' : string,
   'priceInCents' : bigint,
+  'ringVariants' : [] | [RingVariants],
 }
 export interface ProductCreate {
   'id' : string,
@@ -99,6 +106,7 @@ export interface ProductCreate {
   'gender' : Gender,
   'category' : string,
   'priceInCents' : bigint,
+  'ringVariants' : [] | [RingVariants],
 }
 export interface ProductMedia {
   'video' : [] | [ExternalBlob],
@@ -112,6 +120,11 @@ export interface ProductUpdate {
   'gender' : [] | [Gender],
   'category' : [] | [string],
   'priceInCents' : [] | [bigint],
+  'ringVariants' : [] | [RingVariants],
+}
+export interface RingVariants {
+  'sizes' : Array<string>,
+  'colours' : Array<string>,
 }
 export interface ShippingAddress {
   'name' : string,
@@ -283,6 +296,7 @@ export interface _SERVICE {
     [string, bigint, CarouselSlide],
     undefined
   >,
+  'updateCategoryVideo' : ActorMethod<[string, [] | [ExternalBlob]], undefined>,
   'updateOrderStatus' : ActorMethod<[string, OrderStatus], undefined>,
   'updateProduct' : ActorMethod<[string, ProductUpdate], undefined>,
   'updateSiteContent' : ActorMethod<[SiteContent], undefined>,
