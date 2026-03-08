@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* Base OKLCH color system */
-    --background: 98% 0.01 120;
+    --background: 92% 0.04 60;
     --foreground: 20% 0.02 280;
     --card: 98% 0.01 120;
     --card-foreground: 20% 0.02 280;
@@ -280,12 +280,33 @@
 
 /* Customer Page Scoped Styles */
 [data-customer-page="true"] {
-  background-color: oklch(var(--beige-dark));
+  background-color: oklch(92% 0.04 60);
   color: #392a48;
 }
 
 [data-customer-page="true"] .off-white-surface {
-  background-color: oklch(var(--beige-dark));
+  background-color: oklch(var(--beige-champagne));
+}
+
+/* Section headings and form labels — exact brand bottle green across customer and admin */
+[data-customer-page="true"] label,
+[data-customer-page="true"] h1,
+[data-customer-page="true"] h2,
+[data-customer-page="true"] h3,
+[data-customer-page="true"] h4,
+[data-customer-page="true"] h5,
+[data-customer-page="true"] h6 {
+  color: #006a4e;
+}
+
+[data-admin-scope="true"] label,
+[data-admin-scope="true"] h1,
+[data-admin-scope="true"] h2,
+[data-admin-scope="true"] h3,
+[data-admin-scope="true"] h4,
+[data-admin-scope="true"] h5,
+[data-admin-scope="true"] h6 {
+  color: #006a4e;
 }
 
 /* Footer Scoped Styles */

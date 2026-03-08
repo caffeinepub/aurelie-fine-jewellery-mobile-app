@@ -15,7 +15,10 @@ export default function MarqueeBanner() {
   const fullText = `${messageText} ✨ ${messageText}`;
 
   return (
-    <div className="w-full bg-gradient-to-r from-gold-dark via-gold-medium to-gold-dark overflow-hidden border-b border-gold-medium/30 relative">
+    <div
+      className="w-full overflow-hidden border-b border-gold-medium/30 relative"
+      style={{ backgroundColor: "#FFBF00" }}
+    >
       <div className="marquee-container">
         <div className="marquee-content">
           <span className="marquee-text">{fullText}</span>
@@ -43,8 +46,7 @@ export default function MarqueeBanner() {
           font-size: 0.95rem;
           font-weight: 600;
           letter-spacing: 0.05em;
-          color: oklch(var(--beige-light));
-          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+          color: #142d12;
           white-space: nowrap;
           padding: 0 2rem;
         }

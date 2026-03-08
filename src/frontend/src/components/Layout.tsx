@@ -275,7 +275,10 @@ export default function Layout() {
       {!isAdminRoute && <GenderCategoryTabs />}
 
       {/* Main Content */}
-      <main className="flex-1 bg-beige-champagne">
+      <main
+        className="flex-1"
+        style={{ backgroundColor: "oklch(92% 0.04 60)" }}
+      >
         <Suspense fallback={<RouteLoadingFallback />}>
           <Outlet />
         </Suspense>
