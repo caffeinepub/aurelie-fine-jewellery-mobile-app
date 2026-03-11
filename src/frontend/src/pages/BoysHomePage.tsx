@@ -1,5 +1,5 @@
-import { useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 import CustomerPageStyleScope from "../components/CustomerPageStyleScope";
 import { Skeleton } from "../components/ui/skeleton";
 import { useGetAllCategoryHeaders } from "../hooks/useCategoryHeaderNav";
@@ -10,17 +10,27 @@ const SWIPE_DIRECTIONS = ["from-left", "from-top", "from-right", "from-bottom"];
 
 export default function BoysHomePage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { data: categoryHeaders, isLoading } = useGetAllCategoryHeaders();
   const [animated, setAnimated] = useState(false);
+  // Track mount/navigation counter for stable key on the circle container
+  const mountCounterRef = useRef(0);
+  const [mountKey, setMountKey] = useState(0);
 
   const headersMap = new Map(categoryHeaders || []);
 
-  // Trigger animation on mount / each navigation to this page
+  // Re-trigger swipe animation on every navigation to this page.
+  // We store pathname in a local const so the linter sees it consumed.
   useEffect(() => {
+    const _path = location.pathname;
+    void _path; // consumed — used as change trigger
+    mountCounterRef.current += 1;
+    setMountKey((k) => k + 1);
     setAnimated(false);
-    const timer = setTimeout(() => setAnimated(true), 50);
+    const timer = setTimeout(() => setAnimated(true), 80);
     return () => clearTimeout(timer);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   const handleCategoryClick = (categorySlug: string, redirectUrl?: string) => {
     if (redirectUrl?.trim()) {
@@ -50,8 +60,8 @@ export default function BoysHomePage() {
           </p>
         </div>
 
-        {/* Sub-categories */}
-        <div className="offwhite-surface py-12 overflow-hidden">
+        {/* Sub-categories — key forces DOM remount on every navigation */}
+        <div key={mountKey} className="offwhite-surface py-12 overflow-hidden">
           <div className="container px-4">
             {isLoading ? (
               <div
@@ -85,7 +95,6 @@ export default function BoysHomePage() {
                         handleCategoryClick(category.slug, redirectUrl)
                       }
                       className={`flex flex-col items-center gap-3 min-w-[100px] hover:opacity-80 transition-all duration-200 group shrink-0 category-circle-swipe ${direction} ${animated ? "arrived" : ""}`}
-                      style={{ transitionDelay: `${index * 0}ms` }}
                     >
                       <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gold-medium/40 group-hover:border-gold-medium transition-all duration-200 shadow-md group-hover:shadow-gold bg-beige-champagne flex items-center justify-center">
                         {imageUrl ? (

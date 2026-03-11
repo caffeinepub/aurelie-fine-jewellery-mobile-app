@@ -86,7 +86,6 @@ export default function Layout() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Navigate to home with search query as hash/param for filtering
       navigate({ to: "/", search: { q: searchQuery.trim() } as any });
       setSearchOpen(false);
       setSearchQuery("");
@@ -276,8 +275,11 @@ export default function Layout() {
 
       {/* Main Content */}
       <main
-        className="flex-1"
-        style={{ backgroundColor: "oklch(92% 0.04 60)" }}
+        className={`flex-1 ${
+          isAdminRoute ? "admin-champagne-body" : "aurora-body"
+        }`}
+        data-admin-scope={isAdminRoute ? "true" : undefined}
+        data-customer-page={!isAdminRoute ? "true" : undefined}
       >
         <Suspense fallback={<RouteLoadingFallback />}>
           <Outlet />
