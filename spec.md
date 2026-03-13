@@ -1,26 +1,24 @@
-# Aurelie Fine Jewellery
+# Aurelie Fine Jewellery — Version 101 Lock: Label Audit + For Him Animation Fix
 
 ## Current State
-- Labels, headings, and form field text use OKLCH bottle-green tokens (`--bottle-green-dark`) in CSS
-- Banner (`MarqueeBanner.tsx`) uses `oklch(var(--gold-medium))` for background and `oklch(var(--bottle-green-dark))` for text via CSS class
-- `BoysHomePage.tsx` has swipe-in animation CSS already defined in `index.css` (`.category-circle-swipe` with direction classes), and the animation is triggered via `animated` state on mount
-- `GirlsHomePage.tsx` (For Her page) has its own category circles — swipe-in animation is NOT wired there
+- Version 101 is the locked base. All changes build on top of it.
+- Labels: CSS in `index.css` already has broad selectors for `[data-customer-page="true"]` and `[data-admin-scope="true"]` targeting `label`, `h1-h6`, `span`, `p`, `th`, `legend`, `dt`, `figcaption`. Several element types are missing: `li`, `td`, `small`, `strong`, `em`, `caption`, `option`, `time`, `blockquote`.
+- For Him circles: `BoysHomePage.tsx` uses `category-circle-swipe` CSS classes + `arrived` state toggle. The parent container `<div className="offwhite-surface py-12 overflow-hidden">` has `overflow-hidden` which clips the circles before they animate in from outside the container bounds — this is why the swipe animation is invisible.
 
 ## Requested Changes (Diff)
 
 ### Add
-- For Him (`BoysHomePage.tsx`) category circles: ensure swipe-in from all 4 directions is working correctly (already partially implemented — verify and fix if needed)
+- Additional element selectors to the label color rule (`#006A4E`) in `index.css`: `li`, `td`, `small`, `strong`, `em`, `caption`, `time`, `blockquote` — for both `[data-customer-page="true"]` and `[data-admin-scope="true"]` scopes.
 
 ### Modify
-1. **Label/heading/form field text color** — update all `[data-customer-page="true"]` and `[data-admin-scope="true"]` label, h1–h6 selectors in `src/index.css` to use `#006A4E` instead of `oklch(var(--bottle-green-dark))`
-2. **Banner background** — update `MarqueeBanner.tsx` inline style from `oklch(var(--gold-medium))` to `#FFBF00`
-3. **Banner text color** — update `.marquee-text` color in `MarqueeBanner.tsx` from `oklch(var(--bottle-green-dark))` to `#142d12`
-4. **For Him category circles swipe-in** — verify `BoysHomePage.tsx` swipe animation is correctly triggering from all 4 directions simultaneously; fix any issues
+- `BoysHomePage.tsx`: Remove `overflow-hidden` from the inner category section container (`offwhite-surface py-12 overflow-hidden`). Keep `overflow-x-hidden` only on the outermost `div.min-h-screen` wrapper (already present). This allows the circles to visibly swipe in from outside bounds before arriving.
+- `index.css`: Ensure the `category-circle-swipe` transitions are correct and `overflow-hidden` is not blocking the animation at any ancestor level that could be globally applied.
 
 ### Remove
-- Nothing removed
+- Nothing removed.
 
 ## Implementation Plan
-1. In `src/frontend/src/index.css`: change all label/heading color rules under `[data-customer-page="true"]` and `[data-admin-scope="true"]` from `oklch(var(--bottle-green-dark))` to `#006A4E`
-2. In `MarqueeBanner.tsx`: change the banner wrapper `backgroundColor` style from `oklch(var(--gold-medium))` to `#FFBF00`; change `.marquee-text` color from `oklch(var(--bottle-green-dark))` to `#142d12`
-3. In `BoysHomePage.tsx`: confirm swipe animation directions cycle through `from-left`, `from-top`, `from-right`, `from-bottom` for indices 0–3; ensure `animated` state triggers correctly on mount; verify all 4 circles animate in simultaneously from their respective edges
+1. In `index.css`, extend the `[data-customer-page="true"]` label color block to also target `li`, `td`, `small`, `strong`, `em`, `caption`, `time`, `blockquote` with `color: #006A4E`.
+2. Apply the same additional selectors to the `[data-admin-scope="true"]` block.
+3. In `BoysHomePage.tsx`, remove `overflow-hidden` from the inner section container so circles can animate in from off-screen without being clipped.
+4. Validate and build.

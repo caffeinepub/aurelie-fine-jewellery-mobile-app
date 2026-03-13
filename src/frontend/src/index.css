@@ -283,7 +283,9 @@
 /* ============================================================
    Label / Text color #006A4E — full audit coverage
    Applies to section headings, category labels, form field
-   labels, card titles, filter labels, table headers, spans.
+   labels, card titles, filter labels, table headers, spans,
+   list items, table cells, inline text elements, captions,
+   time elements, and blockquotes.
    Covers both customer pages and admin pages.
    Excludes buttons (own scope), gold-text, white-text elements.
    ============================================================ */
@@ -305,9 +307,20 @@
     [class*="text-gold"]
   ),
 [data-customer-page="true"] th,
+[data-customer-page="true"] td,
 [data-customer-page="true"] legend,
 [data-customer-page="true"] dt,
-[data-customer-page="true"] figcaption {
+[data-customer-page="true"] figcaption,
+[data-customer-page="true"] caption,
+[data-customer-page="true"] time,
+[data-customer-page="true"] blockquote,
+[data-customer-page="true"] small,
+[data-customer-page="true"] strong,
+[data-customer-page="true"] em,
+[data-customer-page="true"]
+  li:not([class*="text-white"]):not([class*="text-gold"]):not(
+    [class*="text-muted"]
+  ) {
   color: #006a4e;
 }
 
@@ -328,8 +341,19 @@
     [class*="text-gold"]
   ),
 [data-admin-scope="true"] th,
+[data-admin-scope="true"] td,
 [data-admin-scope="true"] legend,
-[data-admin-scope="true"] dt {
+[data-admin-scope="true"] dt,
+[data-admin-scope="true"] caption,
+[data-admin-scope="true"] time,
+[data-admin-scope="true"] blockquote,
+[data-admin-scope="true"] small,
+[data-admin-scope="true"] strong,
+[data-admin-scope="true"] em,
+[data-admin-scope="true"]
+  li:not([class*="text-white"]):not([class*="text-gold"]):not(
+    [class*="text-muted"]
+  ) {
   color: #006a4e;
 }
 

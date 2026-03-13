@@ -60,8 +60,9 @@ export default function BoysHomePage() {
           </p>
         </div>
 
-        {/* Sub-categories — key forces DOM remount on every navigation */}
-        <div key={mountKey} className="offwhite-surface py-12 overflow-hidden">
+        {/* Sub-categories — key forces DOM remount on every navigation.
+            overflow-hidden removed so circles can animate in from outside bounds */}
+        <div key={mountKey} className="offwhite-surface py-12">
           <div className="container px-4">
             {isLoading ? (
               <div
