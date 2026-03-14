@@ -1,24 +1,23 @@
-# Aurelie Fine Jewellery — Version 101 Lock: Label Audit + For Him Animation Fix
+# Aurelie Fine Jewellery
 
 ## Current State
-- Version 101 is the locked base. All changes build on top of it.
-- Labels: CSS in `index.css` already has broad selectors for `[data-customer-page="true"]` and `[data-admin-scope="true"]` targeting `label`, `h1-h6`, `span`, `p`, `th`, `legend`, `dt`, `figcaption`. Several element types are missing: `li`, `td`, `small`, `strong`, `em`, `caption`, `option`, `time`, `blockquote`.
-- For Him circles: `BoysHomePage.tsx` uses `category-circle-swipe` CSS classes + `arrived` state toggle. The parent container `<div className="offwhite-surface py-12 overflow-hidden">` has `overflow-hidden` which clips the circles before they animate in from outside the container bounds — this is why the swipe animation is invisible.
+The app applies `aurora-body` (animated champagne beige #F7E7CE) to customer-facing pages and `admin-champagne-body` (static lighter #fdf5e8) to admin pages. Several admin pages also have `bg-background` overrides on their root divs, preventing the layout background from showing through.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Additional element selectors to the label color rule (`#006A4E`) in `index.css`: `li`, `td`, `small`, `strong`, `em`, `caption`, `time`, `blockquote` — for both `[data-customer-page="true"]` and `[data-admin-scope="true"]` scopes.
+- Nothing new.
 
 ### Modify
-- `BoysHomePage.tsx`: Remove `overflow-hidden` from the inner category section container (`offwhite-surface py-12 overflow-hidden`). Keep `overflow-x-hidden` only on the outermost `div.min-h-screen` wrapper (already present). This allows the circles to visibly swipe in from outside bounds before arriving.
-- `index.css`: Ensure the `category-circle-swipe` transitions are correct and `overflow-hidden` is not blocking the animation at any ancestor level that could be globally applied.
+- `index.css`: Update `.admin-champagne-body` to use the same aurora drift animation as customer pages, anchored to `#F7E7CE`.
+- `Layout.tsx`: Apply `aurora-body` class to the `<main>` element for ALL routes (admin and customer), removing the conditional.
+- `AdminDashboardPage.tsx`, `AdminProductsPage.tsx`: Replace `bg-background` on root/wrapper divs with `bg-transparent` so the layout aurora body shows through.
 
 ### Remove
-- Nothing removed.
+- The distinction between `admin-champagne-body` and `aurora-body` — admin pages will now use the same aurora body.
 
 ## Implementation Plan
-1. In `index.css`, extend the `[data-customer-page="true"]` label color block to also target `li`, `td`, `small`, `strong`, `em`, `caption`, `time`, `blockquote` with `color: #006A4E`.
-2. Apply the same additional selectors to the `[data-admin-scope="true"]` block.
-3. In `BoysHomePage.tsx`, remove `overflow-hidden` from the inner section container so circles can animate in from off-screen without being clipped.
-4. Validate and build.
+1. Update `.admin-champagne-body` in `index.css` to match `aurora-body` with `#F7E7CE` tones.
+2. In `Layout.tsx`, remove the conditional on `<main>` className — always use `aurora-body`.
+3. In `AdminDashboardPage.tsx`, replace `bg-background` on outer divs with `bg-transparent`.
+4. In `AdminProductsPage.tsx`, replace `bg-background` on outer divs with `bg-transparent`.

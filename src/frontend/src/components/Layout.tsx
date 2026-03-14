@@ -275,9 +275,7 @@ export default function Layout() {
 
       {/* Main Content */}
       <main
-        className={`flex-1 ${
-          isAdminRoute ? "admin-champagne-body" : "aurora-body"
-        }`}
+        className="flex-1 aurora-body"
         data-admin-scope={isAdminRoute ? "true" : undefined}
         data-customer-page={!isAdminRoute ? "true" : undefined}
       >

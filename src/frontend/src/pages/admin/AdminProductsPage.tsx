@@ -22,7 +22,7 @@ export default function AdminProductsPage() {
 
   if (!identity || (!adminLoading && !isAdmin)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <div className="text-center">
           <Shield className="w-16 h-16 text-destructive mx-auto mb-4" />
           <h2 className="text-2xl font-serif text-foreground mb-2">
@@ -38,14 +38,14 @@ export default function AdminProductsPage() {
 
   if (adminLoading || actorFetching) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-transparent">
       <div className="border-b border-gold/20 bg-card px-4 py-4">
         <div className="max-w-7xl mx-auto flex items-center gap-4">
           <button

@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* Base OKLCH color system */
-    --background: 92% 0.04 60;
+    --background: 93% 0.042 68;
     --foreground: 20% 0.02 280;
     --card: 98% 0.01 120;
     --card-foreground: 20% 0.02 280;
@@ -89,6 +89,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: #f7e7ce;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
@@ -526,7 +527,7 @@
 /* ============================================================
    Aurora Drift Animation — Main Body Background
    Uses clearly visible champagne beige tones (#F7E7CE base).
-   Applied to all customer-facing pages via .aurora-body.
+   Applied to all pages (customer and admin) via .aurora-body.
    ============================================================ */
 
 @keyframes aurora-drift {
@@ -577,9 +578,25 @@
 }
 
 /* ============================================================
-   Admin Body — Lighter champagne beige
-   Distinctly lighter than customer aurora but still warm.
+   Admin Body — same aurora drift as customer pages
    ============================================================ */
 .admin-champagne-body {
-  background-color: #fdf5e8;
+  background: radial-gradient(
+      ellipse at 60% 40%,
+      #fff8ee 0%,
+      #fdf3e3 30%,
+      transparent 70%
+    ),
+    linear-gradient(
+      135deg,
+      #f7e7ce 0%,
+      #fdf3e3 20%,
+      #efd9b4 35%,
+      #fff8ee 50%,
+      #f9ebd5 65%,
+      #f0d9b8 80%,
+      #f7e7ce 100%
+    );
+  background-size: 250% 250%, 350% 350%;
+  animation: aurora-drift 20s ease-in-out infinite;
 }

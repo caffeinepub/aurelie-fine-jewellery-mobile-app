@@ -31,7 +31,7 @@ export default function AdminDashboardPage() {
 
   if (!identity) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <div className="text-center">
           <Shield className="w-16 h-16 text-gold mx-auto mb-4" />
           <h2 className="text-2xl font-serif text-foreground mb-2">
@@ -47,7 +47,7 @@ export default function AdminDashboardPage() {
 
   if (adminLoading || actorFetching) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-muted-foreground">Verifying access...</p>
@@ -58,7 +58,7 @@ export default function AdminDashboardPage() {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <div className="text-center">
           <Shield className="w-16 h-16 text-destructive mx-auto mb-4" />
           <h2 className="text-2xl font-serif text-foreground mb-2">
@@ -125,7 +125,7 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
+    <div className="min-h-screen bg-transparent py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
