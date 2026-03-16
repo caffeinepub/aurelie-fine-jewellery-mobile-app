@@ -65,10 +65,12 @@ export default function NewArrivalsSection() {
         </div>
 
         <div className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory">
-          {products.map((product) => {
+          {products.map((product, index) => {
             const firstImage =
               product.media.images.length > 0 ? product.media.images[0] : null;
             const imageUrl = firstImage ? firstImage.getDirectURL() : null;
+            // Stagger shimmer animation delay per card
+            const shimmerDelay = `${Math.min(index * 0.25, 2.0)}s`;
 
             return (
               <button
@@ -79,6 +81,7 @@ export default function NewArrivalsSection() {
                   width: "calc(33.333% - 8px)",
                   minWidth: "140px",
                   maxWidth: "200px",
+                  animationDelay: shimmerDelay,
                 }}
                 onClick={() => navigate({ to: `/product/${product.id}` })}
               >

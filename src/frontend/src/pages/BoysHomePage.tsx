@@ -20,7 +20,6 @@ export default function BoysHomePage() {
   const headersMap = new Map(categoryHeaders || []);
 
   // Re-trigger swipe animation on every navigation to this page.
-  // We store pathname in a local const so the linter sees it consumed.
   useEffect(() => {
     const _path = location.pathname;
     void _path; // consumed — used as change trigger
@@ -49,7 +48,9 @@ export default function BoysHomePage() {
 
   return (
     <CustomerPageStyleScope>
-      <div className="min-h-screen overflow-x-hidden">
+      {/* overflow-x-hidden removed from outermost wrapper so circle swipe
+          animations starting off-screen are not clipped */}
+      <div className="min-h-screen">
         {/* Hero Header */}
         <div className="offwhite-surface py-12 text-center border-b border-gold-medium/20">
           <h1 className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-3 text-bottle-green-dark">
@@ -60,9 +61,11 @@ export default function BoysHomePage() {
           </p>
         </div>
 
-        {/* Sub-categories — key forces DOM remount on every navigation.
-            overflow-hidden removed so circles can animate in from outside bounds */}
-        <div key={mountKey} className="offwhite-surface py-12">
+        {/* Sub-categories — key forces DOM remount on every navigation */}
+        <div
+          key={mountKey}
+          className="offwhite-surface py-12 overflow-x-hidden"
+        >
           <div className="container px-4">
             {isLoading ? (
               <div

@@ -123,6 +123,9 @@ export default function MasonryProductGrid({
         ];
         const aspectClass = aspectVariants[index % aspectVariants.length];
 
+        // Stagger shimmer animation: cap at 2s so late cards still shimmer quickly
+        const shimmerDelay = `${Math.min(index * 0.25, 2.0)}s`;
+
         return (
           <div
             key={product.id}
@@ -131,7 +134,7 @@ export default function MasonryProductGrid({
             }}
             data-index={index}
             className={`masonry-card mb-6 card-entrance ${direction} ${isVisible ? "arrived" : ""} product-card-shimmer`}
-            style={{ breakInside: "avoid" }}
+            style={{ breakInside: "avoid", animationDelay: shimmerDelay }}
           >
             <Card className="group overflow-hidden offwhite-surface hover:shadow-gold transition-all duration-300 border-0">
               <button

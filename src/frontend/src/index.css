@@ -525,78 +525,59 @@
 }
 
 /* ============================================================
-   Aurora Drift Animation — Main Body Background
-   Uses clearly visible champagne beige tones (#F7E7CE base).
-   Applied to all pages (customer and admin) via .aurora-body.
+   Body Background — static champagne beige #F7E7CE
    ============================================================ */
 
-@keyframes aurora-drift {
-  0% {
-    background-position: 0% 0%, 100% 100%;
-  }
-  25% {
-    background-position: 60% 20%, 40% 80%;
-  }
-  50% {
-    background-position: 100% 60%, 0% 40%;
-  }
-  75% {
-    background-position: 40% 100%, 60% 0%;
-  }
-  100% {
-    background-position: 0% 0%, 100% 100%;
-  }
-}
-
 .aurora-body {
-  background: radial-gradient(
-      ellipse at 60% 40%,
-      #fff8ee 0%,
-      #fdf3e3 30%,
-      transparent 70%
-    ),
-    linear-gradient(
-      135deg,
-      #f7e7ce 0%,
-      #fdf3e3 20%,
-      #efd9b4 35%,
-      #fff8ee 50%,
-      #f9ebd5 65%,
-      #f0d9b8 80%,
-      #f7e7ce 100%
-    );
-  background-size: 250% 250%, 350% 350%;
-  animation: aurora-drift 20s ease-in-out infinite;
+  background-color: #f7e7ce;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .aurora-body {
-    animation: none;
-    background: #f7e7ce;
-    background-size: auto;
-  }
+.admin-champagne-body {
+  background-color: #f7e7ce;
 }
 
 /* ============================================================
-   Admin Body — same aurora drift as customer pages
+   Label Color Audit Extension — #006A4E
+   Covers: select/option labels, filter chip text (spans inside
+   filter components), outline button text & border color.
+   Excludes buttons with gold/admin/checkout background overrides.
    ============================================================ */
-.admin-champagne-body {
-  background: radial-gradient(
-      ellipse at 60% 40%,
-      #fff8ee 0%,
-      #fdf3e3 30%,
-      transparent 70%
-    ),
-    linear-gradient(
-      135deg,
-      #f7e7ce 0%,
-      #fdf3e3 20%,
-      #efd9b4 35%,
-      #fff8ee 50%,
-      #f9ebd5 65%,
-      #f0d9b8 80%,
-      #f7e7ce 100%
-    );
-  background-size: 250% 250%, 350% 350%;
-  animation: aurora-drift 20s ease-in-out infinite;
+
+/* select and option labels */
+[data-customer-page="true"] select,
+[data-customer-page="true"] option,
+[data-admin-scope="true"] select,
+[data-admin-scope="true"] option {
+  color: #006a4e;
+}
+
+/* Filter chip text — spans inside filter/badge UI elements */
+[data-customer-page="true"] [class*="filter"] span,
+[data-customer-page="true"] [class*="chip"] span,
+[data-admin-scope="true"] [class*="filter"] span,
+[data-admin-scope="true"] [class*="chip"] span {
+  color: #006a4e;
+}
+
+/* Outline/ghost buttons — text and border color.
+   Only applies when button has no filled background class.
+   Does NOT override admin dark-green buttons, shimmer-gold, or customer-cta-btn. */
+[data-customer-page="true"]
+  button[class*="outline"]:not(.btn-shimmer-gold):not(.customer-cta-btn):not(
+    [class*="bg-gold"]
+  ):not([class*="bg-bottle"]),
+[data-customer-page="true"]
+  button[class*="ghost"]:not(.btn-shimmer-gold):not(.customer-cta-btn):not(
+    [class*="bg-gold"]
+  ):not([class*="bg-bottle"]) {
+  color: #006a4e;
+  border-color: #006a4e;
+}
+
+[data-admin-scope="true"]
+  button[class*="outline"]:not(.btn-shimmer-gold):not(.customer-cta-btn):not(
+    [class*="bg-gold"]
+  ):not([data-no-admin-style]):not(.header-brand-btn) {
+  color: #006a4e;
+  border-color: #006a4e;
 }

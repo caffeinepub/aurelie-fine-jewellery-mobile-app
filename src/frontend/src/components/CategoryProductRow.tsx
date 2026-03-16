@@ -77,8 +77,10 @@ export default function CategoryProductRow({
           display: none;
         }
       `}</style>
-      {products.map((product) => {
+      {products.map((product, index) => {
         const imageUrl = product.media.images[0]?.getDirectURL() ?? null;
+        // Stagger shimmer animation delay per card
+        const shimmerDelay = `${Math.min(index * 0.25, 2.0)}s`;
 
         return (
           <button
@@ -94,6 +96,7 @@ export default function CategoryProductRow({
             style={{
               width: "calc((100% - 1.5rem) / 3)",
               scrollSnapAlign: "start",
+              animationDelay: shimmerDelay,
             }}
           >
             {/* Square image */}
