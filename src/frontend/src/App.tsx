@@ -37,6 +37,9 @@ const AdminBannerPage = lazy(() => import("./pages/admin/AdminBannerPage"));
 const AdminCategoriesPage = lazy(
   () => import("./pages/admin/AdminCategoriesPage"),
 );
+const PageVideosAdminPage = lazy(
+  () => import("./pages/admin/PageVideosAdminPage"),
+);
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
 const PaymentFailurePage = lazy(() => import("./pages/PaymentFailurePage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
@@ -275,6 +278,16 @@ const adminCategoriesRoute = createRoute({
   ),
 });
 
+const adminPageVideosRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin/page-videos",
+  component: () => (
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <PageVideosAdminPage />
+    </Suspense>
+  ),
+});
+
 const paymentSuccessRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/payment-success",
@@ -447,6 +460,7 @@ const routeTree = rootRoute.addChildren([
   adminCarouselRoute,
   adminBannerRoute,
   adminCategoriesRoute,
+  adminPageVideosRoute,
   paymentSuccessRoute,
   paymentFailureRoute,
   privacyPolicyRoute,

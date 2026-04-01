@@ -11,7 +11,6 @@ interface MasonryProductGridProps {
   onBuyNow: (product: Product) => void;
 }
 
-// Directions for staggered entrance animations
 const DIRECTIONS = [
   "from-left",
   "from-right",
@@ -46,7 +45,6 @@ export default function MasonryProductGrid({
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    // Reset visible cards when products change
     setVisibleCards(new Set());
     cardRefs.current = cardRefs.current.slice(0, products.length);
   }, [products]);
@@ -64,7 +62,7 @@ export default function MasonryProductGrid({
               entry.target.getAttribute("data-index") || "0",
               10,
             );
-            // Stagger the animation by index
+            // Stagger card entrance by index
             setTimeout(() => {
               setVisibleCards((prev) => new Set([...prev, index]));
             }, index * 80);
@@ -82,7 +80,7 @@ export default function MasonryProductGrid({
     return () => {
       observerRef.current?.disconnect();
     };
-  }); // runs after every render — safe because it only reads refs
+  });
 
   if (products.length === 0) {
     return (
@@ -114,7 +112,6 @@ export default function MasonryProductGrid({
             ? product.media.images[0].getDirectURL()
             : null;
 
-        // Vary image aspect ratios for masonry effect
         const aspectVariants = [
           "aspect-square",
           "aspect-[3/4]",
@@ -123,8 +120,9 @@ export default function MasonryProductGrid({
         ];
         const aspectClass = aspectVariants[index % aspectVariants.length];
 
-        // Stagger shimmer animation: cap at 2s so late cards still shimmer quickly
-        const shimmerDelay = `${Math.min(index * 0.25, 2.0)}s`;
+        // Cascading wave: stagger shimmer delay so cards animate like a wave
+        // Cap at 3s so even late cards still complete a cycle quickly
+        const shimmerDelay = `${Math.min(index * 0.22, 3.0)}s`;
 
         return (
           <div
@@ -134,7 +132,11 @@ export default function MasonryProductGrid({
             }}
             data-index={index}
             className={`masonry-card mb-6 card-entrance ${direction} ${isVisible ? "arrived" : ""} product-card-shimmer`}
-            style={{ breakInside: "avoid", animationDelay: shimmerDelay }}
+            style={{
+              breakInside: "avoid",
+              // Inline animation-delay drives the cascading wave on the shimmer border
+              animationDelay: shimmerDelay,
+            }}
           >
             <Card className="group overflow-hidden offwhite-surface hover:shadow-gold transition-all duration-300 border-0">
               <button
@@ -154,7 +156,6 @@ export default function MasonryProductGrid({
                     <Eye className="h-12 w-12 text-muted-foreground" />
                   </div>
                 )}
-                {/* New badge for recently added */}
                 {Number(product.createdAt) > 0 && (
                   <div className="absolute top-2 left-2">
                     <span className="bg-gold-medium text-white text-xs px-2 py-0.5 rounded-full font-medium">

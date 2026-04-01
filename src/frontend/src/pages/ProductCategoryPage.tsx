@@ -89,7 +89,10 @@ export default function ProductCategoryPage() {
         {/* Category Header */}
         <div className="offwhite-surface py-16">
           <div className="container px-4 text-center">
-            <h1 className="font-serif text-5xl font-bold tracking-tight mb-4">
+            <h1
+              className="font-serif text-5xl font-bold tracking-tight mb-4"
+              style={{ color: "#B5860D" }}
+            >
               {category?.title}
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

@@ -15,7 +15,10 @@ export default function HomeCategoryCarouselsSection() {
             <div key={category.slug} className="space-y-6">
               {/* Category Title */}
               <div className="text-center">
-                <h3 className="text-2xl font-serif font-semibold text-gold-dark mb-2">
+                <h3
+                  className="text-2xl font-serif font-semibold mb-2"
+                  style={{ color: "#B5860D" }}
+                >
                   {category.title}
                 </h3>
                 <p className="text-bottle-green-medium max-w-2xl mx-auto">

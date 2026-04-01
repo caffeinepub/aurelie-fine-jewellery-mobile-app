@@ -126,11 +126,36 @@ export default function Layout() {
             onClick={() => navigate({ to: "/" })}
             className="header-brand-btn flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
+            {/* Flower symbol */}
             <img
-              src="/assets/generated/aurelie-lockup-transparent.dim_1000x320.png"
-              alt="Aurelie Fine Jewellery"
-              className="h-10 w-auto"
+              src="/assets/generated/aurelie-flower-logo-transparent.dim_200x200.png"
+              alt=""
+              aria-hidden="true"
+              className="h-9 w-9 object-contain flex-shrink-0"
             />
+            {/* Brand name + subtitle */}
+            <div className="flex flex-col leading-tight">
+              <span
+                className="gold-text font-serif text-xl tracking-widest uppercase"
+                style={{
+                  fontFamily: "'Didot', 'Times New Roman', serif",
+                  letterSpacing: "0.12em",
+                }}
+              >
+                Aurelie
+              </span>
+              <span
+                style={{
+                  fontFamily: "'Didot', 'Times New Roman', serif",
+                  letterSpacing: "0.18em",
+                  fontSize: "0.6rem",
+                  color: "#B5860D",
+                  textTransform: "uppercase",
+                }}
+              >
+                Fine Jewellery
+              </span>
+            </div>
           </button>
 
           {/* Navigation */}

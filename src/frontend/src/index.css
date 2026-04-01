@@ -86,6 +86,21 @@
 @layer base {
   * {
     @apply border-border;
+    /* Hide scrollbars globally while preserving scroll functionality */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  *::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+  }
+  html,
+  body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
   }
   body {
     @apply bg-background text-foreground;
@@ -189,14 +204,12 @@
    simultaneously slide into their final position on page load.
    ============================================================ */
 
-/* Base state: hidden, positioned off-screen */
 .category-circle-swipe {
   opacity: 0;
   transition: transform 0.7s cubic-bezier(0.34, 1.3, 0.64, 1), opacity 0.6s
     ease-out;
 }
 
-/* Direction-specific starting transforms */
 .category-circle-swipe.from-left {
   transform: translateX(-140px);
 }
@@ -213,10 +226,51 @@
   transform: translateY(140px);
 }
 
-/* Arrived state: visible, in final position */
 .category-circle-swipe.arrived {
   opacity: 1 !important;
   transform: translate(0, 0) !important;
+}
+
+/* ============================================================
+   Category Circle Shimmer Border — staggered per circle
+   Applied to the inner circle div via .circle-shimmer-border
+   ============================================================ */
+
+@keyframes circle-shimmer-gold {
+  0%,
+  100% {
+    box-shadow: 0 0 0 1.5px oklch(95% 0.02 60 / 0.85), 0 0 6px 1px
+      oklch(65% 0.15 80 / 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 1.5px oklch(95% 0.02 60 / 0.95), 0 0 10px 3px
+      oklch(65% 0.15 80 / 0.5), 0 0 20px 6px oklch(75% 0.12 80 / 0.25);
+  }
+}
+
+.circle-shimmer-border {
+  animation: circle-shimmer-gold 3.5s ease-in-out infinite;
+  border: 1.5px solid oklch(95% 0.02 60 / 0.85) !important;
+}
+
+/* Stagger delays for up to 6 circles */
+.circle-shimmer-border:nth-child(1) {
+  animation-delay: 0s;
+}
+.circle-shimmer-border:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.circle-shimmer-border:nth-child(3) {
+  animation-delay: 0.8s;
+}
+.circle-shimmer-border:nth-child(4) {
+  animation-delay: 1.2s;
+}
+.circle-shimmer-border:nth-child(5) {
+  animation-delay: 1.6s;
+}
+.circle-shimmer-border:nth-child(6) {
+  animation-delay: 2.0s;
 }
 
 /* ============================================================
@@ -282,13 +336,11 @@
 }
 
 /* ============================================================
-   Label / Text color #006A4E — full audit coverage
-   Applies to section headings, category labels, form field
-   labels, card titles, filter labels, table headers, spans,
-   list items, table cells, inline text elements, captions,
-   time elements, and blockquotes.
+   Label / Text color #033500 — section headings, category
+   labels, form field labels, card titles, filter labels,
+   table cells, inline text elements.
    Covers both customer pages and admin pages.
-   Excludes buttons (own scope), gold-text, white-text elements.
+   Excludes buttons (own scope), gold-text, white-text.
    ============================================================ */
 
 /* Customer pages */
@@ -322,7 +374,7 @@
   li:not([class*="text-white"]):not([class*="text-gold"]):not(
     [class*="text-muted"]
   ) {
-  color: #006a4e;
+  color: #033500;
 }
 
 /* Admin pages */
@@ -355,7 +407,7 @@
   li:not([class*="text-white"]):not([class*="text-gold"]):not(
     [class*="text-muted"]
   ) {
-  color: #006a4e;
+  color: #033500;
 }
 
 /* Footer Scoped Styles */
@@ -378,7 +430,7 @@
 
 /* Customer Page body background */
 [data-customer-page="true"] {
-  color: #006a4e;
+  color: #033500;
 }
 
 /* Shimmering Gold Button */
@@ -486,7 +538,7 @@
 }
 
 /* ============================================================
-   Product Card Shimmer Gold Border — 1.5px
+   Product Card Shimmer Gold Border — 1.5px, staggered
    ============================================================ */
 
 @keyframes shimmer-gold-border {
@@ -537,31 +589,27 @@
 }
 
 /* ============================================================
-   Label Color Audit Extension — #006A4E
-   Covers: select/option labels, filter chip text (spans inside
-   filter components), outline button text & border color.
-   Excludes buttons with gold/admin/checkout background overrides.
+   Button borders/text, selects, filter chips — #B5860D
+   (antique gold accent — separate from label #033500)
    ============================================================ */
 
-/* select and option labels */
+/* select and option elements */
 [data-customer-page="true"] select,
 [data-customer-page="true"] option,
 [data-admin-scope="true"] select,
 [data-admin-scope="true"] option {
-  color: #006a4e;
+  color: #b5860d;
 }
 
-/* Filter chip text — spans inside filter/badge UI elements */
+/* Filter chip / badge text inside filter UI elements */
 [data-customer-page="true"] [class*="filter"] span,
 [data-customer-page="true"] [class*="chip"] span,
 [data-admin-scope="true"] [class*="filter"] span,
 [data-admin-scope="true"] [class*="chip"] span {
-  color: #006a4e;
+  color: #b5860d;
 }
 
-/* Outline/ghost buttons — text and border color.
-   Only applies when button has no filled background class.
-   Does NOT override admin dark-green buttons, shimmer-gold, or customer-cta-btn. */
+/* Outline / ghost buttons — text and border */
 [data-customer-page="true"]
   button[class*="outline"]:not(.btn-shimmer-gold):not(.customer-cta-btn):not(
     [class*="bg-gold"]
@@ -570,14 +618,14 @@
   button[class*="ghost"]:not(.btn-shimmer-gold):not(.customer-cta-btn):not(
     [class*="bg-gold"]
   ):not([class*="bg-bottle"]) {
-  color: #006a4e;
-  border-color: #006a4e;
+  color: #b5860d;
+  border-color: #b5860d;
 }
 
 [data-admin-scope="true"]
   button[class*="outline"]:not(.btn-shimmer-gold):not(.customer-cta-btn):not(
     [class*="bg-gold"]
   ):not([data-no-admin-style]):not(.header-brand-btn) {
-  color: #006a4e;
-  border-color: #006a4e;
+  color: #b5860d;
+  border-color: #b5860d;
 }

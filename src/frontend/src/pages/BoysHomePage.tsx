@@ -3,26 +3,53 @@ import { useEffect, useRef, useState } from "react";
 import CustomerPageStyleScope from "../components/CustomerPageStyleScope";
 import { Skeleton } from "../components/ui/skeleton";
 import { useGetAllCategoryHeaders } from "../hooks/useCategoryHeaderNav";
+import { useGetAllCategories } from "../hooks/useQueries";
 import { BOYS_CATEGORIES } from "../utils/productCategories";
 
-// Directions for each circle index (cycles through all 4 edges)
+// Distribute circles across all 4 edges for the swipe-in effect
 const SWIPE_DIRECTIONS = ["from-left", "from-top", "from-right", "from-bottom"];
 
 export default function BoysHomePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { data: categoryHeaders, isLoading } = useGetAllCategoryHeaders();
+  const { data: allCategories } = useGetAllCategories();
   const [animated, setAnimated] = useState(false);
-  // Track mount/navigation counter for stable key on the circle container
   const mountCounterRef = useRef(0);
   const [mountKey, setMountKey] = useState(0);
+  const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
 
   const headersMap = new Map(categoryHeaders || []);
+
+  // Build a map of slug -> video URL from allCategories
+  const categoryVideoMap = new Map<string, string>();
+  if (allCategories) {
+    for (const cat of allCategories) {
+      if (cat.video) {
+        // Backend category name matches slug
+        const videoUrl = cat.video.getDirectURL();
+        categoryVideoMap.set(cat.name, videoUrl);
+      }
+    }
+  }
+
+  // Determine active video: hovered category's video, or first boys category with a video
+  const activeVideoUrl = (() => {
+    if (hoveredSlug && categoryVideoMap.has(hoveredSlug)) {
+      return categoryVideoMap.get(hoveredSlug);
+    }
+    for (const cat of BOYS_CATEGORIES) {
+      if (categoryVideoMap.has(cat.slug)) {
+        return categoryVideoMap.get(cat.slug);
+      }
+    }
+    return undefined;
+  })();
 
   // Re-trigger swipe animation on every navigation to this page.
   useEffect(() => {
     const _path = location.pathname;
-    void _path; // consumed — used as change trigger
+    void _path;
     mountCounterRef.current += 1;
     setMountKey((k) => k + 1);
     setAnimated(false);
@@ -48,11 +75,29 @@ export default function BoysHomePage() {
 
   return (
     <CustomerPageStyleScope>
-      {/* overflow-x-hidden removed from outermost wrapper so circle swipe
-          animations starting off-screen are not clipped */}
-      <div className="min-h-screen">
+      {/* Fullscreen background video layer */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        {activeVideoUrl && (
+          // biome-ignore lint/a11y/useMediaCaption: background decorative video
+          <video
+            key={activeVideoUrl}
+            src={activeVideoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+          />
+        )}
+        {/* Semi-transparent overlay so circles remain readable */}
+        <div className="absolute inset-0 bg-black/30" />
+      </div>
+
+      {/* No overflow-hidden on the outermost wrapper — circles must animate
+          from outside the viewport without being clipped */}
+      <div className="min-h-screen relative z-10">
         {/* Hero Header */}
-        <div className="offwhite-surface py-12 text-center border-b border-gold-medium/20">
+        <div className="offwhite-surface py-12 text-center border-b border-gold-medium/20 bg-[#F7E7CE]/80 backdrop-blur-sm">
           <h1 className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-3 text-bottle-green-dark">
             For Him
           </h1>
@@ -61,11 +106,9 @@ export default function BoysHomePage() {
           </p>
         </div>
 
-        {/* Sub-categories — key forces DOM remount on every navigation */}
-        <div
-          key={mountKey}
-          className="offwhite-surface py-12 overflow-x-hidden"
-        >
+        {/* Sub-categories — key forces DOM remount on every navigation.
+            overflow: visible so circles can enter from outside container edges */}
+        <div key={mountKey} className="py-12" style={{ overflow: "visible" }}>
           <div className="container px-4">
             {isLoading ? (
               <div
@@ -90,6 +133,8 @@ export default function BoysHomePage() {
                   const redirectUrl = header?.redirectUrl;
                   const direction =
                     SWIPE_DIRECTIONS[index % SWIPE_DIRECTIONS.length];
+                  // Stagger shimmer delay per circle
+                  const shimmerDelay = `${index * 0.4}s`;
 
                   return (
                     <button
@@ -98,9 +143,14 @@ export default function BoysHomePage() {
                       onClick={() =>
                         handleCategoryClick(category.slug, redirectUrl)
                       }
+                      onMouseEnter={() => setHoveredSlug(category.slug)}
+                      onMouseLeave={() => setHoveredSlug(null)}
                       className={`flex flex-col items-center gap-3 min-w-[100px] hover:opacity-80 transition-all duration-200 group shrink-0 category-circle-swipe ${direction} ${animated ? "arrived" : ""}`}
                     >
-                      <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gold-medium/40 group-hover:border-gold-medium transition-all duration-200 shadow-md group-hover:shadow-gold bg-beige-champagne flex items-center justify-center">
+                      <div
+                        className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gold-medium/40 group-hover:border-gold-medium transition-all duration-200 shadow-md group-hover:shadow-gold bg-beige-champagne flex items-center justify-center circle-shimmer-border"
+                        style={{ animationDelay: shimmerDelay }}
+                      >
                         {imageUrl ? (
                           <img
                             src={imageUrl}
@@ -115,7 +165,7 @@ export default function BoysHomePage() {
                           </div>
                         )}
                       </div>
-                      <span className="text-sm font-medium text-bottle-green-dark tracking-wide text-center font-serif">
+                      <span className="text-sm font-medium text-white drop-shadow tracking-wide text-center font-serif">
                         {category.title}
                       </span>
                     </button>
@@ -128,14 +178,14 @@ export default function BoysHomePage() {
 
         {/* Decorative divider */}
         <div className="flex items-center justify-center py-6">
-          <div className="h-px w-24 bg-gold-medium/40" />
+          <div className="h-px w-24 bg-gold-medium/60" />
           <div className="mx-4 text-gold-medium text-lg">✦</div>
-          <div className="h-px w-24 bg-gold-medium/40" />
+          <div className="h-px w-24 bg-gold-medium/60" />
         </div>
 
         {/* Tagline */}
         <div className="text-center pb-12 px-4">
-          <p className="font-serif text-bottle-green-medium italic text-base">
+          <p className="font-serif text-white drop-shadow italic text-base">
             Select a category to explore our exclusive collection
           </p>
         </div>

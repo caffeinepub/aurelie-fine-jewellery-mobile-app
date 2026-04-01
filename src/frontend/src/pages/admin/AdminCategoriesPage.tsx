@@ -3,9 +3,26 @@ import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Shield } from "lucide-react";
 import React from "react";
 import BoysHeaderCategoryNavManagement from "../../components/admin/BoysHeaderCategoryNavManagement";
+import CategoryCarouselManagement from "../../components/admin/CategoryCarouselManagement";
 import HeaderCategoryNavManagement from "../../components/admin/HeaderCategoryNavManagement";
 import { useActor } from "../../hooks/useActor";
 import { useInternetIdentity } from "../../hooks/useInternetIdentity";
+
+const GIRL_CATEGORIES = [
+  { slug: "rings", label: "Rings" },
+  { slug: "earrings", label: "Earrings" },
+  { slug: "necklace", label: "Necklace" },
+  { slug: "anklets", label: "Anklets" },
+  { slug: "bridal-jewellery", label: "Bridal Jewellery" },
+  { slug: "lab-diamonds-jewellery", label: "Lab Diamonds Jewellery" },
+];
+
+const BOY_CATEGORIES = [
+  { slug: "boys-chains", label: "Chains (For Him)" },
+  { slug: "boys-bracelet", label: "Bracelet (For Him)" },
+  { slug: "boys-rings", label: "Rings (For Him)" },
+  { slug: "boys-lab-diamonds", label: "Lab Diamonds (For Him)" },
+];
 
 export default function AdminCategoriesPage() {
   const navigate = useNavigate();
@@ -64,17 +81,60 @@ export default function AdminCategoriesPage() {
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-4 py-6 space-y-10">
+        {/* Category Navigation */}
         <div>
           <h2 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-gold/20">
-            Girls Category Navigation
+            For Her — Category Navigation
           </h2>
           <HeaderCategoryNavManagement />
         </div>
         <div>
           <h2 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-gold/20">
-            Boys Category Navigation
+            For Him — Category Navigation
           </h2>
           <BoysHeaderCategoryNavManagement />
+        </div>
+
+        {/* Product Category Carousels — For Her */}
+        <div>
+          <h2 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-gold/20">
+            For Her — Product Category Carousels
+          </h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            Manage the 16:9 carousel images displayed on the homepage for each
+            For Her product category.
+          </p>
+          <div className="space-y-6">
+            {GIRL_CATEGORIES.map((cat) => (
+              <CategoryCarouselManagement
+                key={cat.slug}
+                categorySlug={cat.slug}
+                carouselIndex={1}
+                title={`${cat.label} — Carousel`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Product Category Carousels — For Him */}
+        <div>
+          <h2 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-gold/20">
+            For Him — Product Category Carousels
+          </h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            Manage the 16:9 carousel images displayed on the homepage for each
+            For Him product category.
+          </p>
+          <div className="space-y-6">
+            {BOY_CATEGORIES.map((cat) => (
+              <CategoryCarouselManagement
+                key={cat.slug}
+                categorySlug={cat.slug}
+                carouselIndex={1}
+                title={`${cat.label} — Carousel`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

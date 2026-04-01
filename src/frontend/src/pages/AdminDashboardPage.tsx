@@ -10,6 +10,7 @@ import {
   Shield,
   ShoppingCart,
   Tag,
+  Video,
 } from "lucide-react";
 import React from "react";
 import { useActor } from "../hooks/useActor";
@@ -120,6 +121,14 @@ export default function AdminDashboardPage() {
       description: "Edit category images, names, and navigation settings",
       icon: Tag,
       route: "/admin/categories",
+      color: "text-gold",
+    },
+    {
+      label: "Page Videos",
+      description:
+        "Upload and manage background videos for For Him and For Her pages",
+      icon: Video,
+      route: "/admin/page-videos",
       color: "text-gold",
     },
   ];
